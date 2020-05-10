@@ -29,17 +29,10 @@ class ProjectCreateTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-    }
-
-    public function testResponseOkSavedProject()
-    {
-        $response = $this->post('api/v1/projects', [
+        $response->assertJsonFragment([
             'name' => 'test_project'
         ]);
-
-        $all = $this->projectRepoMock->getAll();
-        $this->assertEquals(1, count($all));
-        $this->assertEquals('test_project', $all[0]->getName());
+        $this->assertEquals('test_project', $this->projectRepoMock->getSaved()->getName());
     }
 
     public function testResponseValidationErrorMissingName()

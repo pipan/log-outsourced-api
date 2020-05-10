@@ -37,6 +37,16 @@ class DatabaseProjectRepository implements ProjectRepository
         return $this->getByUuid(hex2bin($hexUuid));
     }
 
+    public function save(ProjectEntity $project)
+    {
+        if ($project->getId() == 0) {
+            $this->create($project);
+        } else {
+            $this->update($project->getId(), $project);
+        }
+        return $project;
+    }
+
     public function create(ProjectEntity $project)
     {
         DB::table('projects')
@@ -46,16 +56,21 @@ class DatabaseProjectRepository implements ProjectRepository
             ]);
     }
 
-    public function deleteByUuid($uuid)
+    protected function update($id, ProjectEntity $project)
     {
-        return DB::table('projects')
-            ->where('uuid', '=', $uuid)
-            ->delete();
+        DB::table('projects')
+            ->where('id', '=', $id)
+            ->update([
+                'uuid' => $project->getUuid(),
+                'name' => $project->getName()
+            ]);
     }
 
-    public function deleteByHexUuid($hexUuid)
+    public function delete(ProjectEntity $project)
     {
-        return $this->deleteByUuid(hex2bin($hexUuid));
+        return DB::table('projects')
+            ->where('uuid', '=', $project->getUuid())
+            ->delete();
     }
 
     public function exists($value)

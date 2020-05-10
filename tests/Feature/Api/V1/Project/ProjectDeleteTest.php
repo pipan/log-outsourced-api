@@ -21,27 +21,21 @@ class ProjectDeleteTest extends TestCase
             $this->projectRepoMock,
             null
         ));
-
-        $this->projectRepoMock->createProject(1, 'aabb', 'test_project');
     }
 
     public function testResponseOk()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'test_project')
+        );
         $response = $this->delete('api/v1/projects/aabb');
 
         $response->assertStatus(204);
     }
 
-    public function testResponseOkLastDeletedName()
+    public function testResponseNotFound()
     {
         $response = $this->delete('api/v1/projects/aabb');
-
-        $this->assertEquals(0, count($this->projectRepoMock->getAll()));
-    }
-
-    public function testResponseNotFoundSomeProjects()
-    {
-        $response = $this->delete('api/v1/projects/aacc');
 
         $response->assertStatus(404);
     }

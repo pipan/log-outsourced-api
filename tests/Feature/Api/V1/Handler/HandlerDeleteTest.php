@@ -36,7 +36,7 @@ class HandlerDeleteTest extends TestCase
         );
         $response = $this->delete('api/v1/handlers/0011');
 
-        $response->assertStatus(200);
+        $response->assertStatus(204);
         $this->assertEquals('test_handler', $this->handlerRepoMock->getDeleted()->getName());
     }
 

@@ -29,9 +29,11 @@ class DatabaseHandlerRepository implements HandlerRepository
     public function save(HandlerEntity $handler)
     {
         if ($handler->getId() == 0) {
-            return $this->create($handler);
+            $this->create($handler);
+        } else {
+            $this->update($handler->getId(), $handler);
         }
-        return $this->update($handler);
+        return $handler;
     }
 
     protected function create(HandlerEntity $handler)
@@ -44,9 +46,10 @@ class DatabaseHandlerRepository implements HandlerRepository
             ]);
     }
 
-    protected function update(HandlerEntity $handler)
+    protected function update($id, HandlerEntity $handler)
     {
         return DB::table('handlers')
+            ->where('id', '=', $id)
             ->update([
                 'uuid' => $handler->getUuid(),
                 'project_id' => $handler->getProjectId(),

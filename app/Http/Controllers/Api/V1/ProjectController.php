@@ -41,7 +41,7 @@ class ProjectController
             $generator->next(),
             $request->input('name')
         );
-        $repository->project()->create($project);
+        $repository->project()->save($project);
         return response()->json($this->projectAdapter->adapt($project), 201);
     }
 
@@ -64,8 +64,7 @@ class ProjectController
             return response()->json(null, 404);
         }
 
-        $repository->project()->deleteByHexUuid($hexUuid);
-
+        $repository->project()->delete($project);
         return response()->json(null, 204);
     }
 }

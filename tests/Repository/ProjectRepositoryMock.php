@@ -7,21 +7,31 @@ use App\Domain\Project\ProjectRepository;
 
 class ProjectRepositoryMock implements ProjectRepository
 {
-    private $all;
+    private $all = [];
+    private $entity = null;
+    private $saved = null;
+    private $deleted = null;
 
-    public function __construct($all)
+    public function withAll($all)
     {
         $this->all = $all;
+        return $this;
     }
 
-    public function createProject($id, $hexUuid, $name)
+    public function withEntity($entity)
     {
-        $this->create(new ProjectEntity($id, hex2bin($hexUuid), $name));
+        $this->entity = $entity;
+        return $this;
     }
 
-    public function setAll($all)
+    public function getDeleted()
     {
-        $this->all = $all;
+        return $this->deleted;
+    }
+
+    public function getSaved()
+    {
+        return $this->saved;
     }
 
     public function getAll()
@@ -31,12 +41,7 @@ class ProjectRepositoryMock implements ProjectRepository
 
     public function getByUuid($uuid)
     {
-        foreach ($this->all as $item) {
-            if ($item->getUuid() == $uuid) {
-                return  $item;
-            }
-        }
-        return null;
+        return $this->entity;
     }
 
     public function getByHexUuid($hexUuid)
@@ -44,25 +49,15 @@ class ProjectRepositoryMock implements ProjectRepository
         return $this->getByUuid(hex2bin($hexUuid));
     }
 
-    public function create(ProjectEntity $project)
+    public function save(ProjectEntity $project)
     {
-        $this->all[] = $project;
+        $this->saved = $project;
     }
     
-    public function deleteByUuid($uuid)
+    public function delete(ProjectEntity $project)
     {
-        $project = $this->getByUuid($uuid);
-        $this->lastDeleted = $project;
-        if ($project == null) {
-            return;
-        }
-        $key = array_search($this->lastDeleted, $this->all);
-        unset($this->all[$key]);
-    }
-
-    public function deleteByHexUuid($hexUuid)
-    {
-        return $this->deleteByUuid(hex2bin($hexUuid));
+        $this->deleted = $project;
+        return $project;
     }
 
     public function exists($value)

@@ -22,13 +22,11 @@ class HandlerUpdateTest extends TestCase
         parent::setUp();
 
         $this->handlerRepoMock = new HandlerRepositoryMock();
-        $this->projectRepoMock = new ProjectRepositoryMock([]);
+        $this->projectRepoMock = new ProjectRepositoryMock();
         $this->app->instance(Repository::class, new SimpleRepository(
             $this->projectRepoMock,
             $this->handlerRepoMock
         ));
-
-        $this->projectRepoMock->createProject(1, 'aabb', 'project_name');
     }
 
     public function testResponseOk()

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
+use App\Domain\Project\ProjectEntity;
 use App\Repository\Repository;
 use App\Repository\SimpleRepository;
 use Tests\Repository\HandlerRepositoryMock;
@@ -17,18 +18,19 @@ class HandlerCreateTest extends TestCase
     {
         parent::setUp();
 
-        $this->handlerRepoMock = new HandlerRepositoryMock([]);
-        $this->projectRepoMock = new ProjectRepositoryMock([]);
+        $this->handlerRepoMock = new HandlerRepositoryMock();
+        $this->projectRepoMock = new ProjectRepositoryMock();
         $this->app->instance(Repository::class, new SimpleRepository(
             $this->projectRepoMock,
             $this->handlerRepoMock
         ));
-
-        $this->projectRepoMock->createProject(1, 'aabb', 'project_name');
     }
 
     public function testResponseOk()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'project')
+        );
         $response = $this->post('api/v1/handlers', [
             'name' => 'test_handler',
             'project_uuid' => 'aabb'
@@ -44,6 +46,9 @@ class HandlerCreateTest extends TestCase
 
     public function testResponseValidationErrorMissingName()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'project')
+        );
         $response = $this->post('api/v1/handlers', [
             'project_uuid' => 'aabb'
         ]);
@@ -53,6 +58,9 @@ class HandlerCreateTest extends TestCase
 
     public function testResponseValidationErrorEmptyName()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'project')
+        );
         $response = $this->post('api/v1/handlers', [
             'name' => '',
             'project_uuid' => 'aabb'
@@ -63,6 +71,9 @@ class HandlerCreateTest extends TestCase
 
     public function testResponseValidationErrorLongName()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'project')
+        );
         $name = "";
         for ($i = 0; $i < 256; $i++) {
             $name .= "a";
@@ -77,6 +88,9 @@ class HandlerCreateTest extends TestCase
 
     public function testResponseValidationErrorProjectUuidMissing()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, 'aabb', 'project')
+        );
         $response = $this->post('api/v1/handlers', [
             'name' => 'test_handler'
         ]);
@@ -84,7 +98,7 @@ class HandlerCreateTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function testResponseValidationErrorWrongProjectUuid()
+    public function testResponseValidationErrorProjectNotFound()
     {
         $response = $this->post('api/v1/handlers', [
             'name' => 'test_handler',

@@ -16,23 +16,24 @@ class ProjectViewTest extends TestCase
     {
         parent::setUp();
 
-        $this->projectRepoMock = new ProjectRepositoryMock([]);
+        $this->projectRepoMock = new ProjectRepositoryMock();
         $this->app->instance(Repository::class, new SimpleRepository(
             $this->projectRepoMock,
             null
         ));
-
-        $this->projectRepoMock->createProject(1, 'aabb', 'test_project');
     }
 
     public function testResponseOk()
     {
+        $this->projectRepoMock->withEntity(
+            new ProjectEntity(1, hex2bin('aabb'), 'test_project')
+        );
         $response = $this->get('api/v1/projects/aabb');
 
         $response->assertStatus(200);
     }
 
-    public function testResponseNotFoundSomeProjects()
+    public function testResponseNotFound()
     {
         $response = $this->get('api/v1/projects/aacc');
 

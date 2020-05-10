@@ -15,7 +15,7 @@ class ProjectEntity
         $this->name = $name;
     }
 
-    public function getid()
+    public function getId()
     {
         return $this->id;
     }

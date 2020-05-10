@@ -86,6 +86,6 @@ class HandlerController
         }
 
         $repository->handler()->delete($handler);
-        return response()->json(null, 200);
+        return response()->json(null, 204);
     }
 }
