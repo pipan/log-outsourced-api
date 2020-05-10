@@ -4,13 +4,20 @@ namespace App\Domain\Project;
 
 class ProjectEntity
 {
+    protected $id;
     protected $uuid;
     protected $name;
 
-    public function __construct($uuid, $name)
+    public function __construct($id, $uuid, $name)
     {
+        $this->id = $id;
         $this->uuid = $uuid;
         $this->name = $name;
+    }
+
+    public function getid()
+    {
+        return $this->id;
     }
 
     public function getUuid()

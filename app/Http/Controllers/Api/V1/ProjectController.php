@@ -36,7 +36,11 @@ class ProjectController
             return response()->json(null, 422);
         }
 
-        $project = new ProjectEntity($generator->next(), $request->input('name'));
+        $project = new ProjectEntity(
+            0,
+            $generator->next(),
+            $request->input('name')
+        );
         $repository->project()->create($project);
         return response()->json($this->projectAdapter->adapt($project), 201);
     }

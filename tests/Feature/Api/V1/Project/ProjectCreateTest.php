@@ -37,7 +37,9 @@ class ProjectCreateTest extends TestCase
             'name' => 'test_project'
         ]);
 
-        $this->assertEquals('test_project', $this->projectRepoMock->getLastCreated()->getName());
+        $all = $this->projectRepoMock->getAll();
+        $this->assertEquals(1, count($all));
+        $this->assertEquals('test_project', $all[0]->getName());
     }
 
     public function testResponseValidationErrorMissingName()

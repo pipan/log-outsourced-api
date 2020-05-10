@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Repository\DatabaseRepository;
+use App\Repository\Database\DatabaseRepository;
 use App\Repository\ProxyRepository;
 use App\Repository\Repository;
 use Illuminate\Support\ServiceProvider;

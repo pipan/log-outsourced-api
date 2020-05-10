@@ -8,12 +8,15 @@ use App\Domain\Project\ProjectRepository;
 class ProjectRepositoryMock implements ProjectRepository
 {
     private $all;
-    private $lastCreated;
-    private $lastDeleted;
 
     public function __construct($all)
     {
         $this->all = $all;
+    }
+
+    public function createProject($id, $hexUuid, $name)
+    {
+        $this->create(new ProjectEntity($id, hex2bin($hexUuid), $name));
     }
 
     public function setAll($all)
@@ -43,12 +46,7 @@ class ProjectRepositoryMock implements ProjectRepository
 
     public function create(ProjectEntity $project)
     {
-        $this->lastCreated = $project;
-    }
-
-    public function getLastCreated()
-    {
-        return $this->lastCreated;
+        $this->all[] = $project;
     }
     
     public function deleteByUuid($uuid)
@@ -67,8 +65,8 @@ class ProjectRepositoryMock implements ProjectRepository
         return $this->deleteByUuid(hex2bin($hexUuid));
     }
 
-    public function getLastDeleted()
+    public function exists($value)
     {
-        return $this->lastDeleted;
+        return $this->getByHexUuid($value) != null;
     }
 }

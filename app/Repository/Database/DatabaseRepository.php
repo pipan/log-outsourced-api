@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Database;
 
-use App\Domain\Handler\DatabaseHandlerRepository;
-use App\Domain\Project\DatabaseProjectRepository;
+use App\Repository\Database\Handler\DatabaseHandlerRepository;
+use App\Repository\Database\Project\DatabaseProjectRepository;
+use App\Repository\SimpleRepository;
 
 class DatabaseRepository extends SimpleRepository
 {

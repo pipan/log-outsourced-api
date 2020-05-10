@@ -1,19 +1,27 @@
 <?php
 
-namespace App\Domain\Project;
+namespace App\Repository\Database\Project;
 
+use App\Domain\Project\ProjectEntity;
+use App\Domain\Project\ProjectRepository;
 use Illuminate\Support\Facades\DB;
+use Lib\Adapter\AdapterHelper;
 
 class DatabaseProjectRepository implements ProjectRepository
 {
+    private $resultAdapter;
+
+    public function __construct()
+    {
+        $this->resultAdapter = new ProjectDatabaseResultAdapter();
+    }
+
     public function getAll()
     {
         $result = DB::table('projects')->get();
-        $projects = [];
-        foreach ($result as $item) {
-            $projects[] = new ProjectEntity($item->uid, $item->name);
-        }
-        return $projects;
+
+        $adapter = AdapterHelper::listOf($this->resultAdapter);
+        return $adapter->adapt($result);
     }
 
     public function getByUuid($uuid)
@@ -21,7 +29,7 @@ class DatabaseProjectRepository implements ProjectRepository
         $result = DB::table('projects')
             ->where('uuid', '=', $uuid)
             ->first();
-        return new ProjectEntity($result->uuid, $result->name);
+        return $this->resultAdapter->adapt($result);
     }
 
     public function getByHexUuid($hexUuid)
@@ -48,5 +56,10 @@ class DatabaseProjectRepository implements ProjectRepository
     public function deleteByHexUuid($hexUuid)
     {
         return $this->deleteByUuid(hex2bin($hexUuid));
+    }
+
+    public function exists($value)
+    {
+        return $this->getByHexUuid($value) != null;
     }
 }

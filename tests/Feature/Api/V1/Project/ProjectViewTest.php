@@ -21,38 +21,20 @@ class ProjectViewTest extends TestCase
             $this->projectRepoMock,
             null
         ));
-    }
 
-    private function createProject($hexUuid, $name)
-    {
-        return new ProjectEntity(hex2bin($hexUuid), $name);
+        $this->projectRepoMock->createProject(1, 'aabb', 'test_project');
     }
 
     public function testResponseOk()
     {
-        $this->projectRepoMock->setAll([
-            $this->createProject('aabb', 'test_project')
-        ]);
-
         $response = $this->get('api/v1/projects/aabb');
 
         $response->assertStatus(200);
     }
 
-    public function testResponseNotFoundEmptyProjects()
-    {
-        $response = $this->get('api/v1/projects/aabb');
-
-        $response->assertStatus(404);
-    }
-
     public function testResponseNotFoundSomeProjects()
     {
-        $this->projectRepoMock->setAll([
-            $this->createProject('aacc', 'test_project')
-        ]);
-
-        $response = $this->get('api/v1/projects/aabb');
+        $response = $this->get('api/v1/projects/aacc');
 
         $response->assertStatus(404);
     }

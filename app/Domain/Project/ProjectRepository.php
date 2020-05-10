@@ -2,7 +2,9 @@
 
 namespace App\Domain\Project;
 
-interface ProjectRepository
+use App\Domain\ExistsValidable;
+
+interface ProjectRepository extends ExistsValidable
 {
     public function getAll();
     public function getByUuid($uuid);

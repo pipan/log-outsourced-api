@@ -21,19 +21,12 @@ class ProjectDeleteTest extends TestCase
             $this->projectRepoMock,
             null
         ));
-    }
 
-    private function createProject($hexUuid, $name)
-    {
-        return new ProjectEntity(hex2bin($hexUuid), $name);
+        $this->projectRepoMock->createProject(1, 'aabb', 'test_project');
     }
 
     public function testResponseOk()
     {
-        $this->projectRepoMock->setAll([
-            $this->createProject('aabb', 'test_project')
-        ]);
-
         $response = $this->delete('api/v1/projects/aabb');
 
         $response->assertStatus(204);
@@ -41,29 +34,14 @@ class ProjectDeleteTest extends TestCase
 
     public function testResponseOkLastDeletedName()
     {
-        $this->projectRepoMock->setAll([
-            $this->createProject('aabb', 'test_project')
-        ]);
-
         $response = $this->delete('api/v1/projects/aabb');
 
-        $this->assertEquals('test_project', $this->projectRepoMock->getLastDeleted()->getName());
-    }
-
-    public function testResponseNotFoundEmptyProjects()
-    {
-        $response = $this->delete('api/v1/projects/aabb');
-
-        $response->assertStatus(404);
+        $this->assertEquals(0, count($this->projectRepoMock->getAll()));
     }
 
     public function testResponseNotFoundSomeProjects()
     {
-        $this->projectRepoMock->setAll([
-            $this->createProject('aacc', 'test_project')
-        ]);
-
-        $response = $this->delete('api/v1/projects/aabb');
+        $response = $this->delete('api/v1/projects/aacc');
 
         $response->assertStatus(404);
     }

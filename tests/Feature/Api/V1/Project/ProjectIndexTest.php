@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
-use App\Domain\Project\ProjectEntity;
 use App\Repository\Repository;
 use App\Repository\SimpleRepository;
 use Tests\Repository\ProjectRepositoryMock;
@@ -23,11 +22,6 @@ class ProjectIndexTest extends TestCase
         ));
     }
 
-    private function createProject($hexUuid, $name)
-    {
-        return new ProjectEntity(hex2bin($hexUuid), $name);
-    }
-
     public function testResponseOk()
     {
         $response = $this->get('api/v1/projects');
@@ -44,7 +38,7 @@ class ProjectIndexTest extends TestCase
 
     public function testResponseNotEmpty()
     {
-        $this->projectRepoMock->setAll([$this->createProject('aabc', 'test')]);
+        $this->projectRepoMock->createProject(1, 'aabc', 'test');
         
         $response = $this->get('api/v1/projects');
 

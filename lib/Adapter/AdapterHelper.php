@@ -8,4 +8,9 @@ class AdapterHelper
     {
         return new ListAdapter($itemAdapter);
     }
+
+    public static function chain($adapters = [])
+    {
+        return new ChainAdapter($adapters);
+    }
 }
