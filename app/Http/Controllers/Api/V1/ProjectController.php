@@ -68,6 +68,34 @@ class ProjectController
         return response()->json(null, 204);
     }
 
+    public function update($hexUuid, Repository $repository, Request $request)
+    {
+        $project = $repository->project()->getByHexUuid($hexUuid);
+
+        if ($project == null) {
+            return response()->json(null, 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => ['bail', 'nullable', 'filled', 'max:255']
+        ]);
+        if ($validator->fails()) {
+            return response()->json(null, 422);
+        }
+
+        $project = new ProjectEntity(
+            $project->getId(),
+            $project->getUuid(),
+            $request->input('name', $project->getName())
+        );
+        $repository->project()->save($project);
+
+        return response()->json(
+            $this->projectAdapter->adapt($project),
+            200
+        );
+    }
+
     public function generateUuid($hexUuid, Repository $repository, UidGenerator $uidGenerator)
     {
         $project = $repository->project()->getByHexUuid($hexUuid);
