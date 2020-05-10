@@ -9,6 +9,7 @@ Route::prefix('api/v1')->group(function () {
     Route::get('projects', 'Api\V1\ProjectController@index');
     Route::post('projects', 'Api\V1\ProjectController@create');
     Route::get('projects/{hexUuid}', 'Api\V1\ProjectController@view');
+    Route::put('projects/{hexUuid}/generate', 'Api\V1\ProjectController@generateUuid');
     Route::delete('projects/{hexUuid}', 'Api\V1\ProjectController@delete');
 
     Route::post('handlers', 'Api\V1\HandlerController@create');

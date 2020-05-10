@@ -8,7 +8,7 @@ use App\Repository\SimpleRepository;
 use Tests\Repository\ProjectRepositoryMock;
 use Tests\TestCase;
 
-class ProjectDeleteTest extends TestCase
+class ProjectGenerateUuidTest extends TestCase
 {
     private $projectRepoMock;
 
@@ -28,14 +28,16 @@ class ProjectDeleteTest extends TestCase
         $this->projectRepoMock->withEntity(
             new ProjectEntity(1, hex2bin('aabb'), 'test_project')
         );
-        $response = $this->delete('api/v1/projects/aabb');
+        $response = $this->put('api/v1/projects/aabb/generate');
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
+        $this->assertEquals(1, $this->projectRepoMock->getSaved()->getId());
+        $this->assertNotEquals('aabb', $response->json('uuid'));
     }
 
     public function testResponseNotFound()
     {
-        $response = $this->delete('api/v1/projects/aabb');
+        $response = $this->put('api/v1/projects/aabb/generate');
 
         $response->assertStatus(404);
     }

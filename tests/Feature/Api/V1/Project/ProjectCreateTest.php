@@ -15,7 +15,7 @@ class ProjectCreateTest extends TestCase
     {
         parent::setUp();
 
-        $this->projectRepoMock = new ProjectRepositoryMock([]);
+        $this->projectRepoMock = new ProjectRepositoryMock();
         $this->app->instance(Repository::class, new SimpleRepository(
             $this->projectRepoMock,
             null

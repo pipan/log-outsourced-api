@@ -67,4 +67,24 @@ class ProjectController
         $repository->project()->delete($project);
         return response()->json(null, 204);
     }
+
+    public function generateUuid($hexUuid, Repository $repository, UidGenerator $uidGenerator)
+    {
+        $project = $repository->project()->getByHexUuid($hexUuid);
+        if ($project == null) {
+            return response()->json(null, 404);
+        }
+
+        $project = new ProjectEntity(
+            $project->getId(),
+            $uidGenerator->next(),
+            $project->getName()
+        );
+        $repository->project()->save($project);
+
+        return response()->json(
+            $this->projectAdapter->adapt($project),
+            200
+        );
+    }
 }
