@@ -3,37 +3,21 @@
 namespace Tests\Feature\Api\V1\Project;
 
 use App\Domain\Project\ProjectEntity;
-use App\Repository\Repository;
-use App\Repository\SimpleRepository;
-use Tests\Repository\ProjectRepositoryMock;
-use Tests\TestCase;
+use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class ProjectUpdateTest extends TestCase
+class ProjectUpdateTest extends ControllerActionTestCase
 {
-    private $projectRepoMock;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->projectRepoMock = new ProjectRepositoryMock();
-        $this->app->instance(Repository::class, new SimpleRepository(
-            $this->projectRepoMock,
-            null
-        ));
-    }
-
     public function testResponseOk()
     {
-        $this->projectRepoMock->withEntity(
-            new ProjectEntity(1, hex2bin('aabb'), 'test_project')
+        $this->projectRepository->withEntity(
+            new ProjectEntity(1, 'aabb', 'test_project')
         );
         $response = $this->put('api/v1/projects/aabb', [
             'name' => 'new_project'
         ]);
 
         $response->assertStatus(200);
-        $this->assertEquals(1, $this->projectRepoMock->getSaved()->getId());
+        $this->assertEquals(1, $this->projectRepository->getUpdated()->getId());
         $response->assertJsonFragment([
             'name' => 'new_project'
         ]);
@@ -41,8 +25,8 @@ class ProjectUpdateTest extends TestCase
 
     public function testResponseValidationErrorEmptyName()
     {
-        $this->projectRepoMock->withEntity(
-            new ProjectEntity(1, hex2bin('aabb'), 'test_project')
+        $this->projectRepository->withEntity(
+            new ProjectEntity(1, 'aabb', 'test_project')
         );
         $response = $this->put('api/v1/projects/aabb', [
             'name' => ''
@@ -53,8 +37,8 @@ class ProjectUpdateTest extends TestCase
 
     public function testResponseValidationErrorLongName()
     {
-        $this->projectRepoMock->withEntity(
-            new ProjectEntity(1, hex2bin('aabb'), 'test_project')
+        $this->projectRepository->withEntity(
+            new ProjectEntity(1, 'aabb', 'test_project')
         );
         $name = "";
         for ($i = 0; $i < 256; $i++) {

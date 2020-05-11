@@ -3,35 +3,19 @@
 namespace Tests\Feature\Api\V1\Project;
 
 use App\Domain\Project\ProjectEntity;
-use App\Repository\Repository;
-use App\Repository\SimpleRepository;
-use Tests\Repository\ProjectRepositoryMock;
-use Tests\TestCase;
+use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class ProjectGenerateUuidTest extends TestCase
+class ProjectGenerateUuidTest extends ControllerActionTestCase
 {
-    private $projectRepoMock;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->projectRepoMock = new ProjectRepositoryMock();
-        $this->app->instance(Repository::class, new SimpleRepository(
-            $this->projectRepoMock,
-            null
-        ));
-    }
-
     public function testResponseOk()
     {
-        $this->projectRepoMock->withEntity(
-            new ProjectEntity(1, hex2bin('aabb'), 'test_project')
+        $this->projectRepository->withEntity(
+            new ProjectEntity(1, 'aabb', 'test_project')
         );
         $response = $this->put('api/v1/projects/aabb/generate');
 
         $response->assertStatus(200);
-        $this->assertEquals(1, $this->projectRepoMock->getSaved()->getId());
+        $this->assertEquals(1, $this->projectRepository->getUpdated()->getId());
         $this->assertNotEquals('aabb', $response->json('uuid'));
     }
 

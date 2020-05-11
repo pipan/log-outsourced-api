@@ -5,18 +5,18 @@ namespace App\Domain\Handler;
 class HandlerEntity
 {
     protected $id;
-    protected $uuid;
+    protected $slug;
     protected $name;
-    protected $projectId;
-    protected $serviceId;
-    protected $rules;
+    protected $configSchema;
+    protected $meta;
 
-    public function __construct($id, $uuid, $projectId, $name)
+    public function __construct($id, $slug, $name, $configSchema, $meta)
     {
         $this->id = $id;
-        $this->uuid = $uuid;
-        $this->projectId = $projectId;
+        $this->slug = $slug;
         $this->name = $name;
+        $this->configSchema = $configSchema;
+        $this->meta = $meta;
     }
 
     public function getId()
@@ -24,19 +24,9 @@ class HandlerEntity
         return $this->id;
     }
 
-    public function getUuid()
+    public function getSlug()
     {
-        return $this->uuid;
-    }
-
-    public function getProjectId()
-    {
-        return $this->projectId;
-    }
-
-    public function getHexUuid()
-    {
-        return bin2hex($this->getUuid());
+        return $this->slug;
     }
 
     public function getName()
@@ -44,13 +34,13 @@ class HandlerEntity
         return $this->name;
     }
 
-    public function getServiceId()
+    public function getConfigSchema()
     {
-        return $this->serviceId;
+        return $this->configSchema;
     }
 
-    public function getRules()
+    public function getMeta()
     {
-        return $this->rules;
+        return $this->meta;
     }
 }

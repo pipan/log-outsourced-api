@@ -2,26 +2,10 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
-use App\Repository\Repository;
-use App\Repository\SimpleRepository;
-use Tests\Repository\ProjectRepositoryMock;
-use Tests\TestCase;
+use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class ProjectCreateTest extends TestCase
+class ProjectCreateTest extends ControllerActionTestCase
 {
-    private $projectRepoMock;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->projectRepoMock = new ProjectRepositoryMock();
-        $this->app->instance(Repository::class, new SimpleRepository(
-            $this->projectRepoMock,
-            null
-        ));
-    }
-
     public function testResponseOk()
     {
         $response = $this->post('api/v1/projects', [
@@ -32,7 +16,7 @@ class ProjectCreateTest extends TestCase
         $response->assertJsonFragment([
             'name' => 'test_project'
         ]);
-        $this->assertEquals('test_project', $this->projectRepoMock->getSaved()->getName());
+        $this->assertEquals('test_project', $this->projectRepository->getInserted()->getName());
     }
 
     public function testResponseValidationErrorMissingName()

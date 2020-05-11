@@ -9,72 +9,57 @@ use Lib\Adapter\AdapterHelper;
 
 class DatabaseProjectRepository implements ProjectRepository
 {
-    private $resultAdapter;
+    const TABLE_NAME = 'projects';
+
+    private $readAdapter;
+    private $writeAdapter;
 
     public function __construct()
     {
-        $this->resultAdapter = new ProjectDatabaseResultAdapter();
+        $this->readAdapter = new ProjectDatabaseReadAdapter();
+        $this->writeAdapter = new ProjectDatabaseWriteAdapter();
     }
 
     public function getAll()
     {
-        $result = DB::table('projects')->get();
+        $result = DB::table(self::TABLE_NAME)->get();
 
-        $adapter = AdapterHelper::listOf($this->resultAdapter);
+        $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt($result);
     }
 
     public function getByUuid($uuid)
     {
-        $result = DB::table('projects')
+        $result = DB::table(self::TABLE_NAME)
             ->where('uuid', '=', $uuid)
             ->first();
-        return $this->resultAdapter->adapt($result);
+        return $this->readAdapter->adapt($result);
     }
 
-    public function getByHexUuid($hexUuid)
+    public function insert(ProjectEntity $project)
     {
-        return $this->getByUuid(hex2bin($hexUuid));
-    }
-
-    public function save(ProjectEntity $project)
-    {
-        if ($project->getId() == 0) {
-            $this->create($project);
-        } else {
-            $this->update($project->getId(), $project);
-        }
+        DB::table(self::TABLE_NAME)
+            ->insert($this->writeAdapter->adapt($project));
         return $project;
     }
 
-    public function create(ProjectEntity $project)
+    public function update($id, ProjectEntity $project)
     {
-        DB::table('projects')
-            ->insert([
-                'uuid' => $project->getUuid(),
-                'name' => $project->getName()
-            ]);
-    }
-
-    protected function update($id, ProjectEntity $project)
-    {
-        DB::table('projects')
+        DB::table(self::TABLE_NAME)
             ->where('id', '=', $id)
-            ->update([
-                'uuid' => $project->getUuid(),
-                'name' => $project->getName()
-            ]);
+            ->update($this->writeAdapter->adapt($project));
+        return $project;
     }
 
     public function delete(ProjectEntity $project)
     {
-        return DB::table('projects')
-            ->where('uuid', '=', $project->getUuid())
+        return DB::table(self::TABLE_NAME)
+            ->where('id', '=', $project->getId())
             ->delete();
     }
 
     public function exists($value)
     {
-        return $this->getByHexUuid($value) != null;
+        return $this->getByUuid($value) != null;
     }
 }

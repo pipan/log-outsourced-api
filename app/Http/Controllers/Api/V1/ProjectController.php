@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Domain\Project\ProjectAdapter;
 use App\Domain\Project\ProjectEntity;
+use App\Http\ResponseSchema\ProjectResponseSchemaAdapter;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Lib\Adapter\AdapterHelper;
-use Lib\Generator\UidGenerator;
+use Lib\Generator\HexadecimalGenerator;
 
 class ProjectController
 {
-    private $projectAdapter;
+    private $projectSchema;
 
     public function __construct()
     {
-        $this->projectAdapter = new ProjectAdapter();
+        $this->projectSchema = new ProjectResponseSchemaAdapter();
     }
 
     public function index(Repository $repository)
     {
         $projects = $repository->project()->getAll();
-        $adapter = AdapterHelper::listOf($this->projectAdapter);
+        $adapter = AdapterHelper::listOf($this->projectSchema);
         return response()->json($adapter->adapt($projects));
     }
 
-    public function create(Request $request, Repository $repository, UidGenerator $generator)
+    public function create(Request $request, Repository $repository, HexadecimalGenerator $generator)
     {
         $validator = Validator::make($request->all(), [
             'name' => ['bail', 'required', 'max:255']
@@ -41,24 +41,24 @@ class ProjectController
             $generator->next(),
             $request->input('name')
         );
-        $repository->project()->save($project);
-        return response()->json($this->projectAdapter->adapt($project), 201);
+        $repository->project()->insert($project);
+        return response()->json($this->projectSchema->adapt($project), 201);
     }
 
-    public function view($hexUuid, Repository $repository)
+    public function view($uuid, Repository $repository)
     {
-        $project = $repository->project()->getByHexUuid($hexUuid);
+        $project = $repository->project()->getByUuid($uuid);
 
         if ($project == null) {
             return response()->json(null, 404);
         }
 
-        return response()->json($this->projectAdapter->adapt($project));
+        return response()->json($this->projectSchema->adapt($project));
     }
 
-    public function delete($hexUuid, Repository $repository)
+    public function delete($uuid, Repository $repository)
     {
-        $project = $repository->project()->getByHexUuid($hexUuid);
+        $project = $repository->project()->getByUuid($uuid);
 
         if ($project == null) {
             return response()->json(null, 404);
@@ -68,9 +68,9 @@ class ProjectController
         return response()->json(null, 204);
     }
 
-    public function update($hexUuid, Repository $repository, Request $request)
+    public function update($uuid, Repository $repository, Request $request)
     {
-        $project = $repository->project()->getByHexUuid($hexUuid);
+        $project = $repository->project()->getByUuid($uuid);
 
         if ($project == null) {
             return response()->json(null, 404);
@@ -88,30 +88,30 @@ class ProjectController
             $project->getUuid(),
             $request->input('name', $project->getName())
         );
-        $repository->project()->save($project);
+        $repository->project()->update($project->getId(), $project);
 
         return response()->json(
-            $this->projectAdapter->adapt($project),
+            $this->projectSchema->adapt($project),
             200
         );
     }
 
-    public function generateUuid($hexUuid, Repository $repository, UidGenerator $uidGenerator)
+    public function generateUuid($uuid, Repository $repository, HexadecimalGenerator $generator)
     {
-        $project = $repository->project()->getByHexUuid($hexUuid);
+        $project = $repository->project()->getByUuid($uuid);
         if ($project == null) {
             return response()->json(null, 404);
         }
 
         $project = new ProjectEntity(
             $project->getId(),
-            $uidGenerator->next(),
+            $generator->next(),
             $project->getName()
         );
-        $repository->project()->save($project);
+        $repository->project()->update($project->getId(), $project);
 
         return response()->json(
-            $this->projectAdapter->adapt($project),
+            $this->projectSchema->adapt($project),
             200
         );
     }

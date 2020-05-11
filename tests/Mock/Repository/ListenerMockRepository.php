@@ -1,17 +1,18 @@
 <?php
 
-namespace Tests\Repository;
+namespace Tests\Mock\Repository;
 
-use App\Domain\Handler\HandlerEntity;
-use App\Domain\Handler\HandlerRepository;
+use App\Domain\Listener\ListenerEntity;
+use App\Domain\Listener\ListenerRepository;
 
-class HandlerRepositoryMock implements HandlerRepository
+class ListenerMockRepository implements ListenerRepository
 {
     protected $all = [];
     protected $entity = null;
     protected $forProject = [];
     protected $byUuidParam = null;
-    protected $saved = null;
+    protected $inserted = null;
+    protected $updated = null;
     protected $deleted = null;
 
     public function withAll($all)
@@ -37,9 +38,14 @@ class HandlerRepositoryMock implements HandlerRepository
         return $this->byUuidParam;
     }
 
-    public function getSaved()
+    public function getInserted()
     {
-        return $this->saved;
+        return $this->inserted;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
     }
 
     public function getDeleted()
@@ -62,20 +68,21 @@ class HandlerRepositoryMock implements HandlerRepository
         return $this->entity;
     }
 
-    public function getByHexUuid($hexUuid)
+    public function insert(ListenerEntity $entity)
     {
-        return $this->getByUuid(hex2bin($hexUuid));
+        $this->inserted = $entity;
+        return $entity;
     }
 
-    public function save(HandlerEntity $handler)
+    public function update($id, ListenerEntity $entity)
     {
-        $this->saved = $handler;
-        return $handler;
+        $this->updated = $entity;
+        return $entity;
     }
     
-    public function delete(HandlerEntity $handler)
+    public function delete(ListenerEntity $entity)
     {
-        $this->deleted = $handler;
-        return $handler;
+        $this->deleted = $entity;
+        return $entity;
     }
 }

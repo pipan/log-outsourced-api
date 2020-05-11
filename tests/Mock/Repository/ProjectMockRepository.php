@@ -1,15 +1,16 @@
 <?php
 
-namespace Tests\Repository;
+namespace Tests\Mock\Repository;
 
 use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
 
-class ProjectRepositoryMock implements ProjectRepository
+class ProjectMockRepository implements ProjectRepository
 {
     private $all = [];
     private $entity = null;
-    private $saved = null;
+    private $inserted = null;
+    private $updated = null;
     private $deleted = null;
 
     public function withAll($all)
@@ -29,9 +30,14 @@ class ProjectRepositoryMock implements ProjectRepository
         return $this->deleted;
     }
 
-    public function getSaved()
+    public function getInserted()
     {
-        return $this->saved;
+        return $this->inserted;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
     }
 
     public function getAll()
@@ -44,14 +50,14 @@ class ProjectRepositoryMock implements ProjectRepository
         return $this->entity;
     }
 
-    public function getByHexUuid($hexUuid)
+    public function insert(ProjectEntity $project)
     {
-        return $this->getByUuid(hex2bin($hexUuid));
+        $this->inserted = $project;
     }
 
-    public function save(ProjectEntity $project)
+    public function update($id, ProjectEntity $project)
     {
-        $this->saved = $project;
+        $this->updated = $project;
     }
     
     public function delete(ProjectEntity $project)
@@ -62,6 +68,6 @@ class ProjectRepositoryMock implements ProjectRepository
 
     public function exists($value)
     {
-        return $this->getByHexUuid($value) != null;
+        return $this->getByUuid($value) != null;
     }
 }

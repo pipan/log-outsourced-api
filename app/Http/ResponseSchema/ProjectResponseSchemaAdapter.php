@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Domain\Project;
+namespace App\Http\ResponseSchema;
 
 use Lib\Adapter\Adapter;
 
-class ProjectAdapter implements Adapter
+class ProjectResponseSchemaAdapter implements Adapter
 {
     public function adapt($item)
     {
         return [
-            'uuid' => $item->getUuidHex(),
+            'uuid' => $item->getUuid(),
             'name' => $item->getName()
         ];
     }

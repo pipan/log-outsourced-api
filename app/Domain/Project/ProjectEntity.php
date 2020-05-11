@@ -25,11 +25,6 @@ class ProjectEntity
         return $this->uuid;
     }
 
-    public function getUuidHex()
-    {
-        return bin2hex($this->getUuid());
-    }
-
     public function getName()
     {
         return $this->name;

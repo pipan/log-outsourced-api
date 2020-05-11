@@ -2,14 +2,14 @@
 
 namespace Tests\Generator;
 
-use Lib\Generator\UidGenerator;
+use Lib\Generator\BinaryGenerator;
 use Tests\TestCase;
 
-class UidGeneratorTest extends TestCase
+class BinaryGeneratorTest extends TestCase
 {
     public function testGenerates16ByteString()
     {
-        $generator = new UidGenerator();
+        $generator = new BinaryGenerator(16);
         $this->assertEquals(16, strlen($generator->next()));
     }
 }

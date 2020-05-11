@@ -8,9 +8,9 @@ interface ProjectRepository extends ExistsValidable
 {
     public function getAll();
     public function getByUuid($uuid);
-    public function getByHexUuid($hexUuid);
 
-    public function save(ProjectEntity $project);
+    public function insert(ProjectEntity $project);
+    public function update($id, ProjectEntity $project);
 
-    public function delete(ProjectEntity $hexUuid);
+    public function delete(ProjectEntity $uuid);
 }
