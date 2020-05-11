@@ -10,18 +10,12 @@ class HandlerEntity
     protected $configSchema;
     protected $meta;
 
-    public function __construct($id, $slug, $name, $configSchema, $meta)
+    public function __construct($slug, $name, $configSchema, $meta)
     {
-        $this->id = $id;
         $this->slug = $slug;
         $this->name = $name;
         $this->configSchema = $configSchema;
         $this->meta = $meta;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function getSlug()

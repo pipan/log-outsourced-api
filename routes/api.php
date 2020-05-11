@@ -19,12 +19,4 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('handlers', 'Api\V1\HandlerController@index');
     Route::get('handlers/{slug}', 'Api\V1\HandlerController@view');
-    // Route::post('handlers', 'Api\V1\HandlerController@create');
-    // Route::put('handlers/{hexUuid}', 'Api\V1\HandlerController@update');
-    // Route::delete('handlers/{hexUuid}', 'Api\V1\HandlerController@delete');
-
-    Route::get('settings/{hexUuid}', 'Api\V1\SettingsController@view');
-
-    Route::get('config', 'Api\V1\ConfigController@index');
-    Route::put('config', 'Api\V1\ConfigController@update');
 });

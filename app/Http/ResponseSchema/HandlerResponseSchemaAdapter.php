@@ -11,6 +11,7 @@ class HandlerResponseSchemaAdapter implements Adapter
         return [
             'slug' => $item->getSlug(),
             'name' => $item->getName(),
+            'configSchema' => $item->getConfigSchema(),
             'meta' => $item->getMeta(),
         ];
     }

@@ -7,7 +7,7 @@ use App\Domain\Project\ProjectRepository;
 use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
 
-class DatabaseProjectRepository implements ProjectRepository
+class ProjectDatabaseRepository implements ProjectRepository
 {
     const TABLE_NAME = 'projects';
 
