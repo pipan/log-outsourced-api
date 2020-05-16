@@ -14,7 +14,8 @@ class ProjectDeleteTest extends ControllerActionTestCase
         );
         $response = $this->delete('api/v1/projects/aabb');
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
+        $response->assertExactJson([]);
     }
 
     public function testResponseNotFound()
@@ -22,5 +23,6 @@ class ProjectDeleteTest extends ControllerActionTestCase
         $response = $this->delete('api/v1/projects/aabb');
 
         $response->assertStatus(404);
+        $response->assertExactJson([]);
     }
 }

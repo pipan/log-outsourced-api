@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use App\Domain\Handler\HandlerEntity;
+use App\Repository\Repository;
 use Illuminate\Support\ServiceProvider;
 use Lib\Generator\HexadecimalGenerator;
-use Lib\Generator\UidGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,8 +14,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(HexadecimalGenerator::class, HexadecimalGenerator::class);
     }
 
-    public function boot()
+    public function boot(Repository $repository)
     {
-        //
+        $repository->handler()
+            ->insert(new HandlerEntity('test', 'test', '', []));
     }
 }

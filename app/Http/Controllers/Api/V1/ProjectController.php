@@ -61,11 +61,11 @@ class ProjectController
         $project = $repository->project()->getByUuid($uuid);
 
         if ($project == null) {
-            return response()->json(null, 404);
+            return response([], 404);
         }
 
         $repository->project()->delete($project);
-        return response()->json(null, 204);
+        return response([], 200);
     }
 
     public function update($uuid, Repository $repository, Request $request)
