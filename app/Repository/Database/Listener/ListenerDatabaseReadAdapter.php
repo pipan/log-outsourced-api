@@ -14,9 +14,8 @@ class ListenerDatabaseReadAdapter implements Adapter
             $result->uuid,
             $result->project_id,
             $result->name,
-            [],
-            $result->handler_id,
-            $result->handler_settings
+            $result->handler_slug,
+            json_decode($result->handler_values)
         );
     }
 }

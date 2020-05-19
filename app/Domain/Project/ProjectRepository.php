@@ -7,10 +7,10 @@ use App\Domain\ExistsValidable;
 interface ProjectRepository extends ExistsValidable
 {
     public function getAll();
-    public function getByUuid($uuid);
+    public function getByUuid($uuid): ?ProjectEntity;
 
-    public function insert(ProjectEntity $project);
-    public function update($id, ProjectEntity $project);
+    public function insert(ProjectEntity $project): ProjectEntity;
+    public function update($id, ProjectEntity $project): ProjectEntity;
 
     public function delete(ProjectEntity $uuid);
 }

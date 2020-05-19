@@ -9,13 +9,21 @@ class ProjectGenerateUuidTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'test_project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $response = $this->put('api/v1/projects/aabb/generate');
 
         $response->assertStatus(200);
-        $this->assertEquals(1, $this->projectRepository->getUpdated()->getId());
+
+        $updated = $this->projectRepository->getMocker()
+            ->getSimulation('update')
+            ->getExecutions();
+
+        $this->assertCount(1, $updated);
         $this->assertNotEquals('aabb', $response->json('uuid'));
     }
 

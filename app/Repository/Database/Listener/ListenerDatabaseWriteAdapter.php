@@ -12,8 +12,8 @@ class ListenerDatabaseWriteAdapter implements Adapter
             'uuid' => $entity->getUuid(),
             'project_id' => $entity->getProjectId(),
             'name' => $entity->getName(),
-            'handler_id' => $entity->getHandlerId(),
-            'handler_settings' => $entity->getHandlerSettings()
+            'handler_slug' => $entity->getHandlerSlug(),
+            'handler_values' => json_encode($entity->getHandlerValues())
         ];
     }
 }

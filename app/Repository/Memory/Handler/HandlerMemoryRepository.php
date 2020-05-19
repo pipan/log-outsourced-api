@@ -19,15 +19,15 @@ class HandlerMemoryRepository implements HandlerRepository
         return array_values($this->slugIndexed);
     }
 
-    public function getBySlug($slug)
+    public function getBySlug($slug): ?HandlerEntity
     {
-        if (!isset($this->slugIndexed[$slug])) {
+        if (!$this->exists($slug)) {
             return null;
         }
         return $this->slugIndexed[$slug];
     }
 
-    public function insert(HandlerEntity $entity)
+    public function insert(HandlerEntity $entity): HandlerEntity
     {
         $this->slugIndexed[$entity->getSlug()] = $entity;
         return $entity;
@@ -40,5 +40,10 @@ class HandlerMemoryRepository implements HandlerRepository
             unset($this->slugIndexed[$slug]);
         }
         return $entity;
+    }
+
+    public function exists($value)
+    {
+        return isset($this->slugIndexed[$value]);
     }
 }

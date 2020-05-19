@@ -9,9 +9,12 @@ class ProjectDeleteTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'test_project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $response = $this->delete('api/v1/projects/aabb');
 
         $response->assertStatus(200);

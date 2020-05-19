@@ -10,19 +10,17 @@ class ListenerEntity
     protected $uuid;
     protected $projectId;
     protected $name;
-    protected $rules;
-    protected $handlerId;
-    protected $handlerSettings;
+    protected $handlerSlug;
+    protected $handlerValurs;
 
-    public function __construct($id, $uuid, $projectId, $name, $rules, $handlerId, $handlerSettings)
+    public function __construct($id, $uuid, $projectId, $name, $handlerSlug, $handlerValues)
     {
         $this->id = $id;
         $this->uuid = $uuid;
         $this->projectId = $projectId;
         $this->name = $name;
-        $this->rules = $rules;
-        $this->handlerId = $handlerId;
-        $this->handlerSettings = $handlerSettings;
+        $this->handlerSlug = $handlerSlug;
+        $this->handlerValues = $handlerValues;
     }
 
     public function getId()
@@ -47,16 +45,16 @@ class ListenerEntity
     
     public function getRules()
     {
-        return $this->rules;
+        return [];
     }
 
-    public function getHandlerId()
+    public function getHandlerSlug()
     {
-        return $this->handlerId;
+        return $this->handlerSlug;
     }
 
-    public function getHandlerSettings()
+    public function getHandlerValues()
     {
-        return $this->handlerSettings;
+        return $this->handlerValues;
     }
 }

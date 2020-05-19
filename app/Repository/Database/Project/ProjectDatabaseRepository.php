@@ -28,7 +28,7 @@ class ProjectDatabaseRepository implements ProjectRepository
         return $adapter->adapt($result);
     }
 
-    public function getByUuid($uuid)
+    public function getByUuid($uuid): ?ProjectEntity
     {
         $result = DB::table(self::TABLE_NAME)
             ->where('uuid', '=', $uuid)
@@ -36,14 +36,14 @@ class ProjectDatabaseRepository implements ProjectRepository
         return $this->readAdapter->adapt($result);
     }
 
-    public function insert(ProjectEntity $project)
+    public function insert(ProjectEntity $project): ProjectEntity
     {
         DB::table(self::TABLE_NAME)
             ->insert($this->writeAdapter->adapt($project));
         return $project;
     }
 
-    public function update($id, ProjectEntity $project)
+    public function update($id, ProjectEntity $project): ProjectEntity
     {
         DB::table(self::TABLE_NAME)
             ->where('id', '=', $id)

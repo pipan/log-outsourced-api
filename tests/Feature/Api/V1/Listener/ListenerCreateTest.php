@@ -9,29 +9,51 @@ class ListenerCreateTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('exists')
+            ->whenInputReturn(true, ['aabb']);
+            $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
+        $this->handlerRepository->getMocker()
+            ->getSimulation('exists')
+            ->whenInputReturn(true, ['file']);
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
-            'project_uuid' => 'aabb'
+            'project_uuid' => 'aabb',
+            'handler_slug' => 'file'
         ]);
 
+        $inserted = $this->listenerRepository->getMocker()
+            ->getSimulation('insert')->getExecutions();
+
         $response->assertStatus(201);
-        $response->assertJsonFragment([
-            'name' => 'test_handler',
-            'project_id' => 1
+        $response->assertJsonStructure([
+            'uuid',
+            'name',
+            'project_id',
+            'handler' => [
+                'slug',
+                'values'
+            ]
         ]);
-        $this->assertEquals('test_handler', $this->listenerRepository->getInserted()->getName());
+        $this->assertCount(1, $inserted);
     }
 
     public function testResponseValidationErrorMissingName()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $response = $this->post('api/v1/listeners', [
-            'project_uuid' => 'aabb'
+            'project_uuid' => 'aabb',
+            'handler_slug' => 'file'
         ]);
 
         $response->assertStatus(422);
@@ -39,12 +61,16 @@ class ListenerCreateTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorEmptyName()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $response = $this->post('api/v1/listeners', [
             'name' => '',
-            'project_uuid' => 'aabb'
+            'project_uuid' => 'aabb',
+            'handler_slug' => 'file'
         ]);
 
         $response->assertStatus(422);
@@ -52,16 +78,20 @@ class ListenerCreateTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorLongName()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $name = "";
         for ($i = 0; $i < 256; $i++) {
             $name .= "a";
         }
         $response = $this->post('api/v1/listeners', [
             'name' => $name,
-            'project_uuid' => 'aabb'
+            'project_uuid' => 'aabb',
+            'handler_slug' => 'file'
         ]);
 
         $response->assertStatus(422);
@@ -69,11 +99,15 @@ class ListenerCreateTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorProjectUuidMissing()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
         $response = $this->post('api/v1/listeners', [
-            'name' => 'test_handler'
+            'name' => 'test_handler',
+            'handler_slug' => 'file'
         ]);
 
         $response->assertStatus(422);
@@ -83,7 +117,41 @@ class ListenerCreateTest extends ControllerActionTestCase
     {
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
+            'project_uuid' => 'aacc',
+            'handler_slug' => 'file'
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function testResponseValidationErrorHandlerSlugMissing()
+    {
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
+        $response = $this->post('api/v1/listeners', [
+            'name' => 'test_handler',
             'project_uuid' => 'aacc'
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function testResponseValidationErrorHandlerNotFound()
+    {
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
+        $response = $this->post('api/v1/listeners', [
+            'name' => 'test_handler',
+            'project_uuid' => 'aacc',
+            'handler_slug' => 'nan'
         ]);
 
         $response->assertStatus(422);
