@@ -17,6 +17,51 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Repository $repository)
     {
         $repository->handler()
-            ->insert(new HandlerEntity('test', 'test', '', []));
+            ->insert(new HandlerEntity('file', 'File', '', [
+                'schema' => [
+                    [
+                        'type' => 'checkbox',
+                        'name' => 'Daily'
+                    ]
+                ]
+            ]));
+
+        $repository->handler()
+            ->insert(new HandlerEntity('database', 'Database', '', [
+                'schema' => [
+                    [
+                        'type' => 'string',
+                        'name' => 'Host',
+                        'default' => 'localhost'
+                    ], [
+                        'type' => 'number',
+                        'name' => 'Port',
+                        'default' => 3306
+                    ], [
+                        'type' => 'string',
+                        'name' => 'Database'
+                    ], [
+                        'type' => 'string',
+                        'name' => 'Table',
+                        'default' => 'logs'
+                    ], [
+                        'type' => 'string',
+                        'name' => 'User'
+                    ], [
+                        'type' => 'password',
+                        'name' => 'Password'
+                    ]
+                ]
+            ]));
+
+        $repository->handler()
+            ->insert(new HandlerEntity('sentry', 'Sentry', '', [
+                'schema' => [
+                    [
+                        'type' => 'string',
+                        'name' => 'URL'
+                    ]
+                ]
+            ]));
     }
 }

@@ -9,6 +9,9 @@ class ProjectIndexTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
+        $this->projectRepository->getMocker()
+            ->getSimulation('getAll')
+            ->whenInputReturn([]);
         $response = $this->get('api/v1/projects');
 
         $response->assertStatus(200);
@@ -17,10 +20,11 @@ class ProjectIndexTest extends ControllerActionTestCase
 
     public function testResponseNotEmpty()
     {
-
-        $this->projectRepository->withAll([
-            new ProjectEntity(1, 'aabc', 'test')
-        ]);
+        $this->projectRepository->getMocker()
+            ->getSimulation('getAll')
+            ->whenInputReturn([
+                new ProjectEntity(1, 'aabc', 'test')
+            ]);
         
         $response = $this->get('api/v1/projects');
 

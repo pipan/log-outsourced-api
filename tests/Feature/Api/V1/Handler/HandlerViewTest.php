@@ -9,9 +9,12 @@ class HandlerViewText extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->handlerRepository->withEntity(
-            new HandlerEntity('test', 'test', [], [])
-        );
+        $this->handlerRepository->getMocker()
+            ->getSimulation('getBySlug')
+            ->whenInputReturn(
+                new HandlerEntity('test', 'test', [], []),
+                ['test']
+            );
         $response = $this->get('/api/v1/handlers/test');
 
         $response->assertStatus(200);

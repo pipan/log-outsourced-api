@@ -4,55 +4,51 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Handler\HandlerEntity;
 use App\Domain\Handler\HandlerRepository;
+use Tests\Mock\Mocker;
 
 class HandlerMockRepository implements HandlerRepository
 {
-    protected $all = [];
-    protected $entity = null;
-    protected $inserted = null;
-    protected $deleted = null;
+    protected $mocker;
 
-    public function withAll($all)
+    public function __construct()
     {
-        $this->all = $all;
-        return $this;
+        $this->mocker = new Mocker();
     }
 
-    public function withEntity($entity)
+    public function getMocker(): Mocker
     {
-        $this->entity = $entity;
-        return $this;
-    }
-
-    public function getInserted()
-    {
-        return $this->inserted;
-    }
-
-    public function getDeleted()
-    {
-        return $this->deleted;
+        return $this->mocker;
     }
 
     public function getAll()
     {
-        return $this->all;
+        return $this->mocker->getSimulation('getAll')
+            ->execute();
     }
 
-    public function getBySlug($slug)
+    public function getBySlug($slug): ?HandlerEntity
     {
-        return $this->entity;
+        return $this->mocker->getSimulation('getBySlug')
+            ->execute([$slug]);
     }
 
-    public function insert(HandlerEntity $entity)
+    public function insert(HandlerEntity $entity): HandlerEntity
     {
-        $this->inserted = $entity;
+        $this->mocker->getSimulation('insert')
+            ->execute([$entity]);
         return $entity;
     }
     
     public function delete(HandlerEntity $entity)
     {
-        $this->deleted = $entity;
+        $this->mocker->getSimulation('delete')
+            ->execute([$entity]);
         return $entity;
+    }
+
+    public function exists($value)
+    {
+        return $this->mocker->getSimulation('exists')
+            ->execute([$value]);
     }
 }

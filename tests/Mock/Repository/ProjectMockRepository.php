@@ -4,70 +4,57 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
+use Tests\Mock\Mocker;
 
 class ProjectMockRepository implements ProjectRepository
 {
-    private $all = [];
-    private $entity = null;
-    private $inserted = null;
-    private $updated = null;
-    private $deleted = null;
+    private $mocker;
 
-    public function withAll($all)
+    public function __construct()
     {
-        $this->all = $all;
-        return $this;
+        $this->mocker = new Mocker();
     }
 
-    public function withEntity($entity)
+    public function getMocker(): Mocker
     {
-        $this->entity = $entity;
-        return $this;
-    }
-
-    public function getDeleted()
-    {
-        return $this->deleted;
-    }
-
-    public function getInserted()
-    {
-        return $this->inserted;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
+        return $this->mocker;
     }
 
     public function getAll()
     {
-        return $this->all;
+        return $this->mocker->getSimulation('getAll')
+            ->execute();
     }
 
-    public function getByUuid($uuid)
+    public function getByUuid($uuid): ?ProjectEntity
     {
-        return $this->entity;
+        return $this->mocker->getSimulation('getByUuid')
+            ->execute([$uuid]);
     }
 
-    public function insert(ProjectEntity $project)
+    public function insert(ProjectEntity $project): ProjectEntity
     {
-        $this->inserted = $project;
+        $this->mocker->getSimulation('insert')
+            ->execute([$project]);
+        return $project;
     }
 
-    public function update($id, ProjectEntity $project)
+    public function update($id, ProjectEntity $project): ProjectEntity
     {
-        $this->updated = $project;
+        $this->mocker->getSimulation('update')
+            ->execute([$id, $project]);
+        return $project;
     }
     
     public function delete(ProjectEntity $project)
     {
-        $this->deleted = $project;
-        return $project;
+        return $this->mocker->getSimulation('delete')
+            ->execute([$project]);
     }
 
     public function exists($value)
     {
-        return $this->getByUuid($value) != null;
+        return $this->mocker->getSimulation('exists')
+            ->execute([$value]);
     }
 }

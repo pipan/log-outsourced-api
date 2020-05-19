@@ -9,13 +9,20 @@ class ListenerDeleteTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->listenerRepository->withEntity(
-            new ListenerEntity(1, '0011', 1, 'test', [], 1, "")
-        );
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ListenerEntity(1, '0011', 1, 'test', [], 1, ""),
+                ['0011']
+            );
         $response = $this->delete('api/v1/listeners/0011');
 
+        $deleted = $this->listenerRepository->getMocker()
+            ->getSimulation('delete')
+            ->getExecutions();
+
         $response->assertStatus(204);
-        $this->assertEquals('test', $this->listenerRepository->getDeleted()->getName());
+        $this->assertCount(1, $deleted);
     }
 
     public function testHandlerNotFound()

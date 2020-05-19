@@ -12,11 +12,15 @@ class ProjectCreateTest extends ControllerActionTestCase
             'name' => 'test_project'
         ]);
 
+        $inserted = $this->projectRepository->getMocker()
+            ->getSimulation('insert')
+            ->getExecutions();
+
         $response->assertStatus(201);
         $response->assertJsonFragment([
             'name' => 'test_project'
         ]);
-        $this->assertEquals('test_project', $this->projectRepository->getInserted()->getName());
+        $this->assertCount(1, $inserted);
     }
 
     public function testResponseValidationErrorMissingName()

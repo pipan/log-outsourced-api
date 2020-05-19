@@ -10,18 +10,25 @@ class ListenerUpdateTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->listenerRepository->withEntity(
-            new ListenerEntity(1, '0011', 1, 'name', [], 1, "")
-        );
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                ['0011']
+            );
         $response = $this->put('api/v1/listeners/0011', [
             'name' => 'test',
         ]);
+
+        $updated = $this->listenerRepository->getMocker()
+            ->getSimulation('update')
+            ->getExecutions();
 
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'name' => 'test'
         ]);
-        $this->assertEquals('test', $this->listenerRepository->getUpdated()->getName());
+        $this->assertCount(1, $updated);
     }
 
     public function testHandlerNotFound()
@@ -35,9 +42,12 @@ class ListenerUpdateTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorEmptyName()
     {
-        $this->listenerRepository->withEntity(
-            new ListenerEntity(1, '0011', 1, 'name', [], 1, "")
-        );
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                ['0011']
+            );
         $response = $this->put('api/v1/listeners/0011', [
             'name' => ''
         ]);
@@ -47,9 +57,12 @@ class ListenerUpdateTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorLongName()
     {
-        $this->listenerRepository->withEntity(
-            new ListenerEntity(1, '0011', 1, 'name', [], 1, "")
-        );
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                ['0011']
+            );
         $name = "";
         for ($i = 0; $i < 256; $i++) {
             $name .= "a";

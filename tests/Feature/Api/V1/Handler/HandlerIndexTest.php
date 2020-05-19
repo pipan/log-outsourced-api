@@ -9,6 +9,9 @@ class HandlerIndexText extends ControllerActionTestCase
 {
     public function testResponseOkEmpty()
     {
+        $this->handlerRepository->getMocker()
+            ->getSimulation('getAll')
+            ->whenInputReturn([]);
         $response = $this->get('/api/v1/handlers');
 
         $response->assertStatus(200);
@@ -17,9 +20,11 @@ class HandlerIndexText extends ControllerActionTestCase
 
     public function testResponseOkResult()
     {
-        $this->handlerRepository->withAll([
-            new HandlerEntity('test', 'test', [], [])
-        ]);
+        $this->handlerRepository->getMocker()
+            ->getSimulation('getAll')
+            ->whenInputReturn([
+                new HandlerEntity('test', 'test', [], [])
+            ]);
         $response = $this->get('/api/v1/handlers');
 
         $response->assertStatus(200);

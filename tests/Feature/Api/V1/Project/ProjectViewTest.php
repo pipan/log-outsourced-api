@@ -9,9 +9,12 @@ class ProjectViewTest extends ControllerActionTestCase
 {
     public function testResponseOk()
     {
-        $this->projectRepository->withEntity(
-            new ProjectEntity(1, 'aabb', 'test_project')
-        );
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'test_project'),
+                ['aabb']
+            );
         $response = $this->get('api/v1/projects/aabb');
 
         $response->assertStatus(200);

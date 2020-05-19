@@ -4,85 +4,51 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerRepository;
+use Tests\Mock\Mocker;
 
 class ListenerMockRepository implements ListenerRepository
 {
-    protected $all = [];
-    protected $entity = null;
-    protected $forProject = [];
-    protected $byUuidParam = null;
-    protected $inserted = null;
-    protected $updated = null;
-    protected $deleted = null;
+    protected $mocker;
 
-    public function withAll($all)
+    public function __construct()
     {
-        $this->all = $all;
-        return $this;
+        $this->mocker = new Mocker();
     }
 
-    public function withEntity($entity)
+    public function getMocker(): Mocker
     {
-        $this->entity = $entity;
-        return $this;
-    }
-
-    public function withForProject($forProject)
-    {
-        $this->forProject = $forProject;
-        return $this;
-    }
-
-    public function getByUuidParam()
-    {
-        return $this->byUuidParam;
-    }
-
-    public function getInserted()
-    {
-        return $this->inserted;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    public function getDeleted()
-    {
-        return $this->deleted;
-    }
-
-    public function getAll()
-    {
-        return $this->all;
+        return $this->mocker;
     }
 
     public function getForProject($projectId)
     {
-        return $this->forProject;
+        return $this->mocker->getSimulation('getForProject')
+            ->execute([$projectId]);
     }
 
-    public function getByUuid($uuid)
+    public function getByUuid($uuid): ?ListenerEntity
     {
-        return $this->entity;
+        return $this->mocker->getSimulation('getByUuid')
+            ->execute([$uuid]);
     }
 
-    public function insert(ListenerEntity $entity)
+    public function insert(ListenerEntity $entity): ListenerEntity
     {
-        $this->inserted = $entity;
+        $this->mocker->getSimulation('insert')
+            ->execute([$entity]);
         return $entity;
     }
 
-    public function update($id, ListenerEntity $entity)
+    public function update($id, ListenerEntity $entity): ListenerEntity
     {
-        $this->updated = $entity;
+        $this->mocker->getSimulation('update')
+            ->execute([$id, $entity]);
         return $entity;
     }
     
     public function delete(ListenerEntity $entity)
     {
-        $this->deleted = $entity;
-        return $entity;
+        return $this->mocker->getSimulation('delete')
+            ->execute([$entity]);
     }
 }

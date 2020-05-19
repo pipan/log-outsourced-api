@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\ExistsRule;
 use App\Domain\Listener\ListenerEntity;
 use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
+use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,21 +14,27 @@ use Lib\Generator\HexadecimalGenerator;
 class ListenerController
 {
     private $schema;
+    private $errorSchema;
 
     public function __construct()
     {
         $this->schema = new ListenerResponseSchemaAdapter();
+        $this->errorSchema = new ValidationErrorResponseSchema();
     }
 
     public function create(Request $request, HexadecimalGenerator $generator, Repository $repository)
     {
         $validator = Validator::make($request->all(), [
             'name' => ['bail', 'required', 'max:255'],
-            'project_uuid' => ['bail', 'required', new ExistsRule($repository->project())]
+            'project_uuid' => ['bail', 'required', new ExistsRule($repository->project())],
+            'handler_slug' => ['required', new ExistsRule($repository->handler())]
         ]);
 
         if ($validator->fails()) {
-            return response()->json(null, 422);
+            return response(
+                $this->errorSchema->adapt($validator->errors()),
+                422
+            );
         }
 
         $project = $repository->project()->getByUuid(
@@ -36,17 +43,16 @@ class ListenerController
 
         $handler = new ListenerEntity(
             0,
-            $generator,
+            $generator->next(),
             $project->getId(),
             $request->input('name'),
-            $request->input('rules', []),
-            $request->input('handler_id'),
-            $request->input('handler_settings')
+            $request->input('handler_slug'),
+            $request->input('handler_values')
         );
 
         $repository->listener()->insert($handler);
 
-        return response()->json(
+        return response(
             $this->schema->adapt($handler),
             201
         );
@@ -74,8 +80,8 @@ class ListenerController
                 $entity->getProjectId(),
                 $request->input('name', $entity->getName()),
                 $entity->getRules(),
-                $entity->getHandlerId(),
-                $entity->getHandlerSettings()
+                $entity->getHandlerSlug(),
+                $entity->getHandlerValues()
             )
         );
         return response()->json(

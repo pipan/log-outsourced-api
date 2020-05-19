@@ -30,14 +30,14 @@ class ListenerDatabaseRepository implements ListenerRepository
         return $adapter->adapt($result);
     }
 
-    public function insert(ListenerEntity $listener)
+    public function insert(ListenerEntity $listener): ListenerEntity
     {
         DB::table(self::TABLE_NAME)
             ->insert($this->writeAdapter->adapt($listener));
         return $listener;
     }
 
-    public function update($id, ListenerEntity $listener)
+    public function update($id, ListenerEntity $listener): ListenerEntity
     {
         DB::table(self::TABLE_NAME)
             ->where('id', '=', $id)
@@ -45,7 +45,7 @@ class ListenerDatabaseRepository implements ListenerRepository
         return $listener;
     }
 
-    public function getByUuid($uuid)
+    public function getByUuid($uuid): ?ListenerEntity
     {
         $result = DB::table(self::TABLE_NAME)
             ->where('uuid', '=', $uuid)
