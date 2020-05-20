@@ -21,7 +21,8 @@ class ListenerDeleteTest extends ControllerActionTestCase
             ->getSimulation('delete')
             ->getExecutions();
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
+        $response->assertJson([]);
         $this->assertCount(1, $deleted);
     }
 
@@ -32,5 +33,6 @@ class ListenerDeleteTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(404);
+        $response->assertJson([]);
     }
 }

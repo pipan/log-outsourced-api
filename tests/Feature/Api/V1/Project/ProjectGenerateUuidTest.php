@@ -32,5 +32,6 @@ class ProjectGenerateUuidTest extends ControllerActionTestCase
         $response = $this->put('api/v1/projects/aabb/generate');
 
         $response->assertStatus(404);
+        $response->assertJson([]);
     }
 }

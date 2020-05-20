@@ -28,6 +28,9 @@ class ProjectCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/projects');
 
         $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors'
+        ]);
     }
 
     public function testResponseValidationErrorEmptyName()
@@ -37,6 +40,9 @@ class ProjectCreateTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors'
+        ]);
     }
 
     public function testResponseValidationErrorLongName()
@@ -50,5 +56,8 @@ class ProjectCreateTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors'
+        ]);
     }
 }
