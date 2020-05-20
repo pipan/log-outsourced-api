@@ -12,6 +12,7 @@ class ListenerResponseSchemaAdapter implements Adapter
             'uuid' => $item->getUuid(),
             'project_id' => $item->getProjectId(),
             'name' => $item->getName(),
+            'rules' => $item->getRules(),
             'handler' => [
                 'slug' => $item->getHandlerSlug(),
                 'values' => $item->getHandlerValues()

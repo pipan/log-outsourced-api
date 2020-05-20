@@ -15,9 +15,20 @@ class ProjectViewTest extends ControllerActionTestCase
                 new ProjectEntity(1, 'aabb', 'test_project'),
                 ['aabb']
             );
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getForProject')
+            ->whenInputReturn([], [1]);
+
         $response = $this->get('api/v1/projects/aabb');
 
         $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'project' => [
+                'uuid',
+                'name'
+            ],
+            'listeners'
+        ]);
     }
 
     public function testResponseNotFound()
@@ -25,5 +36,6 @@ class ProjectViewTest extends ControllerActionTestCase
         $response = $this->get('api/v1/projects/aacc');
 
         $response->assertStatus(404);
+        $response->assertJson([]);
     }
 }

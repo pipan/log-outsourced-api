@@ -27,6 +27,7 @@ class ListenerController
         $validator = Validator::make($request->all(), [
             'name' => ['bail', 'required', 'max:255'],
             'project_uuid' => ['bail', 'required', new ExistsRule($repository->project())],
+            'rules' => ['nullable', 'array'],
             'handler_slug' => ['required', new ExistsRule($repository->handler())]
         ]);
 
@@ -46,8 +47,9 @@ class ListenerController
             $generator->next(),
             $project->getId(),
             $request->input('name'),
+            $request->input('rules', []),
             $request->input('handler_slug'),
-            $request->input('handler_values')
+            $request->input('handler_values', [])
         );
 
         $repository->listener()->insert($handler);
@@ -62,14 +64,16 @@ class ListenerController
     {
         $entity = $repository->listener()->getByUuid($uuid);
         if ($entity == null) {
-            return response()->json(null, 404);
+            return response([], 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => ['bail', 'nullable', 'filled', 'max:255']
+            'name' => ['bail', 'nullable', 'filled', 'max:255'],
+            'rules' => ['bail', 'nullable', 'array'],
+            'handler_slug' => ['bail', 'nullable', new ExistsRule($repository->handler())]
         ]);
         if ($validator->fails()) {
-            return response()->json(null, 422);
+            return response([], 422);
         }
 
         $entity = $repository->listener()->update(
@@ -79,9 +83,9 @@ class ListenerController
                 $entity->getUuid(),
                 $entity->getProjectId(),
                 $request->input('name', $entity->getName()),
-                $entity->getRules(),
-                $entity->getHandlerSlug(),
-                $entity->getHandlerValues()
+                $request->input('rules', $entity->getRules()),
+                $request->input('handler_slug', $entity->getHandlerSlug()),
+                $request->input('handler_values', $entity->getHandlerValues())
             )
         );
         return response()->json(
@@ -94,10 +98,10 @@ class ListenerController
     {
         $entity = $repository->listener()->getByUuid($uuid);
         if ($entity == null) {
-            return response()->json(null, 404);
+            return response([], 404);
         }
 
         $repository->listener()->delete($entity);
-        return response()->json(null, 204);
+        return response([], 200);
     }
 }

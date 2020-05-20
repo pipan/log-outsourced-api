@@ -24,6 +24,7 @@ class ListenerCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
             'project_uuid' => 'aabb',
+            'rules' => [],
             'handler_slug' => 'file'
         ]);
 
@@ -35,6 +36,7 @@ class ListenerCreateTest extends ControllerActionTestCase
             'uuid',
             'name',
             'project_id',
+            'rules',
             'handler' => [
                 'slug',
                 'values'
@@ -53,7 +55,8 @@ class ListenerCreateTest extends ControllerActionTestCase
             );
         $response = $this->post('api/v1/listeners', [
             'project_uuid' => 'aabb',
-            'handler_slug' => 'file'
+            'handler_slug' => 'file',
+            'rules' => []
         ]);
 
         $response->assertStatus(422);
@@ -70,7 +73,8 @@ class ListenerCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/listeners', [
             'name' => '',
             'project_uuid' => 'aabb',
-            'handler_slug' => 'file'
+            'handler_slug' => 'file',
+            'rules' => []
         ]);
 
         $response->assertStatus(422);
@@ -91,6 +95,7 @@ class ListenerCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/listeners', [
             'name' => $name,
             'project_uuid' => 'aabb',
+            'rules' => [],
             'handler_slug' => 'file'
         ]);
 
@@ -107,6 +112,7 @@ class ListenerCreateTest extends ControllerActionTestCase
             );
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
+            'rules' => [],
             'handler_slug' => 'file'
         ]);
 
@@ -118,6 +124,7 @@ class ListenerCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
             'project_uuid' => 'aacc',
+            'rules' => [],
             'handler_slug' => 'file'
         ]);
 
@@ -134,6 +141,7 @@ class ListenerCreateTest extends ControllerActionTestCase
             );
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
+            'rules' => [],
             'project_uuid' => 'aacc'
         ]);
 
@@ -151,6 +159,7 @@ class ListenerCreateTest extends ControllerActionTestCase
         $response = $this->post('api/v1/listeners', [
             'name' => 'test_handler',
             'project_uuid' => 'aacc',
+            'rules' => [],
             'handler_slug' => 'nan'
         ]);
 

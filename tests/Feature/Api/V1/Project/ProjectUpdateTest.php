@@ -43,6 +43,7 @@ class ProjectUpdateTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(422);
+        $response->assertJson([]);
     }
 
     public function testResponseValidationErrorLongName()
@@ -63,6 +64,7 @@ class ProjectUpdateTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(422);
+        $response->assertJson([]);
     }
        
 
@@ -71,5 +73,6 @@ class ProjectUpdateTest extends ControllerActionTestCase
         $response = $this->put('api/v1/projects/aabb');
 
         $response->assertStatus(404);
+        $response->assertJson([]);
     }
 }
