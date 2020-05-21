@@ -3,33 +3,23 @@
 namespace Ext\Handler\File;
 
 use App\Domain\Handler\HandlerEntity;
-use App\Handler\Plugin;
-use App\Handler\SimplePlugin;
-use Illuminate\Contracts\Foundation\Application;
+use App\Handler\HandlerPlugin;
+use App\Handler\LogHandler;
 
-class FileHandlerPlugin implements Plugin
+class FileHandlerPlugin implements HandlerPlugin
 {
-    private $simplePlugin;
-
-    public function __construct()
+    public function getDefinition(): HandlerEntity
     {
-        $this->simplePlugin = new SimplePlugin(
-            new HandlerEntity(
-                'file',
-                'File',
-                [],
-                []
-            )
+        return new HandlerEntity(
+            'file',
+            'File',
+            [],
+            []
         );
     }
 
-    public function connect(Application $app)
+    public function getLogHandler(): LogHandler
     {
-        $this->simplePlugin->connect($app);
-    }
-
-    public function disconnect(Application $app)
-    {
-        $this->simplePlugin->disconnect($app);
+        return new FileLogHandler();
     }
 }
