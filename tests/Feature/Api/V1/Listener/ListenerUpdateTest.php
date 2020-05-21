@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\V1\Listener;
 use App\Domain\Listener\ListenerEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-
 class ListenerUpdateTest extends ControllerActionTestCase
 {
     public function testResponseOk()
