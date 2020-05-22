@@ -36,7 +36,7 @@ class LogBatchTest extends ControllerActionTestCase
                 [1]
             );
 
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message'
@@ -67,7 +67,7 @@ class LogBatchTest extends ControllerActionTestCase
                 [1]
             );
 
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message',
@@ -88,7 +88,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse404MissingProject()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message'
@@ -101,7 +101,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422SendSingle()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
@@ -112,7 +112,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MissingLevelValue()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'message' => 'Log this message'
             ]
@@ -124,7 +124,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422EmptyLogLevel()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             'level' => '',
             'message' => 'Log this message'
         ]);
@@ -135,7 +135,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422LogLevelNotStandardName()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'custom',
                 'message' => 'Log this message'
@@ -148,7 +148,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MissingMessage()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'error'
             ]
@@ -160,7 +160,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MessageEmpty()
     {
-        $response = $this->post('/log/12345678/batch', [
+        $response = $this->post('/logs/12345678/batch', [
             [
                 'level' => 'error',
                 'message' => ''

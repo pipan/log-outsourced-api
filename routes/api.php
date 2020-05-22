@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::post('log/{uuid}', 'Api\V1\LogController@single');
-Route::post('log/{uuid}/batch', 'Api\V1\LogController@batch');
+Route::post('logs/{uuid}', 'Api\V1\LogController@single');
+Route::post('logs/{uuid}/batch', 'Api\V1\LogController@batch');
 
 Route::prefix('api/v1')->group(function () {
     Route::get('projects', 'Api\V1\ProjectController@index');

@@ -22,7 +22,7 @@ class ListenerEloquentReadAdapter implements Adapter
                 return $rule->pattern; 
             })->toArray(),
             $result->handler_slug,
-            json_decode($result->handler_values)
+            json_decode($result->handler_values, true)
         );
     }
 }
