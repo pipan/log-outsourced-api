@@ -3,6 +3,7 @@
 namespace Ext\Handler\Database;
 
 use App\Handler\LogHandler;
+use Exception;
 use PDO;
 use PDOException;
 
@@ -19,10 +20,13 @@ class DatabaseLogHandler implements LogHandler
             ':context' => json_encode($log['context'] ?? [])
         ]);
 
+        if ($result === false) {
+            $errorInfo = $statement->errorInfo();
+            throw new Exception("Cannot save log to database: " . json_encode($errorInfo));
+        }
+
         $statement = null; // closing statement
         $connection = null; // closing connection
-
-        // TODO: if result fails throw exception
     }
 
     private function createConnection($config): PDO
