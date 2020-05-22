@@ -36,7 +36,7 @@ class LogSingleTest extends ControllerActionTestCase
                 [1]
             );
 
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
@@ -64,7 +64,7 @@ class LogSingleTest extends ControllerActionTestCase
                 [1]
             );
 
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'error',
             'message' => 'Log this message',
             'context' => [
@@ -82,7 +82,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse404MissingProject()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
@@ -93,7 +93,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse422MissingLevelValue()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'message' => 'Log this message'
         ]);
 
@@ -103,7 +103,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse422EmptyLogLevel()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => '',
             'message' => 'Log this message'
         ]);
@@ -114,7 +114,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse422LogLevelNotStandardname()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'custom',
             'message' => 'Log this message'
         ]);
@@ -125,7 +125,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse422MissingMessage()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'error'
         ]);
 
@@ -135,7 +135,7 @@ class LogSingleTest extends ControllerActionTestCase
 
     public function testResponse422MessageEmpty()
     {
-        $response = $this->post('/log/12345678', [
+        $response = $this->post('/logs/12345678', [
             'level' => 'error',
             'message' => ''
         ]);
