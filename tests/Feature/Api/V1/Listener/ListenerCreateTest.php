@@ -12,7 +12,7 @@ class ListenerCreateTest extends ControllerActionTestCase
         $this->projectRepository->getMocker()
             ->getSimulation('exists')
             ->whenInputReturn(true, ['aabb']);
-            $this->projectRepository->getMocker()
+        $this->projectRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn(
                 new ProjectEntity(1, 'aabb', 'project'),
@@ -41,6 +41,37 @@ class ListenerCreateTest extends ControllerActionTestCase
                 'slug',
                 'values'
             ]
+        ]);
+        $this->assertCount(1, $inserted);
+    }
+
+    public function testResponseOkRemoveDuplicateRules()
+    {
+        $this->projectRepository->getMocker()
+            ->getSimulation('exists')
+            ->whenInputReturn(true, ['aabb']);
+        $this->projectRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ProjectEntity(1, 'aabb', 'project'),
+                ['aabb']
+            );
+        $this->handlerRepository->getMocker()
+            ->getSimulation('exists')
+            ->whenInputReturn(true, ['file']);
+        $response = $this->post('api/v1/listeners', [
+            'name' => 'test_handler',
+            'project_uuid' => 'aabb',
+            'rules' => ['error', 'error'],
+            'handler_slug' => 'file'
+        ]);
+
+        $inserted = $this->listenerRepository->getMocker()
+            ->getSimulation('insert')->getExecutions();
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment([
+            'rules' => ['error']
         ]);
         $this->assertCount(1, $inserted);
     }

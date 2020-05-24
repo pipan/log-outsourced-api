@@ -30,6 +30,30 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->assertCount(1, $updated);
     }
 
+    public function testResponseOkDuplicateRules()
+    {
+        $this->listenerRepository->getMocker()
+            ->getSimulation('getByUuid')
+            ->whenInputReturn(
+                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                ['0011']
+            );
+        $response = $this->put('api/v1/listeners/0011', [
+            'name' => 'test',
+            'rules' => ['error', 'error']
+        ]);
+
+        $updated = $this->listenerRepository->getMocker()
+            ->getSimulation('update')
+            ->getExecutions();
+
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'rules' => ['error']
+        ]);
+        $this->assertCount(1, $updated);
+    }
+
     public function testHandlerNotFound()
     {
         $response = $this->put('api/v1/listeners/0011', [

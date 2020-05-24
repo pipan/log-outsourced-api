@@ -4,6 +4,7 @@ namespace App\Repository\Eloquent\Listener;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerRepository;
+use App\Repository\Eloquent\Rule\Rule;
 use App\Repository\Eloquent\Rule\RuleEloquentWriteAdapter;
 use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
@@ -37,7 +38,21 @@ class ListenerEloquentRepository implements ListenerRepository
 
     public function update($id, ListenerEntity $entity): ListenerEntity
     {
-        return $this->save($entity);
+        $listener = Listener::find($id);
+        $listener->project_id = $entity->getProjectId();
+        $listener->name = $entity->getName();
+        $listener->save();
+
+        Rule::where('listener_id', $id)
+            ->delete();
+
+        $rules = [];
+        foreach ($entity->getRules() as $rule) {
+            $rules[] = $this->ruleWriteAdapter->adapt($rule);
+        }
+        $listener->rules()->saveMany($rules);
+
+        return $this->readAdapter->adapt($listener);
     }
 
     private function save(ListenerEntity $entity)

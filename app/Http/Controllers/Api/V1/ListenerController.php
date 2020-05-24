@@ -42,12 +42,14 @@ class ListenerController
             $request->input('project_uuid')
         );
 
+        $rules = array_unique($request->input('rules', []));
+
         $handler = new ListenerEntity(
             0,
             $generator->next(),
             $project->getId(),
             $request->input('name'),
-            $request->input('rules', []),
+            $rules,
             $request->input('handler_slug'),
             $request->input('handler_values', [])
         );
@@ -76,6 +78,8 @@ class ListenerController
             return response([], 422);
         }
 
+        $rules = array_unique($request->input('rules', $entity->getRules()));
+
         $entity = $repository->listener()->update(
             $entity->getId(),
             new ListenerEntity(
@@ -83,7 +87,7 @@ class ListenerController
                 $entity->getUuid(),
                 $entity->getProjectId(),
                 $request->input('name', $entity->getName()),
-                $request->input('rules', $entity->getRules()),
+                $rules,
                 $request->input('handler_slug', $entity->getHandlerSlug()),
                 $request->input('handler_values', $entity->getHandlerValues())
             )
