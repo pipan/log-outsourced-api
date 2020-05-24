@@ -22,7 +22,6 @@ class HandlerProvider extends ServiceProvider
             new DatabaseHandlerPlugin(),
             new SentryHandlerPlugin()
         ];
-        // $installedPlugins = [];
         foreach ($installedPlugins as $plugin) {
             $this->connectHandler($plugin);
         }
