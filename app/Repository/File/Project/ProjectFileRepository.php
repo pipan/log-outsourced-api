@@ -88,7 +88,7 @@ class ProjectFileRepository implements ProjectRepository
     {
         $adapter = AdapterHelper::listOf($this->writeAdapter);
         $this->jsonFile->write(
-            $adapter->adapt($$all)
+            $adapter->adapt($all)
         );
     }
 }
