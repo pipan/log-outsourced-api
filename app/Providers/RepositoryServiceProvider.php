@@ -9,19 +9,31 @@ use App\Repository\File\Project\ProjectFileRepository;
 use App\Repository\Memory\Handler\HandlerMemoryRepository;
 use App\Repository\Repository;
 use App\Repository\SimpleRepository;
+use Exception;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton(Repository::class, function ($app) {
-            return new SimpleRepository(
+        $repositories = [
+            'file' => new SimpleRepository(
                 new ProjectFileRepository(),
                 new ListenerFileRepository(),
                 new HandlerMemoryRepository()
-            );
-        });
+            ),
+            'database' => new SimpleRepository(
+                new ProjectDatabaseRepository(),
+                new ListenerEloquentRepository(),
+                new HandlerMemoryRepository()
+            )
+        ];
+        $repositotyType = env('REPOSITORY_TYPE', 'file');
+        if (!isset($repositories[$repositotyType])) {
+            throw new Exception("Repository type is not supported: " . $repositotyType);
+        }
+
+        $this->app->instance(Repository::class, $repositories[$repositotyType]);
     }
 
     public function boot()
