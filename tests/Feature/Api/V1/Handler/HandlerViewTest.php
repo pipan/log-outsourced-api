@@ -21,7 +21,6 @@ class HandlerViewText extends ControllerActionTestCase
         $response->assertJson([
             'slug' => 'test',
             'name' => 'test',
-            'configSchema' => [],
             'meta' => []
         ]);
     }
