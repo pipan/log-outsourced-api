@@ -13,7 +13,6 @@ class SentryHandlerPlugin implements HandlerPlugin
         return new HandlerEntity(
             'sentry',
             'Sentry',
-            '',
             [
                 'schema' => [
                     'sentry_dsn' => [
@@ -24,6 +23,9 @@ class SentryHandlerPlugin implements HandlerPlugin
                         'type' => 'string',
                         'name' => 'Environment'
                     ]
+                ],
+                'meta' => [
+                    'icon' => 'wifi'
                 ]
             ]
         );

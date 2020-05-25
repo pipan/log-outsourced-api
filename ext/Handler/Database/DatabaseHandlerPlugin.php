@@ -13,7 +13,6 @@ class DatabaseHandlerPlugin implements HandlerPlugin
         return new HandlerEntity(
             'database',
             'Database',
-            '',
             [
                 'schema' => [
                     'db_driver' => [
@@ -49,6 +48,9 @@ class DatabaseHandlerPlugin implements HandlerPlugin
                         'type' => 'password',
                         'name' => 'Password'
                     ]
+                ],
+                'meta' => [
+                    'icon' => 'layers'
                 ]
             ]
         );

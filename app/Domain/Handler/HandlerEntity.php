@@ -7,14 +7,12 @@ class HandlerEntity
     protected $id;
     protected $slug;
     protected $name;
-    protected $configSchema;
     protected $meta;
 
-    public function __construct($slug, $name, $configSchema, $meta)
+    public function __construct($slug, $name, $meta)
     {
         $this->slug = $slug;
         $this->name = $name;
-        $this->configSchema = $configSchema;
         $this->meta = $meta;
     }
 
@@ -26,11 +24,6 @@ class HandlerEntity
     public function getName()
     {
         return $this->name;
-    }
-
-    public function getConfigSchema()
-    {
-        return $this->configSchema;
     }
 
     public function getMeta()

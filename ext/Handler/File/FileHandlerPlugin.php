@@ -13,13 +13,15 @@ class FileHandlerPlugin implements HandlerPlugin
         return new HandlerEntity(
             'file',
             'File',
-            '',
             [
                 'schema' => [
                     'file_daily' => [
                         'type' => 'checkbox',
                         'name' => 'Daily'
                     ]
+                ],
+                'meta' => [
+                    'icon' => 'insert_drive_file'
                 ]
             ]
         );

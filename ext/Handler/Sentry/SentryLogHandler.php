@@ -2,6 +2,7 @@
 
 namespace Ext\Handler\Sentry;
 
+use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandler;
 use Exception;
 use Psr\Log\LogLevel;
@@ -20,7 +21,7 @@ class SentryLogHandler implements LogHandler
         $this->levelAdapter = new LevelAdapter();
     }
 
-    public function handle($log, $config)
+    public function handle($log, ProjectEntity $project, $config)
     {
         $level = $this->levelAdapter->adapt($log['level']);
         $options = [

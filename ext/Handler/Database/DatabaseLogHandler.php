@@ -2,6 +2,7 @@
 
 namespace Ext\Handler\Database;
 
+use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandler;
 use Exception;
 use PDO;
@@ -9,7 +10,7 @@ use PDOException;
 
 class DatabaseLogHandler implements LogHandler
 {
-    public function handle($log, $config)
+    public function handle($log, ProjectEntity $project, $config)
     {
         $connection = $this->createConnection($config);
         $statement = $connection->prepare("INSERT INTO " . $config['db_table'] . "(level, message, context) VALUES(:level, :message, :context)");
