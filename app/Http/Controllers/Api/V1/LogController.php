@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Listener\ListenerPatternMatcher;
+use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandlerContainer;
 use App\Repository\Repository;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -31,6 +33,7 @@ class LogController
         $this->proccessBatch(
             [$request->all()],
             $listners,
+            $project,
             $matcher,
             $handlerContainer
         );
@@ -57,6 +60,7 @@ class LogController
         $this->proccessBatch(
             $request->all(),
             $listners,
+            $project,
             $matcher,
             $handlerContainer
         );
@@ -64,18 +68,18 @@ class LogController
         return response([], 200);
     }
 
-    private function proccessBatch($events, $listners, ListenerPatternMatcher $matcher, LogHandlerContainer $handlerContainer)
+    private function proccessBatch($events, $listners, ProjectEntity $project, ListenerPatternMatcher $matcher, LogHandlerContainer $handlerContainer)
     {
         foreach ($events as $event) {
             $matched = $matcher->match($event['level'], $listners);
             foreach ($matched as $matchedListener) {
                 $logHandler = $handlerContainer->get($matchedListener->getHandlerSlug());
                 if ($logHandler == null) {
-                    // TODO: non existing handler
-                    continue;
+                    throw new Exception("Cannot process log, because log handler does not exists: " . $matchedListener->getHandlerSlug());
                 }
                 $logHandler->handle(
                     $event,
+                    $project,
                     $matchedListener->getHandlerValues()
                 );
             }

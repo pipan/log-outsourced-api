@@ -32,7 +32,6 @@ class HandlerIndexText extends ControllerActionTestCase
             [
                 'slug' => 'test',
                 'name' => 'test',
-                'configSchema' => [],
                 'meta' => []
             ]
         ]);
