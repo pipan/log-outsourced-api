@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "472902f83229be6721a7a82e54ff55b8",
+    "content-hash": "1d987d0875dcc9b9f622ab485c487fb7",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -679,6 +679,66 @@
                 "psr-7"
             ],
             "time": "2018-07-31T19:32:56+00:00"
+        },
+        {
+            "name": "imliam/laravel-env-set-command",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/imliam/laravel-env-set-command.git",
+                "reference": "b579306ff613e82a44ea77eeebf058b3026a5b06"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/imliam/laravel-env-set-command/zipball/b579306ff613e82a44ea77eeebf058b3026a5b06",
+                "reference": "b579306ff613e82a44ea77eeebf058b3026a5b06",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "*",
+                "illuminate/support": "*",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5",
+                "roave/security-advisories": "dev-master"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ImLiam\\EnvironmentSetCommand\\EnvironmentSetCommandServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ImLiam\\EnvironmentSetCommand\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Liam Hammett",
+                    "email": "liam@liamhammett.com",
+                    "homepage": "https://liamhammett.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Set a .env file variable from the command line",
+            "homepage": "https://github.com/imliam/laravel-env-set-command",
+            "keywords": [
+                "artisan",
+                "env",
+                "environment",
+                "imliam",
+                "laravel-env-set-command",
+                "variables"
+            ],
+            "time": "2020-05-27T17:38:29+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
