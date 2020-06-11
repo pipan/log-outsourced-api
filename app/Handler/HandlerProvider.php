@@ -5,6 +5,7 @@ namespace App\Handler;
 use App\Repository\Repository;
 use Ext\Handler\Database\DatabaseHandlerPlugin;
 use Ext\Handler\File\FileHandlerPlugin;
+use Ext\Handler\Redis\RedisHandlerPlugin;
 use Ext\Handler\Sentry\SentryHandlerPlugin;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,7 +21,8 @@ class HandlerProvider extends ServiceProvider
         $installedPlugins = [
             new FileHandlerPlugin(),
             new DatabaseHandlerPlugin(),
-            new SentryHandlerPlugin()
+            new SentryHandlerPlugin(),
+            new RedisHandlerPlugin()
         ];
         foreach ($installedPlugins as $plugin) {
             $this->connectHandler($plugin);
