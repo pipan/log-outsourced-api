@@ -51,7 +51,7 @@ class ListenerController
             $request->input('name'),
             $rules,
             $request->input('handler_slug'),
-            $request->input('handler_values', [])
+            encrypt($request->input('handler_values', []))
         );
 
         $repository->listener()->insert($handler);
@@ -89,7 +89,7 @@ class ListenerController
                 $request->input('name', $entity->getName()),
                 $rules,
                 $request->input('handler_slug', $entity->getHandlerSlug()),
-                $request->input('handler_values', $entity->getHandlerValues())
+                encrypt($request->input('handler_values', decrypt($entity->getHandlerValues())))
             )
         );
         return response()->json(
