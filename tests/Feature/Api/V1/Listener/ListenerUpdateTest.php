@@ -12,7 +12,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->listenerRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
                 ['0011']
             );
         $response = $this->put('api/v1/listeners/0011', [
@@ -35,7 +35,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->listenerRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
                 ['0011']
             );
         $response = $this->put('api/v1/listeners/0011', [
@@ -68,7 +68,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->listenerRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
                 ['0011']
             );
         $response = $this->put('api/v1/listeners/0011', [
@@ -83,7 +83,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->listenerRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 1, ""),
+                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
                 ['0011']
             );
         $name = "";
