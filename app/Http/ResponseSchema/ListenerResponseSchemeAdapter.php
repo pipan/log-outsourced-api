@@ -15,7 +15,7 @@ class ListenerResponseSchemaAdapter implements Adapter
             'rules' => $item->getRules(),
             'handler' => [
                 'slug' => $item->getHandlerSlug(),
-                'values' => $item->getHandlerValues()
+                'values' => decrypt($item->getHandlerValues())
             ]
         ];
     }
