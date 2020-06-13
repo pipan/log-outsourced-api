@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/pipan/log-outsourced-api.svg?branch=master)](https://travis-ci.com/pipan/log-outsourced-api)
 
-Proxy server for applications logs
+Proxy server for application logs
 
 ## Demo
 
@@ -34,8 +34,13 @@ Then you should go to `console` directory and run initial setup.
 
 ```
 cd console
+php artisan key:generate --ansi
+php artisan init:file
 php artisan setup
+cd ../
 ```
+
+Application will need access to one directory, so you will have to run `sudo chown -R www-data:www-data storage`
 
 Then you have to configure your [virtual host](docs/VIRTUAL_HOST.md).
 
@@ -59,5 +64,9 @@ ln -sfn releases/<previous_version_number> current
 ```
 
 ## API
+
+## Plugins
+
+### Autorization
 
 ## Contribution
