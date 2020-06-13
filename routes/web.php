@@ -14,7 +14,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('vue-ui');
 });
 
 Route::get('/test', 'ProjectController@test');
