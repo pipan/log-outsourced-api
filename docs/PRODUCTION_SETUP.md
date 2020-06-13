@@ -8,7 +8,7 @@ mkdir storage
 cp -r releases/1/storage/* storage
 
 mkdir environment
-cp releases/1/examples/.env environment/.env
+cp releases/1/examples/.env.example environment/.env
 cp releases/1/examples/config.php environment/config.php
 
 mkdir public
@@ -22,8 +22,10 @@ cp releases/1/examples/console.php console/artisan
 
 ln -s releases/1 current
 
+cd console
+php artisan key:generate --ansi
+php artisan init:file
+cd ../
+echo "Installation successful"
+
 ```
-
-> be sure that the last comman (ln -s) has finnished
-
-last thing is to change storage permissions `sudo chown -R www-data:www-data storage`
