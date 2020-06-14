@@ -13,6 +13,10 @@ class ReleaseRollback extends Command
 
     public function handle()
     {
+        if (!isset($this->laravel['path.root'])) {
+            $this->error('application does not have root path set');
+            return;
+        }
         $currentPath = $this->laravel['path.root'] . '/current';
         if (!file_exists($currentPath)) {
             $this->error('link to current release does not exists');

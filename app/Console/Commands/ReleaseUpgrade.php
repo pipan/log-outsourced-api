@@ -12,6 +12,10 @@ class ReleaseUpgrade extends Command
 
     public function handle()
     {
+        if (!isset($this->laravel['path.root'])) {
+            $this->error('application does not have root path set');
+            return;
+        }
         $currentPath = $this->laravel['path.root'] . DIRECTORY_SEPARATOR . 'current';
         $this->info($currentPath);
         if (!file_exists($currentPath)) {
