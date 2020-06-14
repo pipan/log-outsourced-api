@@ -14,7 +14,7 @@ Demo installlation is good just for trying thinks out. You will not be able to u
 
 First step is to install source code
 
-`composer create-project outsourced/log`
+`composer create-project --prefer-dist --no-dev outsourced/log`
 
 > this command will create a folder named `log`. This guide will assume, you have not changed this folder name
 
@@ -51,16 +51,17 @@ Now you should be able to access one API endpoint. Open your web browser and inp
 ### Update to new version
 
 ```
-cd releases
-composer create-project outsourced/log <increment_number>
+cd console
+php artisan release:upgrade
 cd ../
-ln -sfn releases/<increment_number> current
 ```
 
 ### Rollback to previous version
 
 ```
-ln -sfn releases/<previous_version_number> current
+cd console
+php artisan release:rollback
+cd ../
 ```
 
 ## API

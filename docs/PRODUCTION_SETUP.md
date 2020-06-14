@@ -1,7 +1,7 @@
 ```
 mkdir releases
 cd releases
-composer create-project outsourced/log 1
+composer create-project --prefer-dist --no-dev outsourced/log 1
 cd ../
 
 mkdir storage

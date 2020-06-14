@@ -40,6 +40,9 @@ class OutsourcedLog
         if (isset($config['storage_path'])) {
             $app->useStoragePath($config['storage_path']);
         }
+        if (isset($config['root_path'])) {
+            $app->instance('path.root', $config['root_path']);
+        }
         return $app;
     }
 }
