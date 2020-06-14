@@ -1,6 +1,7 @@
 <?php
 
 return [
-	'env_path' => __DIR__ . '/../environment',
-	'storage_path' => __DIR__ . '/../storage'
+	'root_path' => dirname(__DIR__),
+	'env_path' => dirname(__DIR__) . '/environment',
+	'storage_path' => dirname(__DIR__) . '/storage'
 ];
