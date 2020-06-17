@@ -4,7 +4,7 @@
 
 Proxy server for application logs
 
-## Demo
+[demo](https://log-demo.ovaldo.sk)
 
 ## Installation
 

@@ -4,6 +4,14 @@ This is an example of standard virtual host for this outsourced log application.
 
 ## Apache
 
+You will have to enable 2 mods `headers` and `rewrite`
+
+```
+a2enmod headers
+a2enmod rewrite
+sudo service apache2 restart
+```
+
 If you are using apache and linux, then command to create new virtual host is `sudo vim /etc/apache2/sites-available/<your_doamin>.conf`.
 
 Copy, paste and edit this virtual host.
@@ -27,4 +35,43 @@ Enable new virtual host `sudo a2ensite <your_domain>` and restart apache `sudo s
 
 ## Nginx
 
-TODO
+```
+server {
+    listen 80;
+    listen [::]:80;
+
+    root /path/to/outsourced/log/installation/folder/public;
+
+    index index.php;
+    server_name <subdomain>.<your_domain>;
+
+    location ^~ /.well-known {
+        allow all;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Headers' 'Content-Type';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+    }
+
+    # SSL
+    # listen 443 ssl;
+    # ssl_certificate /etc/letsencrypt/live/<subdomain>.<your_domain>/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/<subdomain>.<your_domain>/privkey.pem;
+    # include /etc/letsencrypt/options-ssl-nginx.conf;
+
+    # if ($scheme != "https") {
+        # return 301 https://$host$request_uri;
+    # }
+}
+```
+
+Enable new virtual host `ln -s /etc/nginx/sites-available/<subdomain>.<your_domain> /etc/nginx/sites-enabled/<subdomain>.<your_domain>` and restart apache `sudo service nginx restart`.
