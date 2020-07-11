@@ -1,7 +1,7 @@
 {
     "name": "outsourced/log",
     "type": "project",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "Log proxy server",
     "keywords": [
         "log",
