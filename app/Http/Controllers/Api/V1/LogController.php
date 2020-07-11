@@ -8,6 +8,7 @@ use App\Handler\LogHandlerContainer;
 use App\Repository\Repository;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Psr\Log\LogLevel;
@@ -77,11 +78,24 @@ class LogController
                 if ($logHandler == null) {
                     throw new Exception("Cannot process log, because log handler does not exists: " . $matchedListener->getHandlerSlug());
                 }
-                $logHandler->handle(
-                    $event,
-                    $project,
-                    $matchedListener->getHandlerValues()
-                );
+                try {
+                    $logHandler->handle(
+                        $event,
+                        $project,
+                        $matchedListener->getHandlerValues()
+                    );
+                } catch (Exception $ex) {
+                    Log::warning("Log handler finnished with error: " . $ex->getMessage() . ". Skipping handler.", [
+                        'code' => $ex->getCode(),
+                        'source' => $ex->getFile() . ":" . $ex->getLine(),
+                        'handler' => $matchedListener->getHandlerSlug(),
+                        'project' => [
+                            'name' => $project->getName(),
+                            'uuid' => $project->getUuid()
+                        ],
+                        'event' => $event
+                    ]);
+                }
             }
         }
     }
