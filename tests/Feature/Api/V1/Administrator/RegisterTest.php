@@ -23,6 +23,9 @@ class RegisterTest extends ControllerActionTestCase
             $this->administratorRepository->getMocker()
                 ->getSimulation('getByUsername')
                 ->whenInputReturn($administrator, [$administrator->getUsername()]);
+            $this->administratorRepository->getMocker()
+                ->getSimulation('get')
+                ->whenInputReturn($administrator, [$administrator->getId()]);
         }
     }
 

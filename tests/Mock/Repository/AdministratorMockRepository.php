@@ -26,6 +26,12 @@ class AdministratorMockRepository implements AdministratorRepository
             ->execute([$value]);
     }
 
+    public function get($id): ?AdministratorEntity
+    {
+        return $this->getMocker()->getSimulation('get')
+            ->execute([$id]);
+    }
+
     public function getByUsername($username): ?AdministratorEntity
     {
         return $this->mocker->getSimulation('getByUsername')
