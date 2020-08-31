@@ -6,7 +6,7 @@ use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AuthenticationController
+class LoginController
 {
     public function __invoke(Request $request, Repository $repository)
     {

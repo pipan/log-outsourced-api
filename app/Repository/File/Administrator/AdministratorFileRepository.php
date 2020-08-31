@@ -25,6 +25,11 @@ class AdministratorFileRepository implements AdministratorRepository
         $this->indexGenerator = new IndexGenerator('administratos');
     }
 
+    public function exists($value)
+    {
+        return $this->getByUsername($value) !== null;
+    }
+
     public function getByUsername($username): ?AdministratorEntity
     {
         $json = $this->jsonFile->read();

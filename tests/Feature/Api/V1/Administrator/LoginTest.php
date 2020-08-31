@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Api\V1\Listener;
+namespace Tests\Feature\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
 use Illuminate\Support\Facades\Hash;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class AuthenticationTest extends ControllerActionTestCase
+class LoginTest extends ControllerActionTestCase
 {
     private function createUser($id, $username, $password)
     {
@@ -21,7 +21,7 @@ class AuthenticationTest extends ControllerActionTestCase
             ->getSimulation('getByUsername')
             ->whenInputReturn($administrator, ['test']);
 
-        $response = $this->post('api/v1/auth', [
+        $response = $this->post('api/v1/login', [
             'username' => 'test',
             'password' => 'test'
         ]);
@@ -38,7 +38,7 @@ class AuthenticationTest extends ControllerActionTestCase
             ->getSimulation('getByUsername')
             ->whenInputReturn(null, ['test']);
 
-        $response = $this->post('api/v1/auth', [
+        $response = $this->post('api/v1/login', [
             'username' => 'test',
             'password' => 'test'
         ]);
@@ -53,7 +53,7 @@ class AuthenticationTest extends ControllerActionTestCase
             ->getSimulation('getByUsername')
             ->whenInputReturn($administrator, ['test']);
 
-        $response = $this->post('api/v1/auth', [
+        $response = $this->post('api/v1/login', [
             'username' => 'test',
             'password' => 'aaaa'
         ]);

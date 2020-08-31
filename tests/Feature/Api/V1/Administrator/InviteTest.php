@@ -1,12 +1,30 @@
 <?php
 
-namespace Tests\Feature\Api\V1\Listener;
+namespace Tests\Feature\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class InviteTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+
+        $administrators = [
+            $this->createUser('1', 'root', 'root')
+        ];
+        foreach ($administrators as $administrator) {
+            $this->administratorRepository->getMocker()
+                ->getSimulation('getByUsername')
+                ->whenInputReturn($administrator, [$administrator->getUsername()]);
+            $this->administratorRepository->getMocker()
+                ->getSimulation('exists')
+                ->whenInputReturn(true, [$administrator->getUsername()]);
+        }
+    }
+
     private function createUser($id, $username, $password)
     {
         return AdministratorEntity::createWithPassword($id, $username, $password);
@@ -52,13 +70,8 @@ class InviteTest extends ControllerActionTestCase
 
     public function testResponseValidationErrorIfUsernameExists()
     {
-        $administrator = $this->createUser('1', 'test', 'test');
-        $this->administratorRepository->getMocker()
-            ->getSimulation('getByUsername')
-            ->whenInputReturn($administrator, ['test']);
-
         $response = $this->post('api/v1/invite', [
-            'username' => 'test'
+            'username' => 'root'
         ]);
 
         $response->assertStatus(422);

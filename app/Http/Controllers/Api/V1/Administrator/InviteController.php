@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
+use App\Domain\MissingRule;
 use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
@@ -21,18 +22,11 @@ class InviteController
     public function __invoke(Request $request, Repository $repository, HexadecimalGenerator $generator)
     {
         $validator = Validator::make($request->all(), [
-            'username' => ['bail', 'required', 'max:255']
+            'username' => ['bail', 'required', 'max:255', new MissingRule($repository->administrator())]
         ]);
 
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
-        }
-
-        $administrator = $repository->administrator()->getByUsername(
-            $request->input('username')
-        );
-        if ($administrator) {
-            return response([], 422);
         }
 
         $inviteAdministrator = AdministratorEntity::createInvite(
