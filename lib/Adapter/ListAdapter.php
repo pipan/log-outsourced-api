@@ -13,6 +13,9 @@ class ListAdapter implements Adapter
 
     public function adapt($items)
     {
+        if ($items === null) {
+            return [];
+        }
         $result = [];
         foreach ($items as $item) {
             $result[] = $this->itemAdapter->adapt($item);

@@ -23,4 +23,15 @@ Route::prefix('api/v1')->group(function () {
     Route::post('login', 'Api\V1\Administrator\LoginController');
     Route::post('invite', 'Api\V1\Administrator\InviteController');
     Route::post('register', 'Api\V1\Administrator\RegisterController');
+
+    Route::get('roles', 'Api\V1\Role\RoleController@index')
+        ->name('roles.index');
+    Route::post('roles', 'Api\V1\Role\RoleController@create')
+        ->name('roles.create');
+    Route::get('roles/{uuid}', 'Api\V1\Role\RoleController@view')
+        ->name('roles.view');
+    Route::delete('roles/{uuid}', 'Api\V1\Role\RoleController@delete')
+        ->name('roles.delete');
+    Route::put('roles/{uuid}', 'Api\V1\Role\RoleController@update')
+        ->name('roles.update');
 });
