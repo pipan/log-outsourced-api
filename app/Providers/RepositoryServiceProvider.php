@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Repository\Database\Project\ProjectDatabaseRepository;
 use App\Repository\Eloquent\Listener\ListenerEloquentRepository;
+use App\Repository\File\Administrator\AdministratorFileRepository;
 use App\Repository\File\Listener\ListenerFileRepository;
 use App\Repository\File\Project\ProjectFileRepository;
 use App\Repository\Memory\Handler\HandlerMemoryRepository;
@@ -20,7 +21,8 @@ class RepositoryServiceProvider extends ServiceProvider
             'file' => new SimpleRepository(
                 new ProjectFileRepository(),
                 new ListenerFileRepository(),
-                new HandlerMemoryRepository()
+                new HandlerMemoryRepository(),
+                new AdministratorFileRepository()
             ),
             'database' => new SimpleRepository(
                 new ProjectDatabaseRepository(),

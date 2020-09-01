@@ -19,4 +19,8 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('handlers', 'Api\V1\HandlerController@index');
     Route::get('handlers/{slug}', 'Api\V1\HandlerController@view');
+
+    Route::post('login', 'Api\V1\Administrator\LoginController');
+    Route::post('invite', 'Api\V1\Administrator\InviteController');
+    Route::post('register', 'Api\V1\Administrator\RegisterController');
 });
