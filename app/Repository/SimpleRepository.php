@@ -7,6 +7,7 @@ use App\Domain\Handler\HandlerRepository;
 use App\Domain\Listener\ListenerRepository;
 use App\Domain\Project\ProjectRepository;
 use App\Domain\Role\RoleRepository;
+use App\Domain\User\UserRepository;
 
 class SimpleRepository implements Repository
 {
@@ -15,13 +16,15 @@ class SimpleRepository implements Repository
     protected $handlerRepo;
     protected $administratorRepo;
     protected $roleRepo;
+    protected $userRepo;
 
     public function __construct(
         $projectRepo = null,
         $listenerRepo = null,
         $handlerRepo = null,
         $administratorRepo = null,
-        $roleRepo = null
+        $roleRepo = null,
+        $userRepo = null
     )
     {
         $this->projectRepo = $projectRepo;
@@ -29,6 +32,7 @@ class SimpleRepository implements Repository
         $this->handlerRepo = $handlerRepo;
         $this->administratorRepo = $administratorRepo;
         $this->roleRepo = $roleRepo;
+        $this->userRepo = $userRepo;
     }
 
     public function project(): ProjectRepository
@@ -54,5 +58,10 @@ class SimpleRepository implements Repository
     public function role(): ?RoleRepository
     {
         return $this->roleRepo;
+    }
+
+    public function user(): ?UserRepository
+    {
+        return $this->userRepo;
     }
 }
