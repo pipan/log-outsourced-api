@@ -6,7 +6,7 @@ use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use Closure;
 use Illuminate\Support\Facades\Validator;
 
-class ProjectGetParameter
+class ProjectRequired
 {
     private $errorSchema;
 

@@ -2,20 +2,21 @@
 
 namespace App\Domain\User;
 
-class UserEntity
+use App\Domain\Project\ProjectAwareEntity;
+
+class UserEntity extends ProjectAwareEntity
 {
     private $id;
     private $uuid;
     private $username;
     private $roles;
-    private $projectId;
 
     public function __construct($id, $uuid, $username, $projectId, $roles)
     {
+        parent::__construct($projectId);
         $this->id = $id;
         $this->uuid = $uuid;
         $this->username = $username;
-        $this->projectId = $projectId;
         $this->roles = $roles;
     }
 
@@ -32,11 +33,6 @@ class UserEntity
     public function getUsername()
     {
         return $this->username;
-    }
-
-    public function getProjectId()
-    {
-        return $this->projectId;
     }
 
     public function getRoles()

@@ -11,22 +11,12 @@ class RoleUpdateTest extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $roles = [
-            new RoleEntity(1, 'aabb', 'Product', 'Access', ['product.view'])
-        ];
-        foreach ($roles as $role) {
-            $this->roleRepository->getMocker()
-                ->getSimulation('getByUuid')
-                ->whenInputReturn($role, [$role->getUuid()]);
-            $this->roleRepository->getMocker()
-                ->getSimulation('exists')
-                ->whenInputReturn(true, [$role->getUuid()]);
-        }
+        RoleTestSeeder::seed($this->roleRepository);
     }
 
     public function getAllInvalidRequestData()
     {
-        return RoleRequests::getAllInvalid();
+        return RoleRequests::getUpdateInvalid();
     }
 
     public function testResponseOk()

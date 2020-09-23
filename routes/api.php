@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\ProjectGetParameter;
+use App\Http\Middleware\ProjectRequired;
 use Illuminate\Support\Facades\Route;
 
 Route::post('logs/{uuid}', 'Api\V1\LogController@single');
@@ -26,7 +26,8 @@ Route::prefix('api/v1')->group(function () {
     Route::post('register', 'Api\V1\Administrator\RegisterController');
 
     Route::get('roles', 'Api\V1\Role\RoleController@index')
-        ->name('roles.index');
+        ->name('roles.index')
+        ->middleware(ProjectRequired::class);
     Route::post('roles', 'Api\V1\Role\RoleController@create')
         ->name('roles.create');
     Route::get('roles/{uuid}', 'Api\V1\Role\RoleController@view')
@@ -38,7 +39,7 @@ Route::prefix('api/v1')->group(function () {
 
     Route::get('users', 'Api\V1\User\UserController@index')
         ->name('users.index')
-        ->middleware(ProjectGetParameter::class);
+        ->middleware(ProjectRequired::class);
     Route::post('users', 'Api\V1\User\UserController@create')
         ->name('users.create');
     Route::get('users/{uuid}', 'Api\V1\User\UserController@view')

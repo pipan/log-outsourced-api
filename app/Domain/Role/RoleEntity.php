@@ -2,7 +2,9 @@
 
 namespace App\Domain\Role;
 
-class RoleEntity
+use App\Domain\Project\ProjectAwareEntity;
+
+class RoleEntity extends ProjectAwareEntity
 {
     protected $id;
     protected $uuid;
@@ -10,8 +12,9 @@ class RoleEntity
     protected $name;
     protected $permissions;
 
-    public function __construct($id, $uuid, $domain, $name, $permissions)
+    public function __construct($id, $uuid, $projectId, $domain, $name, $permissions)
     {
+        parent::__construct($projectId);
         $this->id = $id;
         $this->uuid = $uuid;
         $this->domain = $domain;

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Api\V1\User;
 
-use App\Domain\Project\ProjectEntity;
 use App\Domain\User\UserEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
 class UserIndexTest extends ControllerActionTestCase
 {
@@ -12,15 +12,7 @@ class UserIndexTest extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'project'),
-                ['aabb']
-            );
-        $this->projectRepository->getMocker()
-            ->getSimulation('exists')
-            ->whenInputReturn(true, ['aabb']);
+        ProjectTestSeeder::seed($this->projectRepository);
     }
 
     public function testResponseOkEmpty()
@@ -28,7 +20,7 @@ class UserIndexTest extends ControllerActionTestCase
         $response = $this->get('api/v1/users?project_uuid=aabb');
 
         $response->assertStatus(200);
-        $response->assertJson([]);
+        $response->assertJsonCount(0);
     }
 
     public function testResponseOkNotEmpty()
@@ -42,6 +34,7 @@ class UserIndexTest extends ControllerActionTestCase
         $response = $this->get('api/v1/users?project_uuid=aabb');
 
         $response->assertStatus(200);
+        $response->assertJsonCount(1);
         $response->assertJsonFragment([
             [
                 'uuid' => 'aabb',
@@ -49,23 +42,5 @@ class UserIndexTest extends ControllerActionTestCase
                 'roles' => ['user']
             ]
         ]);
-    }
-
-    public function testResponseNotFoundIfProjectNotExists()
-    {
-        $response = $this->get('api/v1/users?project_uuid=9988');
-        $response->assertStatus(404);
-    }
-
-    public function testResponseInvalidIfMissingProjectUuid()
-    {
-        $response = $this->get('api/v1/users');
-        $response->assertStatus(422);
-    }
-
-    public function testResponseInvalidIfEmptyProjectUuid()
-    {
-        $response = $this->get('api/v1/users?project_uuid');
-        $response->assertStatus(422);
     }
 }

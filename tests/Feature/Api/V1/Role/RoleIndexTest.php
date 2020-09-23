@@ -4,45 +4,37 @@ namespace Tests\Feature\Api\V1\Role;
 
 use App\Domain\Role\RoleEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
 class RoleIndexTest extends ControllerActionTestCase
 {
-    // public function setUp(): void
-    // {
-    //     parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-    //     $administrators = [
-    //         $this->createUser('1', 'root', 'root')
-    //     ];
-    //     foreach ($administrators as $administrator) {
-    //         $this->administratorRepository->getMocker()
-    //             ->getSimulation('getByUsername')
-    //             ->whenInputReturn($administrator, [$administrator->getUsername()]);
-    //         $this->administratorRepository->getMocker()
-    //             ->getSimulation('exists')
-    //             ->whenInputReturn(true, [$administrator->getUsername()]);
-    //     }
-    // }
+        ProjectTestSeeder::seed($this->projectRepository);
+    }
 
     public function testResponseOkEmpty()
     {
-        $response = $this->get('api/v1/roles');
+        $response = $this->get('api/v1/roles?project_uuid=aabb');
 
         $response->assertStatus(200);
-        $response->assertJson([]);
+        $response->assertJsonCount(0);
     }
 
     public function testResponseOkNotEmpty()
     {
         $this->roleRepository->getMocker()
-            ->getSimulation('getAll')
+            ->getSimulation('getForProject')
             ->whenInputReturn([
-                new RoleEntity(1, 'aabb', 'Product', 'Access', ['product.view'])
-            ]);
+                new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
+            ], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
 
-        $response = $this->get('api/v1/roles');
+        $response = $this->get('api/v1/roles?project_uuid=aabb');
 
         $response->assertStatus(200);
+        $response->assertJsonCount(1);
         $response->assertJsonFragment([
             [
                 'uuid' => 'aabb',
