@@ -3,9 +3,18 @@
 namespace Tests\Feature\Api\V1\Role;
 
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
 class RoleCreateTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        ProjectTestSeeder::seed($this->projectRepository);
+        RoleTestSeeder::seed($this->roleRepository);
+    }
+
     public function getAllInvalidRequestData()
     {
         return RoleRequests::getAllInvalid();
@@ -14,9 +23,10 @@ class RoleCreateTest extends ControllerActionTestCase
     public function testResponseOk()
     {
         $response = $this->post('api/v1/roles', [
+            'project_uuid' => 'aabb',
             'domain' => 'Product',
-            'name' => 'Access',
-            'permissions' => ['product.view']
+            'name' => 'Manage',
+            'permissions' => ['product.manage']
         ]);
 
         $response->assertStatus(201);
@@ -26,8 +36,8 @@ class RoleCreateTest extends ControllerActionTestCase
         ]);
         $response->assertJsonFragment([
             'domain' => 'Product',
-            'name' => 'Access',
-            'permissions' => ['product.view']
+            'name' => 'Manage',
+            'permissions' => ['product.manage']
         ]);
     }
 

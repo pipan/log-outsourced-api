@@ -47,6 +47,7 @@ abstract class ControllerActionTestCase extends TestCase
             $this->roleRepository,
             $this->userRepository
         );
+
         $this->app->instance(Repository::class, $this->repository);
     }
 }

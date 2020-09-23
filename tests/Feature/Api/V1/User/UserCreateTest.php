@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Api\V1\User;
 
-use App\Domain\Project\ProjectEntity;
-use App\Domain\User\UserEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
 class UserCreateController extends ControllerActionTestCase
 {
@@ -12,28 +11,8 @@ class UserCreateController extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'test project'),
-                ['aabb']
-            );
-        $this->projectRepository->getMocker()
-            ->getSimulation('exists')
-            ->whenInputReturn(true, ['aabb']);
-
-        $this->userRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new UserEntity(1, 'aabb', 'test@example.com', 1, []),
-                ['aabb']
-            );
-        $this->userRepository->getMocker()
-            ->getSimulation('getByUsernameForProject')
-            ->whenInputReturn(
-                new UserEntity(1, 'aabb', 'test@example.com', 1, []),
-                ['test@example.com', 1]
-            );
+        ProjectTestSeeder::seed($this->projectRepository);
+        UserTestSeeder::seed($this->userRepository);
     }
 
     public function getAllInvalidRequestData()

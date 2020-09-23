@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Role;
 
+use App\Domain\Role\RoleDynamicValidator;
 use App\Domain\Role\RoleEntity;
 use App\Http\ResponseSchema\RoleSchemaAdapter;
 use App\Http\ResponseSchema\ValidationErrorResponseSchema;
+use App\Repository\Pagination;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,53 +17,60 @@ class RoleController
 {
     private $roleSchema;
     private $errorSchema;
+    private $roleValidator;
+    private $repository;
 
-    public function __construct()
+    public function __construct(Repository $repository)
     {
         $this->roleSchema = new RoleSchemaAdapter();
         $this->errorSchema = new ValidationErrorResponseSchema();
+        $this->roleValidator = RoleDynamicValidator::create($repository);
+        $this->repository = $repository;
     }
 
-    private function getValidator(Request $request)
+    public function index(Request $request)
     {
-        return Validator::make($request->all(), [
-            'domain' => ['bail', 'required', 'max:255'],
-            'name' => ['bail', 'required', 'max:255'],
-            'permissions' => ['bail', 'required', 'array']
-        ]);
-    }
-
-    public function index(Repository $repository)
-    {
-        $roles = $repository->role()->getAll();
+        $project = $this->repository->project()->getByUuid(
+            $request->input('project_uuid', '')
+        );
+        if (!$project) {
+            return response([], 404);
+        }
+        $roles = $this->repository->role()
+            ->getForProject(
+                $project->getId(), Pagination::fromRequest($request)
+            );
         $adapter = AdapterHelper::listOf($this->roleSchema);
         return response($adapter->adapt($roles));
     }
 
-    public function create(Request $request, Repository $repository, HexadecimalGenerator $generator)
+    public function create(Request $request, HexadecimalGenerator $generator)
     {
-        $validator = $this->getValidator($request);
+        $validator = $this->roleValidator->forAll($request->all());
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
+        $project = $this->repository->project()
+            ->getByUuid($request->input('project_uuid'));
 
         $role = new RoleEntity(
             0,
             $generator->next(),
+            $project->getId(),
             $request->input('domain'),
             $request->input('name'),
             $request->input('permissions')
         );
-        $role = $repository->role()->insert($role);
+        $role = $this->repository->role()->insert($role);
         return response($this->roleSchema->adapt($role), 201)
             ->withHeaders([
                 'Location' => route('roles.view', ['uuid' => $role->getUuid()])
             ]);
     }
 
-    public function view($uuid, Repository $repository)
+    public function view($uuid)
     {
-        $role = $repository->role()->getByUuid($uuid);
+        $role = $this->repository->role()->getByUuid($uuid);
 
         if ($role === null) {
             return response([], 404);
@@ -70,26 +79,26 @@ class RoleController
         return response($this->roleSchema->adapt($role));
     }
 
-    public function delete($uuid, Repository $repository)
+    public function delete($uuid)
     {
-        $role = $repository->role()->getByUuid($uuid);
+        $role = $this->repository->role()->getByUuid($uuid);
 
         if ($role === null) {
             return response([], 404);
         }
 
-        $repository->role()->delete($role);
+        $this->repository->role()->delete($role);
         return response([], 200);
     }
 
-    public function update($uuid, Repository $repository, Request $request)
+    public function update($uuid, Request $request)
     {
-        $role = $repository->role()->getByUuid($uuid);
+        $role = $this->repository->role()->getByUuid($uuid);
         if ($role === null) {
             return response([], 404);
         }
 
-        $validator = $this->getValidator($request);
+        $validator = $this->roleValidator->forOnly($request->all(), ['domain', 'name', 'permissions']);
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
@@ -97,11 +106,12 @@ class RoleController
         $role = new RoleEntity(
             $role->getId(),
             $role->getUuid(),
+            $role->getProjectId(),
             $request->input('domain'),
             $request->input('name'),
             $request->input('permissions')
         );
-        $role = $repository->role()->update($role->getId(), $role);
+        $role = $this->repository->role()->update($role->getId(), $role);
         return response($this->roleSchema->adapt($role), 200);
     }
 }

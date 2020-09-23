@@ -12,7 +12,7 @@ class RoleDeleteTest extends ControllerActionTestCase
         parent::setUp();
 
         $roles = [
-            new RoleEntity(1, 'aabb', 'Product', 'Access', ['product.view'])
+            new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
         ];
         foreach ($roles as $role) {
             $this->roleRepository->getMocker()

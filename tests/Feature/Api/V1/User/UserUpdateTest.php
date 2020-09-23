@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\V1\User;
 
-use App\Domain\User\UserEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class UserUpdateController extends ControllerActionTestCase
@@ -11,18 +10,7 @@ class UserUpdateController extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $this->userRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new UserEntity(1, 'aabb', 'test@example.com', 1, []),
-                ['aabb']
-            );
-        $this->userRepository->getMocker()
-            ->getSimulation('getByUsernameForProject')
-            ->whenInputReturn(
-                new UserEntity(1, 'aabb', 'test@example.com', 1, []),
-                ['test@example.com', 1]
-            );
+        UserTestSeeder::seed($this->userRepository);
     }
 
     public function getAllInvalidRequestData()

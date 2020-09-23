@@ -2,11 +2,10 @@
 
 namespace App\Domain\Role;
 
-use App\Domain\ExistsValidable;
+use App\Domain\Project\ProjectAwareRepository;
 
-interface RoleRepository extends ExistsValidable
+interface RoleRepository extends ProjectAwareRepository
 {
-    public function getAll();
     public function getByUuid($uuid): ?RoleEntity;
 
     public function insert(RoleEntity $entity): RoleEntity;
