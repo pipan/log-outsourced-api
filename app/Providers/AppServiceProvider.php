@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Domain\Listener\ListenerPatternMatcher;
+use App\DynamicValidator\DynamicValidator;
+use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Support\ServiceProvider;
 use Lib\Generator\HexadecimalGenerator;
 

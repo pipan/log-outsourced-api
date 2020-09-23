@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ProjectGetParameter;
 use Illuminate\Support\Facades\Route;
 
 Route::post('logs/{uuid}', 'Api\V1\LogController@single');
@@ -34,4 +35,16 @@ Route::prefix('api/v1')->group(function () {
         ->name('roles.delete');
     Route::put('roles/{uuid}', 'Api\V1\Role\RoleController@update')
         ->name('roles.update');
+
+    Route::get('users', 'Api\V1\User\UserController@index')
+        ->name('users.index')
+        ->middleware(ProjectGetParameter::class);
+    Route::post('users', 'Api\V1\User\UserController@create')
+        ->name('users.create');
+    Route::get('users/{uuid}', 'Api\V1\User\UserController@view')
+        ->name('users.view');
+    Route::delete('users/{uuid}', 'Api\V1\User\UserController@delete')
+        ->name('users.delete');
+    Route::put('users/{uuid}', 'Api\V1\User\UserController@update')
+        ->name('users.update');
 });
