@@ -18,11 +18,8 @@ class RegisterTest extends ControllerActionTestCase
 
         foreach ($administrators as $administrator) {
             $this->administratorRepository->getMocker()
-                ->getSimulation('exists')
-                ->whenInputReturn(true, [$administrator->getUsername()]);
-            $this->administratorRepository->getMocker()
-                ->getSimulation('getByUsername')
-                ->whenInputReturn($administrator, [$administrator->getUsername()]);
+                ->getSimulation('getByInviteToken')
+                ->whenInputReturn($administrator, [$administrator->getInviteToken()]);
             $this->administratorRepository->getMocker()
                 ->getSimulation('get')
                 ->whenInputReturn($administrator, [$administrator->getId()]);
@@ -34,11 +31,15 @@ class RegisterTest extends ControllerActionTestCase
         return new AdministratorEntity($id, $username, $password, $inviteToken);
     }
 
+    public function getInvalidRequests()
+    {
+        return RegisterRequests::getAllInvalid();
+    }
+
     public function testResponseOk()
     {
         $response = $this->post('api/v1/register', [
             'invite_token' => '010101',
-            'username' => 'test',
             'password' => 'test'
         ]);
 
@@ -49,7 +50,6 @@ class RegisterTest extends ControllerActionTestCase
     {
         $this->post('api/v1/register', [
             'invite_token' => '010101',
-            'username' => 'test',
             'password' => 'test'
         ]);
 
@@ -65,7 +65,6 @@ class RegisterTest extends ControllerActionTestCase
     {
         $this->post('api/v1/register', [
             'invite_token' => '010101',
-            'username' => 'test',
             'password' => 'test'
         ]);
 
@@ -77,104 +76,12 @@ class RegisterTest extends ControllerActionTestCase
         $this->assertEmpty($result[0][1]->getInviteToken());
     }
 
-    public function testResponseValidationErrorIfEmptyUsesrname()
+    /**
+     * @dataProvider getInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => '',
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfUsernameTooLong()
-    {
-        $username = "";
-        for ($i = 0; $i < 256; $i++) {
-            $username .= "a";
-        }
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => $username,
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfUsernameDoesNotExists()
-    {
-
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => 'root',
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfPasswordEmpty()
-    {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => 'test',
-            'password' => ''
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfPasswordMissing()
-    {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfUserHasPassword()
-    {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
-            'username' => 'test-pass',
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfTokenMissing()
-    {
-        $response = $this->post('api/v1/register', [
-            'username' => 'test',
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfTokenEmpty()
-    {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => '',
-            'username' => 'test',
-            'password' => 'test'
-        ]);
-
-        $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorIfTokenDoesNotMatch()
-    {
-        $response = $this->post('api/v1/register', [
-            'invite_token' => 'abcdef',
-            'username' => 'test',
-            'password' => 'test'
-        ]);
+        $response = $this->post('api/v1/register', $requestData);
 
         $response->assertStatus(422);
     }

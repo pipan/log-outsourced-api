@@ -20,12 +20,6 @@ class AdministratorMockRepository implements AdministratorRepository
         return $this->mocker;
     }
 
-    public function exists($value)
-    {
-        return $this->getMocker()->getSimulation('exists')
-            ->execute([$value]);
-    }
-
     public function get($id): ?AdministratorEntity
     {
         return $this->getMocker()->getSimulation('get')
@@ -36,6 +30,12 @@ class AdministratorMockRepository implements AdministratorRepository
     {
         return $this->mocker->getSimulation('getByUsername')
             ->execute([$username]);
+    }
+
+    public function getByInviteToken($token): ?AdministratorEntity
+    {
+        return $this->mocker->getSimulation('getByInviteToken')
+            ->execute([$token]);
     }
 
     public function insert(AdministratorEntity $entity): AdministratorEntity

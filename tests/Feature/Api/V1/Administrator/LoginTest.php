@@ -2,28 +2,27 @@
 
 namespace Tests\Feature\Api\V1\Administrator;
 
-use App\Domain\Administrator\AdministratorEntity;
-use Illuminate\Support\Facades\Hash;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class LoginTest extends ControllerActionTestCase
 {
-    private function createUser($id, $username, $password)
+    public function setUp(): void
     {
-        return AdministratorEntity::createWithPassword($id, $username, $password);
+        parent::setUp();
+
+        AdministratorTestSeeder::seed($this->administratorRepository);
+    }
+
+    public function getUnauthorizedRequests()
+    {
+        return LoginRequests::getAllInvalid();
     }
 
     public function testResponseOk()
     {
-        $administrator = $this->createUser('1', 'test', 'test');
-
-        $this->administratorRepository->getMocker()
-            ->getSimulation('getByUsername')
-            ->whenInputReturn($administrator, ['test']);
-
         $response = $this->post('api/v1/login', [
-            'username' => 'test',
-            'password' => 'test'
+            'username' => 'root',
+            'password' => 'root'
         ]);
 
         $response->assertStatus(200);
@@ -32,32 +31,13 @@ class LoginTest extends ControllerActionTestCase
         ]);
     }
 
-    public function testResponseUnauthorizedIfUsernameNotFound()
+    /**
+     * @dataProvider getUnauthorizedRequests
+     */
+    public function testResponseUnauthorized($requestData)
     {
-        $this->administratorRepository->getMocker()
-            ->getSimulation('getByUsername')
-            ->whenInputReturn(null, ['test']);
-
-        $response = $this->post('api/v1/login', [
-            'username' => 'test',
-            'password' => 'test'
-        ]);
+        $response = $this->post('api/v1/login', $requestData);
 
         $response->assertStatus(401);
-    }
-
-    public function testResponseUnauthorizedIfWrongPassword()
-    {
-        $administrator = $this->createUser('1', 'test', 'test');
-        $this->administratorRepository->getMocker()
-            ->getSimulation('getByUsername')
-            ->whenInputReturn($administrator, ['test']);
-
-        $response = $this->post('api/v1/login', [
-            'username' => 'test',
-            'password' => 'aaaa'
-        ]);
-
-        $response->assertStatus(401);
-    }
+    }    
 }
