@@ -35,37 +35,12 @@ class RoleRequests
 
     public static function getUpdateInvalid()
     {
-        $domainLong = "";
         $nameLong = "";
         for ($i = 0; $i < 256; $i++) {
-            $domainLong .= "a";
             $nameLong .= "a";
         }
 
         return [
-            'domain missing' => [
-                [
-                    'project_uuid' => 'aabb',
-                    'name' => 'test',
-                    'permissions' => ['test']
-                ]
-            ],
-            'domain empty' => [
-                [
-                    'project_uuid' => 'aabb',
-                    'domain' => '',
-                    'name' => 'test',
-                    'permissions' => ['test']
-                ]
-            ],
-            'domain too long' => [
-                [
-                    'project_uuid' => 'aabb',
-                    'domain' => $domainLong,
-                    'name' => 'test',
-                    'permissions' => ['test']
-                ]
-            ],
             'name missing' => [
                 [
                     'project_uuid' => 'aabb',

@@ -11,7 +11,6 @@ class RoleDynamicValidator
     public static function create(Repository $repository): DynamicValidator
     {
         return ProjectDynamicValidator::createAware($repository->project(), [
-            'domain' => ['bail', 'required', 'max:255'],
             'name' => ['bail', 'required', 'max:255'],
             'permissions' => ['bail', 'required', 'array']
         ]);

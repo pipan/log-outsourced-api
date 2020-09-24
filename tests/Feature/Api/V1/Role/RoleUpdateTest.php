@@ -22,16 +22,14 @@ class RoleUpdateTest extends ControllerActionTestCase
     public function testResponseOk()
     {
         $response = $this->put('api/v1/roles/aabb', [
-            'domain' => 'Products',
-            'name' => 'View',
+            'name' => 'Product.View',
             'permissions' => ['products.view']
         ]);
 
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'uuid' => 'aabb',
-            'domain' => 'Products',
-            'name' => 'View',
+            'name' => 'Product.View',
             'permissions' => ['products.view']
         ]);
     }
@@ -39,7 +37,6 @@ class RoleUpdateTest extends ControllerActionTestCase
     public function testResponseNotFound()
     {
         $response = $this->put('api/v1/roles/0011', [
-            'domain' => 'Products',
             'name' => 'View',
             'permissions' => ['products.view']
         ]);

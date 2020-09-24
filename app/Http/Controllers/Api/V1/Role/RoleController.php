@@ -57,7 +57,6 @@ class RoleController
             0,
             $generator->next(),
             $project->getId(),
-            $request->input('domain'),
             $request->input('name'),
             $request->input('permissions')
         );
@@ -98,7 +97,7 @@ class RoleController
             return response([], 404);
         }
 
-        $validator = $this->roleValidator->forOnly($request->all(), ['domain', 'name', 'permissions']);
+        $validator = $this->roleValidator->forOnly($request->all(), ['name', 'permissions']);
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
@@ -107,7 +106,6 @@ class RoleController
             $role->getId(),
             $role->getUuid(),
             $role->getProjectId(),
-            $request->input('domain'),
             $request->input('name'),
             $request->input('permissions')
         );

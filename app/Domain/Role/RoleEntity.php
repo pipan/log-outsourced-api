@@ -8,16 +8,14 @@ class RoleEntity extends ProjectAwareEntity
 {
     protected $id;
     protected $uuid;
-    protected $domain;
     protected $name;
     protected $permissions;
 
-    public function __construct($id, $uuid, $projectId, $domain, $name, $permissions)
+    public function __construct($id, $uuid, $projectId, $name, $permissions)
     {
         parent::__construct($projectId);
         $this->id = $id;
         $this->uuid = $uuid;
-        $this->domain = $domain;
         $this->name = $name;
         $this->permissions = $permissions;
     }
@@ -30,11 +28,6 @@ class RoleEntity extends ProjectAwareEntity
     public function getUuid()
     {
         return $this->uuid;
-    }
-
-    public function getDomain()
-    {
-        return $this->domain;
     }
 
     public function getName()

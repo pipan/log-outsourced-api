@@ -11,17 +11,7 @@ class RoleViewTest extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $roles = [
-            new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
-        ];
-        foreach ($roles as $role) {
-            $this->roleRepository->getMocker()
-                ->getSimulation('getByUuid')
-                ->whenInputReturn($role, [$role->getUuid()]);
-            $this->roleRepository->getMocker()
-                ->getSimulation('exists')
-                ->whenInputReturn(true, [$role->getUuid()]);
-        }
+        RoleTestSeeder::seed($this->roleRepository);
     }
 
     public function testResponseOk()
@@ -31,8 +21,7 @@ class RoleViewTest extends ControllerActionTestCase
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'uuid' => 'aabb',
-            'domain' => 'Product',
-            'name' => 'Access',
+            'name' => 'Product.Access',
             'permissions' => ['product.view']
         ]);
     }

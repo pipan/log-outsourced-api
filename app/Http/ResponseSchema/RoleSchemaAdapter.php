@@ -10,7 +10,6 @@ class RoleSchemaAdapter implements Adapter
     {
         return [
             'uuid' => $item->getUuid(),
-            'domain' => $item->getDomain(),
             'name' => $item->getName(),
             'permissions' => $item->getPermissions()
         ];

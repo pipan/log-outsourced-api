@@ -14,7 +14,6 @@ class RoleFileWriteAdapter implements Adapter
         return [
             'id' => $item->getId(),
             'uuid' => $item->getUuid(),
-            'domain' => $item->getDomain(),
             'name' => $item->getName(),
             'permissions' => $item->getPermissions()
         ];
