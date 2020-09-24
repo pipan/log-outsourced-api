@@ -28,7 +28,7 @@ class RoleIndexTest extends ControllerActionTestCase
         $this->roleRepository->getMocker()
             ->getSimulation('getForProject')
             ->whenInputReturn([
-                new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
+                new RoleEntity(1, 'aabb', 1, 'Product.Access', ['product.view'])
             ], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
 
         $response = $this->get('api/v1/roles?project_uuid=aabb');
@@ -38,8 +38,7 @@ class RoleIndexTest extends ControllerActionTestCase
         $response->assertJsonFragment([
             [
                 'uuid' => 'aabb',
-                'domain' => 'Product',
-                'name' => 'Access',
+                'name' => 'Product.Access',
                 'permissions' => ['product.view']
             ]
         ]);

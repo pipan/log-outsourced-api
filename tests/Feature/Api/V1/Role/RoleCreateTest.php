@@ -24,7 +24,6 @@ class RoleCreateTest extends ControllerActionTestCase
     {
         $response = $this->post('api/v1/roles', [
             'project_uuid' => 'aabb',
-            'domain' => 'Product',
             'name' => 'Manage',
             'permissions' => ['product.manage']
         ]);
@@ -32,10 +31,9 @@ class RoleCreateTest extends ControllerActionTestCase
         $response->assertStatus(201);
         $response->assertHeader('Location');
         $response->assertJsonStructure([
-            'uuid', 'domain', 'name', 'permissions'
+            'uuid', 'name', 'permissions'
         ]);
         $response->assertJsonFragment([
-            'domain' => 'Product',
             'name' => 'Manage',
             'permissions' => ['product.manage']
         ]);

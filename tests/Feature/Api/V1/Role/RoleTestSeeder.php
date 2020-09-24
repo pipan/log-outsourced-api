@@ -10,7 +10,7 @@ class RoleTestSeeder
     public static function seed(RoleMockRepository $repository)
     {
         $roles = [
-            new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
+            new RoleEntity(1, 'aabb', 1, 'Product.Access', ['product.view'])
         ];
         foreach ($roles as $role) {
             $repository->getMocker()

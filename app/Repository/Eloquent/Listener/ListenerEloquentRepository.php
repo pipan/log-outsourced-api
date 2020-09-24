@@ -6,7 +6,6 @@ use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerRepository;
 use App\Repository\Eloquent\Rule\Rule;
 use App\Repository\Eloquent\Rule\RuleEloquentWriteAdapter;
-use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
 
 class ListenerEloquentRepository implements ListenerRepository
