@@ -51,6 +51,11 @@ class AdministratorFileRepository implements AdministratorRepository
         return $this->get($id);
     }
 
+    public function getByInviteToken($username): ?AdministratorEntity
+    {
+        return null;
+    }
+
     public function insert(AdministratorEntity $entity): AdministratorEntity
     {
         $json = $this->jsonFile->read();

@@ -2,29 +2,42 @@
 
 namespace App\Http\Controllers\Api\V1\Administrator;
 
+use App\Domain\Administrator\AdministratorDynamicValidator;
 use App\Domain\Administrator\AdministratorEntity;
-use App\Domain\MissingRule;
+use App\Http\ResponseSchema\AdministratorSchema;
 use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Lib\Generator\HexadecimalGenerator;
 
 class InviteController
 {
     private $errorSchema;
+    private $administratorSchema;
+    private $repository;
 
-    public function __construct()
+    public function __construct(Repository $repository)
     {
+        $this->repository = $repository;
         $this->errorSchema = new ValidationErrorResponseSchema();
+        $this->administratorSchema = new AdministratorSchema();
     }
 
-    public function __invoke(Request $request, Repository $repository, HexadecimalGenerator $generator)
+    public function view($token)
     {
-        $validator = Validator::make($request->all(), [
-            'username' => ['bail', 'required', 'max:255', new MissingRule($repository->administrator())]
-        ]);
+        $administrator = $this->repository->administrator()
+            ->getByInviteToken($token);
+        if (!$administrator) {
+            return response([], 404);
+        }
 
+        return response($this->administratorSchema->adapt($administrator), 200);
+    }
+
+    public function create(Request $request, HexadecimalGenerator $generator)
+    {
+        $validator = AdministratorDynamicValidator::forInvitation($this->repository)
+            ->forAll($request->all());
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
@@ -34,12 +47,8 @@ class InviteController
             $request->input('username'),
             $generator->next()
         );
-        $inviteAdministrator = $repository->administrator()->insert($inviteAdministrator);
+        $inviteAdministrator = $this->repository->administrator()->insert($inviteAdministrator);
 
-        return response([
-            'id' => $inviteAdministrator->getId(),
-            'username' => $inviteAdministrator->getUsername(),
-            'invite_token' => $inviteAdministrator->getInviteToken()
-        ], 200);
+        return response($this->administratorSchema->adapt($inviteAdministrator), 200);
     }
 }

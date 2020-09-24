@@ -4,9 +4,10 @@ namespace App\Domain\Administrator;
 
 use App\Domain\ExistsValidable;
 
-interface AdministratorRepository extends ExistsValidable
+interface AdministratorRepository
 {
     public function getByUsername($username): ?AdministratorEntity;
+    public function getByInviteToken($token): ?AdministratorEntity;
     public function get($id): ?AdministratorEntity;
 
     public function insert(AdministratorEntity $entity): AdministratorEntity;
