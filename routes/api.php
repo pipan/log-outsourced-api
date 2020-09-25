@@ -7,22 +7,36 @@ Route::post('logs/{uuid}', 'Api\V1\LogController@single');
 Route::post('logs/{uuid}/batch', 'Api\V1\LogController@batch');
 
 Route::prefix('api/v1')->group(function () {
-    Route::get('projects', 'Api\V1\ProjectController@index');
-    Route::post('projects', 'Api\V1\ProjectController@create');
-    Route::get('projects/{uuid}', 'Api\V1\ProjectController@view');
-    Route::put('projects/{uuid}', 'Api\V1\ProjectController@update');
-    Route::put('projects/{uuid}/generate', 'Api\V1\ProjectController@generateUuid');
-    Route::delete('projects/{uuid}', 'Api\V1\ProjectController@delete');
+    Route::get('projects', 'Api\V1\ProjectController@index')
+        ->name('projects.index');
+    Route::post('projects', 'Api\V1\ProjectController@create')
+        ->name('projects.create');
+    Route::get('projects/{uuid}', 'Api\V1\ProjectController@view')
+        ->name('projects.view');
+    Route::put('projects/{uuid}', 'Api\V1\ProjectController@update')
+        ->name('projects.update');
+    Route::put('projects/{uuid}/generate', 'Api\V1\ProjectController@generateUuid')
+        ->name('projects.generate');
+    Route::delete('projects/{uuid}', 'Api\V1\ProjectController@delete')
+        ->name('projects.delete');
 
-    Route::post('listeners', 'Api\V1\ListenerController@create');
-    Route::put('listeners/{uuid}', 'Api\V1\ListenerController@update');
-    Route::delete('listeners/{uuid}', 'Api\V1\ListenerController@delete');
+    Route::get('listeners', 'Api\V1\ListenerController@index')
+        ->middleware(ProjectRequired::class)
+        ->name('listeners.index');
+    Route::post('listeners', 'Api\V1\ListenerController@create')
+        ->name('listeners.create');
+    Route::put('listeners/{uuid}', 'Api\V1\ListenerController@update')
+        ->name('listeners.update');
+    Route::delete('listeners/{uuid}', 'Api\V1\ListenerController@delete')
+        ->name('listeners.delete');
 
-    Route::get('handlers', 'Api\V1\HandlerController@index');
-    Route::get('handlers/{slug}', 'Api\V1\HandlerController@view');
+    Route::get('handlers', 'Api\V1\HandlerController@index')
+        ->name('handlers.index');
+    Route::get('handlers/{slug}', 'Api\V1\HandlerController@view')
+        ->name('handlers.view');
 
-    Route::post('login', 'Api\V1\Administrator\AuthController@login')
-        ->name('auth.login');
+    Route::post('access', 'Api\V1\Administrator\AuthController@access')
+        ->name('auth.access');
     Route::post('refresh', 'Api\V1\Administrator\AuthController@refresh')
         ->name('auth.refresh');
     Route::get('invite/{token}', 'Api\V1\Administrator\InviteController@view')

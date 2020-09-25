@@ -31,7 +31,7 @@ class RoleFileRepository implements RoleRoleRepository
         return $this->getByUuid($value) !== null;
      }
 
-    public function getForProject($projectId, $config)
+    public function getForProject($projectId, $config = [])
     {
         $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt(

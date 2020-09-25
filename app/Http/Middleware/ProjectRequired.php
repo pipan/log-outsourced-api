@@ -2,26 +2,31 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\ResponseSchema\ValidationErrorResponseSchema;
+use App\Domain\ExistsRule;
+use App\Domain\Project\UuidExistsValidator;
+use App\Repository\Repository;
 use Closure;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectRequired
 {
-    private $errorSchema;
+    private $repository;
 
-    public function __construct()
+    public function __construct(Repository $repository)
     {
-        $this->errorSchema = new ValidationErrorResponseSchema();
+        $this->repository = $repository;    
     }
 
     public function handle($request, Closure $next)
     {
+        $uuiExists = new ExistsRule(
+            new UuidExistsValidator($this->repository->project())
+        );
         $validation = Validator::make($request->all(), [
-            'project_uuid' => ['bail', 'required']
+            'project_uuid' => ['bail', 'required', $uuiExists]
         ]);
         if ($validation->fails()) {
-            return response($this->errorSchema->adapt($validation->errors()), 422);
+            return response([], 404);
         }
 
         return $next($request);

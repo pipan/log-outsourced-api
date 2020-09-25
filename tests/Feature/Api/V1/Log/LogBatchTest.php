@@ -33,7 +33,7 @@ class LogBatchTest extends ControllerActionTestCase
             ->getSimulation('getForProject')
             ->whenInputReturn(
                 [new ListenerEntity(1, 'aabb', 1, 'error_mock', ['error'], 'mock', [])],
-                [1]
+                [1, []]
             );
 
         $response = $this->post('/logs/12345678/batch', [
@@ -64,7 +64,7 @@ class LogBatchTest extends ControllerActionTestCase
             ->getSimulation('getForProject')
             ->whenInputReturn(
                 [new ListenerEntity(1, 'aabb', 1, 'error_mock', ['error'], 'mock', [])],
-                [1]
+                [1, []]
             );
 
         $response = $this->post('/logs/12345678/batch', [

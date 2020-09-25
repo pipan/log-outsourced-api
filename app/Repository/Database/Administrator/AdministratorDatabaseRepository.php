@@ -4,22 +4,27 @@ namespace App\Repository\Database\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
 use App\Domain\Administrator\AdministratorRepository;
+use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\AdapterDatabaseRepository;
+use App\Repository\Database\HookDatabaseIo;
+use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
 
 class AdministratorDatabaseRepository implements AdministratorRepository
 {
     const TABLE = 'administrators';
 
-    private $readAdapter;
-    private $writeAdapter;
-    private $adapterRepository;
+    private $io;
 
     public function __construct()
     {
-        $this->readAdapter = new ReadAdapter();
-        $this->writeAdapter = new WriteAdapter();
-        $this->adapterRepository = new AdapterDatabaseRepository(self::TABLE, $this->readAdapter, $this->writeAdapter);
+        $this->io = new HookDatabaseIo(
+            new AdapterDatabaseIo(
+                new SimpleDatabaseIo(self::TABLE),
+                new ReadAdapter(),
+                new WriteAdapter()
+            )
+        );
     }
 
     public function getByUsername($username): ?AdministratorEntity
@@ -28,7 +33,7 @@ class AdministratorDatabaseRepository implements AdministratorRepository
             ->where('username', '=', $username)
             ->first();
 
-        return $this->readAdapter->adapt($result);
+        return $this->io->select($result);
     }
 
     public function getByInviteToken($token): ?AdministratorEntity
@@ -37,28 +42,26 @@ class AdministratorDatabaseRepository implements AdministratorRepository
             ->where('invite_token', '=', $token)
             ->first();
 
-        return $this->readAdapter->adapt($result);
+        return $this->io->select($result);
     }
 
     public function get($id): ?AdministratorEntity
     {
-        return $this->adapterRepository->get($id);
+        return $this->io->find($id);
     }
 
     public function insert(AdministratorEntity $entity): AdministratorEntity
     {
-        $id = $this->adapterRepository->insert($entity);
-        return $this->adapterRepository->get($id);
+        return $this->io->insert($entity);
     }
 
     public function update($id, AdministratorEntity $entity): AdministratorEntity
     {
-        $this->adapterRepository->update($id, $entity);
-        return $this->adapterRepository->get($id);
+        return $this->io->update($id, $entity);
     }
 
     public function delete(AdministratorEntity $entity)
     {
-        $this->simpleRepository->delete($entity->getId());
+        $this->io->delete($entity->getId());
     }
 }

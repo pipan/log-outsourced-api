@@ -2,15 +2,15 @@
 
 namespace App\Repository\Database\Project;
 
-use Lib\Adapter\Adapter;
+use Lib\Adapter\NullAdapter;
 
-class ProjectDatabaseWriteAdapter implements Adapter
+class ProjectDatabaseWriteAdapter extends NullAdapter
 {
-    public function adapt($project)
+    protected function adaptNotNull($item)
     {
         return [
-            'uuid' => $project->getUuid(),
-            'name' => $project->getName()
+            'uuid' => $item->getUuid(),
+            'name' => $item->getName()
         ];
     }
 }

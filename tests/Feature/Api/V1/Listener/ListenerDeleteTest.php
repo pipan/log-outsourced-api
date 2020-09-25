@@ -2,20 +2,20 @@
 
 namespace Tests\Feature\Api\V1\Listener;
 
-use App\Domain\Listener\ListenerEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ListenerDeleteTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        ListenerTestSeeder::seed($this->listenerRepository);
+    }
+
     public function testResponseOk()
     {
-        $this->listenerRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'test', [], 1, ""),
-                ['0011']
-            );
-        $response = $this->delete('api/v1/listeners/0011');
+        $response = $this->delete('api/v1/listeners/aabb');
 
         $deleted = $this->listenerRepository->getMocker()
             ->getSimulation('delete')
@@ -28,9 +28,7 @@ class ListenerDeleteTest extends ControllerActionTestCase
 
     public function testHandlerNotFound()
     {
-        $response = $this->delete('api/v1/listeners/0011', [
-            'name' => 'test_handler',
-        ]);
+        $response = $this->delete('api/v1/listeners/0011');
 
         $response->assertStatus(404);
         $response->assertJson([]);

@@ -4,7 +4,7 @@ namespace App\Repository\Database;
 
 use Illuminate\Support\Facades\DB;
 
-class SimpleDatabaseRepository
+class SimpleDatabaseIo implements DatabaseIo
 {
     private $table;
 
@@ -13,16 +13,27 @@ class SimpleDatabaseRepository
         $this->table = $table;
     }
 
-    public function getAll()
+    public function select($result)
     {
-        return DB::table($this->table)->get();
+        return $result;
     }
 
-    public function get($id)
+    public function selectList($results)
+    {
+        return $results;
+    }
+
+    public function findList($ids)
     {
         return DB::table($this->table)
-            ->where('id', '=', $id)
-            ->first();
+            ->whereIn('id', $ids)
+            ->get();
+    }
+
+    public function find($id)
+    {
+        $entities = $this->findList([$id]);
+        return $entities[0] ?? null;
     }
 
     public function insert($data)

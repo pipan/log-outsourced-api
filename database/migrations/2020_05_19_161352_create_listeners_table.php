@@ -15,8 +15,7 @@ class CreateListenersTable extends Migration
     {
         Schema::create('listeners', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('uuid')
-                ->unique();
+            $table->uuid('uuid')->unique();
             $table->unsignedBigInteger('project_id');
             $table->string('name', 255);
             $table->string('handler_slug', 255);

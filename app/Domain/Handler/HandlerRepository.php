@@ -4,7 +4,7 @@ namespace App\Domain\Handler;
 
 use App\Domain\ExistsValidable;
 
-interface HandlerRepository extends ExistsValidable
+interface HandlerRepository
 {
     public function getBySlug($slug);
     public function getAll();

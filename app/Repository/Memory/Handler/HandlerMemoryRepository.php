@@ -21,7 +21,7 @@ class HandlerMemoryRepository implements HandlerRepository
 
     public function getBySlug($slug): ?HandlerEntity
     {
-        if (!$this->exists($slug)) {
+        if (!isset($this->slugIndexed[$slug])) {
             return null;
         }
         return $this->slugIndexed[$slug];
@@ -40,10 +40,5 @@ class HandlerMemoryRepository implements HandlerRepository
             unset($this->slugIndexed[$slug]);
         }
         return $entity;
-    }
-
-    public function exists($value)
-    {
-        return isset($this->slugIndexed[$value]);
     }
 }

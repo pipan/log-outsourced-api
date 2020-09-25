@@ -3,16 +3,16 @@
 namespace App\Repository\Database\Project;
 
 use App\Domain\Project\ProjectEntity;
-use Lib\Adapter\Adapter;
+use Lib\Adapter\NullAdapter;
 
-class ProjectDatabaseReadAdapter implements Adapter
+class ProjectDatabaseReadAdapter extends NullAdapter
 {
-    public function adapt($result)
+    protected function adaptNotNull($item)
     {
         return new ProjectEntity(
-            $result->id,
-            $result->uuid,
-            $result->name
+            $item->id,
+            $item->uuid,
+            $item->name
         );
     }
 }

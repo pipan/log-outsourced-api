@@ -17,7 +17,7 @@ class RoleEloquentRepository implements RoleRepository
         $this->writeAdapter = new WriteAdapter();
     }
 
-    public function getForProject($projectId, $config)
+    public function getForProject($projectId, $config = [])
     {
         $result = Role::where('project_id', '=', $projectId)
             ->get();
