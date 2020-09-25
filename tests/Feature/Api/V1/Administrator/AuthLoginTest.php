@@ -4,7 +4,7 @@ namespace Tests\Feature\Api\V1\Administrator;
 
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class LoginTest extends ControllerActionTestCase
+class AuthLoginTest extends ControllerActionTestCase
 {
     public function setUp(): void
     {
@@ -26,9 +26,8 @@ class LoginTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertJsonFragment([
-            'jwt' => 'testJWT'
-        ]);
+        $response->assertCookieNotExpired('access');
+        $response->assertCookieNotExpired('refresh');
     }
 
     /**
@@ -39,5 +38,5 @@ class LoginTest extends ControllerActionTestCase
         $response = $this->post('api/v1/login', $requestData);
 
         $response->assertStatus(401);
-    }    
+    }
 }
