@@ -20,7 +20,7 @@ class RoleMockRepository implements RoleRepository
         return $this->mocker;
     }
 
-    public function getForProject($projectId, $config)
+    public function getForProject($projectId, $config = [])
     {
         return $this->mocker->getSimulation('getForProject')
             ->execute([$projectId, $config]);

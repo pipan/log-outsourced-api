@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Repository\Database\Administrator\AdministratorDatabaseRepository;
+use App\Repository\Database\Listener\ListenerDatabaseRepository;
 use App\Repository\Database\Project\ProjectDatabaseRepository;
-use App\Repository\Eloquent\Listener\ListenerEloquentRepository;
 use App\Repository\Eloquent\Role\RoleEloquentRepository;
 use App\Repository\File\Administrator\AdministratorFileRepository;
 use App\Repository\File\Listener\ListenerFileRepository;
@@ -30,7 +30,7 @@ class RepositoryServiceProvider extends ServiceProvider
             ),
             'database' => new SimpleRepository(
                 new ProjectDatabaseRepository(),
-                new ListenerEloquentRepository(),
+                new ListenerDatabaseRepository(),
                 new HandlerMemoryRepository(),
                 new AdministratorDatabaseRepository(),
                 new RoleEloquentRepository()

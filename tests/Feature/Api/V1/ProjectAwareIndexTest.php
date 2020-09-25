@@ -18,7 +18,8 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
     {
         return [
             'Users' => ['api/v1/users'],
-            'Roles' => ['api/v1/roles']
+            'Roles' => ['api/v1/roles'],
+            'Listeners' => ['api/v1/listeners']
         ];
     }
 
@@ -34,18 +35,18 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
     /**
      * @dataProvider getAllUrls
      */
-    public function testResponseInvalidIfMissingProjectUuid($url)
+    public function testResponseNotFoundIfMissingProjectUuid($url)
     {
         $response = $this->get($url);
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 
     /**
      * @dataProvider getAllUrls
      */
-    public function testResponseInvalidIfEmptyProjectUuid($url)
+    public function testResponseNotFoundIfEmptyProjectUuid($url)
     {
         $response = $this->get($url . '?project_uuid');
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 }

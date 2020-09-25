@@ -21,13 +21,18 @@ class ListenerEloquentRepository implements ListenerRepository
         $this->ruleWriteAdapter = new RuleEloquentWriteAdapter();
     }
 
-    public function getForProject($projectId)
+    public function getForProject($projectId, $config = [])
     {
         $result = Listener::where('project_id', '=', $projectId)
             ->get();
 
         $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt($result);
+    }
+
+    public function get($id): ?ListenerEntity
+    {
+        return null;
     }
 
     public function insert(ListenerEntity $entity): ListenerEntity

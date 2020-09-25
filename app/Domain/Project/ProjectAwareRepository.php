@@ -4,5 +4,5 @@ namespace App\Domain\Project;
 
 interface ProjectAwareRepository
 {
-    public function getForProject($projectId, $config);
+    public function getForProject($projectId, $config = []);
 }

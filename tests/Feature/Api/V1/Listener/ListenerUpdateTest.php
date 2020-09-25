@@ -2,20 +2,25 @@
 
 namespace Tests\Feature\Api\V1\Listener;
 
-use App\Domain\Listener\ListenerEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ListenerUpdateTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        ListenerTestSeeder::seed($this->listenerRepository);
+    }
+
+    public function provideInvalidRequests()
+    {
+        return ListenerRequests::getAllInvalid();
+    }
+
     public function testResponseOk()
     {
-        $this->listenerRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
-                ['0011']
-            );
-        $response = $this->put('api/v1/listeners/0011', [
+        $response = $this->put('api/v1/listeners/aabb', [
             'name' => 'test',
         ]);
 
@@ -32,13 +37,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
 
     public function testResponseOkDuplicateRules()
     {
-        $this->listenerRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
-                ['0011']
-            );
-        $response = $this->put('api/v1/listeners/0011', [
+        $response = $this->put('api/v1/listeners/aabb', [
             'name' => 'test',
             'rules' => ['error', 'error']
         ]);
@@ -54,7 +53,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $this->assertCount(1, $updated);
     }
 
-    public function testHandlerNotFound()
+    public function testResponseNotFound()
     {
         $response = $this->put('api/v1/listeners/0011', [
             'name' => 'test_handler',
@@ -63,37 +62,14 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $response->assertStatus(404);
     }
 
-    public function testResponseValidationErrorEmptyName()
+    /**
+     * @dataProvider provideInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $this->listenerRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
-                ['0011']
-            );
-        $response = $this->put('api/v1/listeners/0011', [
-            'name' => ''
-        ]);
+        $response = $this->put('api/v1/listeners/aabb', $requestData);
 
         $response->assertStatus(422);
-    }
-
-    public function testResponseValidationErrorLongName()
-    {
-        $this->listenerRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, '0011', 1, 'name', [], 'slug', encrypt([])),
-                ['0011']
-            );
-        $name = "";
-        for ($i = 0; $i < 256; $i++) {
-            $name .= "a";
-        }
-        $response = $this->put('api/v1/listeners/0011', [
-            'name' => $name
-        ]);
-
-        $response->assertStatus(422);
+        $response->assertJsonStructure(['errors']);
     }
 }

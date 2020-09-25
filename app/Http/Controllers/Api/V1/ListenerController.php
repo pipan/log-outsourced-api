@@ -2,35 +2,47 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Domain\ExistsRule;
 use App\Domain\Listener\ListenerEntity;
+use App\Domain\Listener\ListenerValidator;
 use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
 use App\Http\ResponseSchema\ValidationErrorResponseSchema;
+use App\Repository\Pagination;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Lib\Adapter\AdapterHelper;
 use Lib\Generator\HexadecimalGenerator;
 
 class ListenerController
 {
     private $schema;
     private $errorSchema;
+    private $repository;
 
-    public function __construct()
+    public function __construct(Repository $repository)
     {
+        $this->repository = $repository;
         $this->schema = new ListenerResponseSchemaAdapter();
         $this->errorSchema = new ValidationErrorResponseSchema();
     }
 
-    public function create(Request $request, HexadecimalGenerator $generator, Repository $repository)
+    public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['bail', 'required', 'max:255'],
-            'project_uuid' => ['bail', 'required', new ExistsRule($repository->project())],
-            'rules' => ['nullable', 'array'],
-            'handler_slug' => ['required', new ExistsRule($repository->handler())]
-        ]);
+        $project = $this->repository->project()
+            ->getByUuid($request->input('project_uuid'));
+        $listeners = $this->repository->listener()
+            ->getForProject(
+                $project->getId(),
+                Pagination::fromRequest($request)
+            );
 
+        $adapter = AdapterHelper::listOf($this->schema);
+        return response($adapter->adapt($listeners));
+    }
+
+    public function create(Request $request, HexadecimalGenerator $generator)
+    {
+        $validator = ListenerValidator::forCreates($this->repository)
+            ->forAll($request->all());
         if ($validator->fails()) {
             return response(
                 $this->errorSchema->adapt($validator->errors()),
@@ -38,7 +50,7 @@ class ListenerController
             );
         }
 
-        $project = $repository->project()->getByUuid(
+        $project = $this->repository->project()->getByUuid(
             $request->input('project_uuid')
         );
 
@@ -54,7 +66,7 @@ class ListenerController
             encrypt($request->input('handler_values', []))
         );
 
-        $repository->listener()->insert($handler);
+        $this->repository->listener()->insert($handler);
 
         return response(
             $this->schema->adapt($handler),
@@ -62,25 +74,22 @@ class ListenerController
         );
     }
 
-    public function update($uuid, Request $request, Repository $repository)
+    public function update($uuid, Request $request)
     {
-        $entity = $repository->listener()->getByUuid($uuid);
+        $entity = $this->repository->listener()->getByUuid($uuid);
         if ($entity == null) {
             return response([], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => ['bail', 'nullable', 'filled', 'max:255'],
-            'rules' => ['bail', 'nullable', 'array'],
-            'handler_slug' => ['bail', 'nullable', new ExistsRule($repository->handler())]
-        ]);
+        $validator = ListenerValidator::forUpdates($this->repository)
+            ->forAll($request->all());
         if ($validator->fails()) {
-            return response([], 422);
+            return response($this->errorSchema->adapt($validator->errors()), 422);
         }
 
         $rules = array_unique($request->input('rules', $entity->getRules()));
 
-        $entity = $repository->listener()->update(
+        $entity = $this->repository->listener()->update(
             $entity->getId(),
             new ListenerEntity(
                 $entity->getId(),
@@ -98,14 +107,16 @@ class ListenerController
         );
     }
 
-    public function delete($uuid, Repository $repository)
+    public function delete($uuid)
     {
-        $entity = $repository->listener()->getByUuid($uuid);
-        if ($entity == null) {
+        $entity = $this->repository->listener()
+            ->getByUuid($uuid);
+        if ($entity === null) {
             return response([], 404);
         }
 
-        $repository->listener()->delete($entity);
+        $this->repository->listener()
+            ->delete($entity);
         return response([], 200);
     }
 }

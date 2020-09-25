@@ -29,7 +29,7 @@ class LogController
         if ($project == null) {
             return response([], 404);
         }
-        $listners = $repository->listener()->getForProject($project->getId());
+        $listners = $repository->listener()->getForProject($project->getId(), []);
 
         $this->proccessBatch(
             [$request->all()],

@@ -32,9 +32,6 @@ class UserController
         $project = $this->repository->project()->getByUuid(
             $request->input('project_uuid', '')
         );
-        if (!$project) {
-            return response([], 404);
-        }
         $roles = $this->repository->user()
             ->getForProject(
                 $project->getId(), Pagination::fromRequest($request)

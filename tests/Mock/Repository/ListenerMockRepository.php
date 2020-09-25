@@ -20,10 +20,16 @@ class ListenerMockRepository implements ListenerRepository
         return $this->mocker;
     }
 
-    public function getForProject($projectId)
+    public function get($id): ?ListenerEntity
+    {
+        return $this->mocker->getSimulation('get')
+            ->execute([$id]);
+    }
+
+    public function getForProject($projectId, $config = [])
     {
         return $this->mocker->getSimulation('getForProject')
-            ->execute([$projectId]);
+            ->execute([$projectId, $config]);
     }
 
     public function getByUuid($uuid): ?ListenerEntity

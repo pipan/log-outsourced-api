@@ -6,6 +6,7 @@ use App\Http\ResponseSchema\AuthSchema;
 use App\Repository\Repository;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\SignatureInvalidException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -36,7 +37,7 @@ class AuthController
             ->withCookie('refresh', $tokens['refresh'], $data['refresh']['ttl'] / 60);
     }
 
-    public function login(Request $request, Repository $repository)
+    public function access(Request $request, Repository $repository)
     {
         $administrator = $repository->administrator()->getByUsername($request->input('username'));
         if (!$administrator) {
@@ -58,6 +59,8 @@ class AuthController
             $refreshToken = JWT::decode($request->input('refresh_token'), config('app.key'), ['HS256']);
         } catch (ExpiredException $ex) {
             return response([], 401);
+        } catch (SignatureInvalidException $ex) {
+            return response([], 500);
         }
 
         return $this->getResponse(

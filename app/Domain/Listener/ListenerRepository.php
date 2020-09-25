@@ -2,10 +2,12 @@
 
 namespace App\Domain\Listener;
 
-interface ListenerRepository
+use App\Domain\Project\ProjectAwareRepository;
+
+interface ListenerRepository extends ProjectAwareRepository
 {
     public function getByUuid($uuid): ?ListenerEntity;
-    public function getForProject($projectId);
+    public function get($id): ?ListenerEntity;
 
     public function insert(ListenerEntity $entity): ListenerEntity;
     public function update($id, ListenerEntity $entity): ListenerEntity;

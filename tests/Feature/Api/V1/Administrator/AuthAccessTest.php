@@ -4,7 +4,7 @@ namespace Tests\Feature\Api\V1\Administrator;
 
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class AuthLoginTest extends ControllerActionTestCase
+class AuthAccessTest extends ControllerActionTestCase
 {
     public function setUp(): void
     {
@@ -20,7 +20,7 @@ class AuthLoginTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->post('api/v1/login', [
+        $response = $this->post('api/v1/access', [
             'username' => 'root',
             'password' => 'root'
         ]);
@@ -35,7 +35,7 @@ class AuthLoginTest extends ControllerActionTestCase
      */
     public function testResponseUnauthorized($requestData)
     {
-        $response = $this->post('api/v1/login', $requestData);
+        $response = $this->post('api/v1/access', $requestData);
 
         $response->assertStatus(401);
     }

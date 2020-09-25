@@ -29,7 +29,12 @@ class ListenerFileRepository implements ListenerRepository
         return $adapter->adapt($this->jsonFile->read());
     }
 
-    public function getForProject($projectId)
+    public function get($id): ?ListenerEntity
+    {
+        return null;
+    }
+
+    public function getForProject($projectId, $config = [])
     {
         $all = $this->getAll();
         $result = [];
