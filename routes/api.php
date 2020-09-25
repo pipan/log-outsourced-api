@@ -21,7 +21,10 @@ Route::prefix('api/v1')->group(function () {
     Route::get('handlers', 'Api\V1\HandlerController@index');
     Route::get('handlers/{slug}', 'Api\V1\HandlerController@view');
 
-    Route::post('login', 'Api\V1\Administrator\LoginController');
+    Route::post('login', 'Api\V1\Administrator\AuthController@login')
+        ->name('auth.login');
+    Route::post('refresh', 'Api\V1\Administrator\AuthController@refresh')
+        ->name('auth.refresh');
     Route::get('invite/{token}', 'Api\V1\Administrator\InviteController@view')
         ->name('administrator.invite.view');
     Route::post('invite', 'Api\V1\Administrator\InviteController@create')

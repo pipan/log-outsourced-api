@@ -113,5 +113,12 @@ return [
     */
 
     'password_timeout' => 10800,
-
+    'jwt' => [
+        'access' => [
+            'time_to_live' => 60 * 60 * 2
+        ],
+        'refresh' => [
+            'time_to_live' => 60 * 60 * 24 * 30,
+        ]
+    ]
 ];
