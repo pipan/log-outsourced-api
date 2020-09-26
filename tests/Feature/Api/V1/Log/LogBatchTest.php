@@ -3,7 +3,6 @@
 namespace Tests\Feature\Api\V1\Log;
 
 use App\Domain\Listener\ListenerEntity;
-use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandlerContainer;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
@@ -22,6 +21,11 @@ class LogBatchTest extends ControllerActionTestCase
         $handlerContainer->add('mock', $this->logHandler);
 
         ProjectTestSeeder::seed($this->projectRepository);
+    }
+
+    public function getInvalidRequests()
+    {
+        return LogRequests::getInvalidForBatch();
     }
 
     public function testResponseOkMissingContext()
@@ -77,9 +81,9 @@ class LogBatchTest extends ControllerActionTestCase
         $this->assertCount(1, $handled);
     }
 
-    public function testResponse404MissingProject()
+    public function testResponseNotFound()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/xxxx/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message'
@@ -90,75 +94,14 @@ class LogBatchTest extends ControllerActionTestCase
         $response->assertJson([]);
     }
 
-    public function testResponse422SendSingle()
+    /**
+     * @dataProvider getInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $response = $this->post('/logs/aabb/batch', [
-            'level' => 'error',
-            'message' => 'Log this message'
-        ]);
+        $response = $this->post('/logs/aabb/batch', $requestData);
 
         $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422MissingLevelValue()
-    {
-        $response = $this->post('/logs/aabb/batch', [
-            [
-                'message' => 'Log this message'
-            ]
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422EmptyLogLevel()
-    {
-        $response = $this->post('/logs/aabb/batch', [
-            'level' => '',
-            'message' => 'Log this message'
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422LogLevelNotStandardName()
-    {
-        $response = $this->post('/logs/aabb/batch', [
-            [
-                'level' => 'custom',
-                'message' => 'Log this message'
-            ]
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422MissingMessage()
-    {
-        $response = $this->post('/logs/aabb/batch', [
-            [
-                'level' => 'error'
-            ]
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422MessageEmpty()
-    {
-        $response = $this->post('/logs/aabb/batch', [
-            [
-                'level' => 'error',
-                'message' => ''
-            ]
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['errors']);
     }
 }

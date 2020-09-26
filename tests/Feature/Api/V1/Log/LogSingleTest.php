@@ -23,6 +23,11 @@ class LogSingleTest extends ControllerActionTestCase
         ProjectTestSeeder::seed($this->projectRepository);
     }
 
+    public function getInvalidRequests()
+    {
+        return LogRequests::getInvalidForSingle();
+    }
+
     public function testResponseOkMissingContext()
     {
         $this->listenerRepository->getMocker()
@@ -70,9 +75,9 @@ class LogSingleTest extends ControllerActionTestCase
         $this->assertCount(1, $handled);
     }
 
-    public function testResponse404MissingProject()
+    public function testResponseNotFound()
     {
-        $response = $this->post('/logs/12345678', [
+        $response = $this->post('/logs/xxxx', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
@@ -81,56 +86,14 @@ class LogSingleTest extends ControllerActionTestCase
         $response->assertJson([]);
     }
 
-    public function testResponse422MissingLevelValue()
+    /**
+     * @dataProvider getInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $response = $this->post('/logs/aabb', [
-            'message' => 'Log this message'
-        ]);
+        $response = $this->post('/logs/aabb', $requestData);
 
         $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422EmptyLogLevel()
-    {
-        $response = $this->post('/logs/aabb', [
-            'level' => '',
-            'message' => 'Log this message'
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422LogLevelNotStandardname()
-    {
-        $response = $this->post('/logs/aabb', [
-            'level' => 'custom',
-            'message' => 'Log this message'
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422MissingMessage()
-    {
-        $response = $this->post('/logs/aabb', [
-            'level' => 'error'
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponse422MessageEmpty()
-    {
-        $response = $this->post('/logs/aabb', [
-            'level' => 'error',
-            'message' => ''
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['errors']);
     }
 }
