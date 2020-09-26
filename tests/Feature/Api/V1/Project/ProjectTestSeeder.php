@@ -9,14 +9,20 @@ class ProjectTestSeeder
 {
     public static function seed(ProjectMockRepository $projectRepository)
     {
+        $projects = [
+            new ProjectEntity([
+                'id' => 1,
+                'uuid' => 'aabb',
+                'name' => 'test project'
+            ])
+        ];
+
         $projectRepository->getMocker()
             ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'test project'),
-                ['aabb']
-            );
+            ->whenInputReturn($projects[0], ['aabb']);
+
         $projectRepository->getMocker()
-            ->getSimulation('exists')
-            ->whenInputReturn(true, ['aabb']);
+            ->getSimulation('getAll')
+            ->whenInputReturn($projects, []);
     }
 }

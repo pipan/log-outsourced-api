@@ -2,31 +2,48 @@
 
 namespace App\Domain\Project;
 
-class ProjectEntity
-{
-    protected $id;
-    protected $uuid;
-    protected $name;
+use Lib\Entity\Entity;
 
-    public function __construct($id, $uuid, $name)
+class ProjectEntity extends Entity
+{
+    public function __construct($data)
     {
-        $this->id = $id;
-        $this->uuid = $uuid;
-        $this->name = $name;
+        parent::__construct([
+            'id' => $data['id'] ?? 0,
+            'uuid' => $data['uuid'] ??'',
+            'name' => $data['name'] ?? ''
+        ]);
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->data['id'];
     }
 
     public function getUuid()
     {
-        return $this->uuid;
+        return $this->data['uuid'];
     }
 
     public function getName()
     {
-        return $this->name;
+        return $this->data['name'];
+    }
+
+    protected function with($key, $value)
+    {
+        $data = $this->toArray();
+        $data[$key] = $value;
+        return new ProjectEntity($data);
+    }
+
+    public function withName($value)
+    {
+        return $this->with('name', $value);
+    }
+
+    public function withUuid($value)
+    {
+        return $this->with('uuid', $value);
     }
 }

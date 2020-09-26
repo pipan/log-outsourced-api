@@ -5,14 +5,10 @@ namespace App\Repository\Database\Project;
 use App\Domain\Project\ProjectEntity;
 use Lib\Adapter\NullAdapter;
 
-class ProjectDatabaseReadAdapter extends NullAdapter
+class ReadAdapter extends NullAdapter
 {
     protected function adaptNotNull($item)
     {
-        return new ProjectEntity(
-            $item->id,
-            $item->uuid,
-            $item->name
-        );
+        return new ProjectEntity((array) $item);
     }
 }

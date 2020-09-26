@@ -20,18 +20,21 @@ class ProjectIndexTest extends ControllerActionTestCase
 
     public function testResponseNotEmpty()
     {
+        $project = new ProjectEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'name' => 'test'
+        ]);
         $this->projectRepository->getMocker()
             ->getSimulation('getAll')
-            ->whenInputReturn([
-                new ProjectEntity(1, 'aabc', 'test')
-            ]);
+            ->whenInputReturn([$project]);
         
         $response = $this->get('api/v1/projects');
 
         $response->assertStatus(200);
         $response->assertJson([
             [
-                'uuid' => 'aabc',
+                'uuid' => 'aabb',
                 'name' => 'test'
             ]
         ]);

@@ -7,14 +7,20 @@ use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectUpdateTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        ProjectTestSeeder::seed($this->projectRepository);
+    }
+
+    public function getInvalidRequests()
+    {
+        return ProjectRequests::getInvalidForUpdates();
+    }
+
     public function testResponseOk()
     {
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'project'),
-                ['aabb']
-            );
         $response = $this->put('api/v1/projects/aabb', [
             'name' => 'new_project'
         ]);
@@ -30,38 +36,12 @@ class ProjectUpdateTest extends ControllerActionTestCase
         ]);
     }
 
-    public function testResponseValidationErrorEmptyName()
+    /**
+     * @dataProvider getInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'project'),
-                ['aabb']
-            );
-        $response = $this->put('api/v1/projects/aabb', [
-            'name' => ''
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJson([]);
-    }
-
-    public function testResponseValidationErrorLongName()
-    {
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, 'aabb', 'project'),
-                ['aabb']
-            );
-        $name = "";
-        for ($i = 0; $i < 256; $i++) {
-            $name .= "a";
-        }
-        
-        $response = $this->put('api/v1/projects/aabb', [
-            'name' => $name
-        ]);
+        $response = $this->put('api/v1/projects/aabb', $requestData);
 
         $response->assertStatus(422);
         $response->assertJson([]);
@@ -70,7 +50,7 @@ class ProjectUpdateTest extends ControllerActionTestCase
 
     public function testResponseNotFound()
     {
-        $response = $this->put('api/v1/projects/aabb');
+        $response = $this->put('api/v1/projects/xxxx');
 
         $response->assertStatus(404);
         $response->assertJson([]);

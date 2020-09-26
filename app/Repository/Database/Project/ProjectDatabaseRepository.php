@@ -6,6 +6,7 @@ use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
 use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
+use Lib\Entity\EntityBlacklistAdapter;
 
 class ProjectDatabaseRepository implements ProjectRepository
 {
@@ -16,8 +17,8 @@ class ProjectDatabaseRepository implements ProjectRepository
 
     public function __construct()
     {
-        $this->readAdapter = new ProjectDatabaseReadAdapter();
-        $this->writeAdapter = new ProjectDatabaseWriteAdapter();
+        $this->readAdapter = new ReadAdapter();
+        $this->writeAdapter = new EntityBlacklistAdapter(['id']);
     }
 
     public function getAll()
@@ -56,10 +57,5 @@ class ProjectDatabaseRepository implements ProjectRepository
         return DB::table(self::TABLE_NAME)
             ->where('id', '=', $project->getId())
             ->delete();
-    }
-
-    public function exists($value)
-    {
-        return $this->getByUuid($value) != null;
     }
 }

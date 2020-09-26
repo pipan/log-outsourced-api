@@ -15,10 +15,11 @@ Route::prefix('api/v1')->group(function () {
         ->name('projects.view');
     Route::put('projects/{uuid}', 'Api\V1\ProjectController@update')
         ->name('projects.update');
-    Route::put('projects/{uuid}/generate', 'Api\V1\ProjectController@generateUuid')
-        ->name('projects.generate');
     Route::delete('projects/{uuid}', 'Api\V1\ProjectController@delete')
         ->name('projects.delete');
+
+    Route::put('projects/{uuid}/generate', 'Api\V1\ProjectUuidController@generate')
+        ->name('projects.generate');
 
     Route::get('listeners', 'Api\V1\ListenerController@index')
         ->middleware(ProjectRequired::class)
