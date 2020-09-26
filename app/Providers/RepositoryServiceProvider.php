@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Repository\Database\Administrator\AdministratorDatabaseRepository;
 use App\Repository\Database\Listener\ListenerDatabaseRepository;
 use App\Repository\Database\Project\ProjectDatabaseRepository;
+use App\Repository\Database\Role\RoleDatabaseRepository;
 use App\Repository\Eloquent\Role\RoleEloquentRepository;
 use App\Repository\File\Administrator\AdministratorFileRepository;
 use App\Repository\File\Listener\ListenerFileRepository;
@@ -33,7 +34,7 @@ class RepositoryServiceProvider extends ServiceProvider
                 new ListenerDatabaseRepository(),
                 new HandlerMemoryRepository(),
                 new AdministratorDatabaseRepository(),
-                new RoleEloquentRepository()
+                new RoleDatabaseRepository()
             )
         ];
         $repositotyType = env('REPOSITORY_TYPE', 'file');

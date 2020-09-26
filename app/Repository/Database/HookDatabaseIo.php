@@ -42,22 +42,20 @@ class HookDatabaseIo implements DatabaseIo
     public function insert($entity)
     {
         $id = $this->io->insert($entity);
-        $this->hooks['save']->onAction($entity);
+        $this->trigger('save', $entity);
         return $this->find($id);
     }
 
     public function update($id, $entity)
     {
         $this->io->update($id, $entity);
-        $this->hooks['save']->onAction($entity);
+        $this->trigger('save', $entity);
         return $this->find($id);
     }
 
     public function delete($id)
     {
-        $this->hooks['delete']->onAction(
-            $this->find($id)
-        );
+        $this->trigger('delete', $this->find($id));
         $this->io->delete($id);
     }
 
@@ -72,7 +70,7 @@ class HookDatabaseIo implements DatabaseIo
     public function trigger($name, $data)
     {
         if (!isset($this->hooks[$name])) {
-            return;
+            return $data;
         }
         return $this->hooks[$name]->onAction($data);
     }

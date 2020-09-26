@@ -11,7 +11,6 @@ use App\Repository\Database\Rule\Hook\Listener\ListenerLoadHook;
 use App\Repository\Database\Rule\Hook\Listener\ListenerSaveHook;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
-use Lib\Adapter\AdapterHelper;
 
 class ListenerDatabaseRepository implements ListenerRepository
 {

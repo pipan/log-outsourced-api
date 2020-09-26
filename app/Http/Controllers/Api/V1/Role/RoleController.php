@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Role;
 
 use App\Domain\Role\RoleDynamicValidator;
 use App\Domain\Role\RoleEntity;
+use App\Domain\Role\RoleValidator;
 use App\Http\ResponseSchema\RoleSchemaAdapter;
 use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Pagination;
@@ -17,14 +18,12 @@ class RoleController
 {
     private $roleSchema;
     private $errorSchema;
-    private $roleValidator;
     private $repository;
 
     public function __construct(Repository $repository)
     {
         $this->roleSchema = new RoleSchemaAdapter();
         $this->errorSchema = new ValidationErrorResponseSchema();
-        $this->roleValidator = RoleDynamicValidator::create($repository);
         $this->repository = $repository;
     }
 
@@ -46,20 +45,19 @@ class RoleController
 
     public function create(Request $request, HexadecimalGenerator $generator)
     {
-        $validator = $this->roleValidator->forAll($request->all());
+        $validator = RoleValidator::forCreation($this->repository)->forAll($request->all());
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
         $project = $this->repository->project()
             ->getByUuid($request->input('project_uuid'));
 
-        $role = new RoleEntity(
-            0,
-            $generator->next(),
-            $project->getId(),
-            $request->input('name'),
-            $request->input('permissions')
-        );
+        $role = new RoleEntity([
+            'uuid' => $generator->next(),
+            'project_id' => $project->getId(),
+            'name' => $request->input('name'),
+            'permissions' => $request->input('permissions')
+        ]);
         $role = $this->repository->role()->insert($role);
         return response($this->roleSchema->adapt($role), 201)
             ->withHeaders([
@@ -97,18 +95,14 @@ class RoleController
             return response([], 404);
         }
 
-        $validator = $this->roleValidator->forOnly($request->all(), ['name', 'permissions']);
+        $validator = RoleValidator::forUpdates()->forAll($request->all());
         if ($validator->fails()) {
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
 
-        $role = new RoleEntity(
-            $role->getId(),
-            $role->getUuid(),
-            $role->getProjectId(),
-            $request->input('name'),
-            $request->input('permissions')
-        );
+        $role = $role->withName($request->input('name', $role->getName()))
+            ->withPermissions($request->input('permissions', $role->getPermissions()));
+
         $role = $this->repository->role()->update($role->getId(), $role);
         return response($this->roleSchema->adapt($role), 200);
     }

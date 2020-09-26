@@ -15,9 +15,9 @@ class RoleCreateTest extends ControllerActionTestCase
         RoleTestSeeder::seed($this->roleRepository);
     }
 
-    public function getAllInvalidRequestData()
+    public function getInvalidRequests()
     {
-        return RoleRequests::getAllInvalid();
+        return RoleRequests::forCreation();
     }
 
     public function testResponseOk()
@@ -40,7 +40,7 @@ class RoleCreateTest extends ControllerActionTestCase
     }
 
     /**
-     * @dataProvider getAllInvalidRequestData
+     * @dataProvider getInvalidRequests
      */
     public function testResponseValidationError($requestData)
     {

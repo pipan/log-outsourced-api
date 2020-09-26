@@ -10,15 +10,19 @@ class RoleTestSeeder
     public static function seed(RoleMockRepository $repository)
     {
         $roles = [
-            new RoleEntity(1, 'aabb', 1, 'Product.Access', ['product.view'])
+            new RoleEntity([
+                'id' => 1,
+                'uuid' => 'aabb',
+                'project_id' => 1,
+                'name' => 'Product.Access',
+                'permissions' => ['product.view']
+            ])
         ];
+        
         foreach ($roles as $role) {
             $repository->getMocker()
                 ->getSimulation('getByUuid')
                 ->whenInputReturn($role, [$role->getUuid()]);
-            $repository->getMocker()
-                ->getSimulation('exists')
-                ->whenInputReturn(true, [$role->getUuid()]);
         }
     }
 }

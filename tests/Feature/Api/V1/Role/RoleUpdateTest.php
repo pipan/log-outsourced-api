@@ -14,24 +14,25 @@ class RoleUpdateTest extends ControllerActionTestCase
         RoleTestSeeder::seed($this->roleRepository);
     }
 
-    public function getAllInvalidRequestData()
+    public function getInvalidRequests()
     {
-        return RoleRequests::getUpdateInvalid();
+        return RoleRequests::getInvalidForUpdates();
     }
 
-    public function testResponseOk()
+    public function getValidRequests()
     {
-        $response = $this->put('api/v1/roles/aabb', [
-            'name' => 'Product.View',
-            'permissions' => ['products.view']
-        ]);
+        return RoleRequests::getValidForUpdates();
+    }
+
+    /**
+     * @dataProvider getValidRequests
+     */
+    public function testResponseOk($requestData)
+    {
+        $response = $this->put('api/v1/roles/aabb', $requestData);
 
         $response->assertStatus(200);
-        $response->assertJsonFragment([
-            'uuid' => 'aabb',
-            'name' => 'Product.View',
-            'permissions' => ['products.view']
-        ]);
+        $response->assertJsonFragment($requestData);
     }
 
     public function testResponseNotFound()
@@ -46,7 +47,7 @@ class RoleUpdateTest extends ControllerActionTestCase
     }
 
     /**
-     * @dataProvider getAllInvalidRequestData
+     * @dataProvider getInvalidRequests
      */
     public function testResponseValidationError($requestData)
     {

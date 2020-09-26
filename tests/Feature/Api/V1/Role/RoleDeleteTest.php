@@ -11,17 +11,7 @@ class RoleDeleteTest extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $roles = [
-            new RoleEntity(1, 'aabb', 1, 'Product', 'Access', ['product.view'])
-        ];
-        foreach ($roles as $role) {
-            $this->roleRepository->getMocker()
-                ->getSimulation('getByUuid')
-                ->whenInputReturn($role, [$role->getUuid()]);
-            $this->roleRepository->getMocker()
-                ->getSimulation('exists')
-                ->whenInputReturn(true, [$role->getUuid()]);
-        }
+        RoleTestSeeder::seed($this->roleRepository);
     }
 
     public function testResponseOk()
