@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use App\Domain\Listener\ListenerPatternMatcher;
-use App\DynamicValidator\DynamicValidator;
-use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Auth\AuthorizedAdministrator;
 use Illuminate\Support\ServiceProvider;
 use Lib\Generator\HexadecimalGenerator;
 
@@ -17,6 +16,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ListenerPatternMatcher::class, ListenerPatternMatcher::class);
+
+        $this->app->singleton(AuthorizedAdministrator::class, AuthorizedAdministrator::class);
     }
 
     public function boot()
