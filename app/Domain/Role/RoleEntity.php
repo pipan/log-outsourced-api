@@ -2,41 +2,60 @@
 
 namespace App\Domain\Role;
 
-use App\Domain\Project\ProjectAwareEntity;
+use Lib\Entity\Entity;
 
-class RoleEntity extends ProjectAwareEntity
+class RoleEntity extends Entity
 {
-    protected $id;
-    protected $uuid;
-    protected $name;
-    protected $permissions;
-
-    public function __construct($id, $uuid, $projectId, $name, $permissions)
+    public function __construct($data)
     {
-        parent::__construct($projectId);
-        $this->id = $id;
-        $this->uuid = $uuid;
-        $this->name = $name;
-        $this->permissions = $permissions;
+        parent::__construct([
+            'id' => $data['id'] ?? 0,
+            'uuid' => $data['uuid'] ??'',
+            'project_id' => $data['project_id'] ?? 0,
+            'name' => $data['name'] ?? '',
+            'permissions' => $data['permissions'] ?? []
+        ]);
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->data['id'];
     }
 
     public function getUuid()
     {
-        return $this->uuid;
+        return $this->data['uuid'];
+    }
+
+    public function getProjectId()
+    {
+        return $this->data['project_id'];
     }
 
     public function getName()
     {
-        return $this->name;
+        return $this->data['name'];
     }
 
     public function getPermissions()
     {
-        return $this->permissions;
+        return $this->data['permissions'];
+    }
+
+    protected function with($key, $value)
+    {
+        $data = $this->toArray();
+        $data[$key] = $value;
+        return new RoleEntity($data);
+    }
+
+    public function withName($value)
+    {
+        return $this->with('name', $value);
+    }
+
+    public function withPermissions($value)
+    {
+        return $this->with('permissions', $value);
     }
 }

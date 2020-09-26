@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Domain\Role;
+
+use App\Domain\Project\ProjectDynamicValidator;
+use App\Validator\DynamicValidator;
+use App\Repository\Repository;
+use App\Validator\EntityValidator;
+
+class RoleValidator
+{
+    public static function forCreation(Repository $repository): DynamicValidator
+    {
+        return ProjectDynamicValidator::createAware($repository->project(), [
+            'name' => ['bail', 'required', 'max:255'],
+            'permissions' => ['bail', 'required', 'array', 'min:1']
+        ]);
+    }
+
+    public static function forUpdates(): DynamicValidator
+    {
+        return new EntityValidator([
+            'name' => ['bail', 'filled', 'max:255'],
+            'permissions' => ['bail', 'array', 'min:1']
+        ]);
+    }
+}

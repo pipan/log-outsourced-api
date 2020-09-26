@@ -4,8 +4,12 @@ namespace Tests\Feature\Api\V1\Role;
 
 class RoleRequests
 {
-    public static function getAllInvalid()
+    public static function forCreation()
     {
+        $nameLong = "";
+        for ($i = 0; $i < 256; $i++) {
+            $nameLong .= "a";
+        }
         return [
             'project uuid missing' => [
                 [
@@ -29,18 +33,7 @@ class RoleRequests
                     'name' => 'test',
                     'permissions' => ['test']
                 ]
-            ]
-        ] + RoleRequests::getUpdateInvalid();
-    }
-
-    public static function getUpdateInvalid()
-    {
-        $nameLong = "";
-        for ($i = 0; $i < 256; $i++) {
-            $nameLong .= "a";
-        }
-
-        return [
+            ],
             'name missing' => [
                 [
                     'project_uuid' => 'aabb',
@@ -77,6 +70,54 @@ class RoleRequests
                     'domain' => 'test',
                     'name' => 'test',
                     'permissions' => []
+                ]
+            ]
+        ];
+    }
+
+    public static function getInvalidForUpdates()
+    {
+        $nameLong = "";
+        for ($i = 0; $i < 256; $i++) {
+            $nameLong .= "a";
+        }
+
+        return [
+            'name empty' => [
+                [
+                    'name' => ''
+                ]
+            ],
+            'name too long' => [
+                [
+                    'name' => $nameLong,
+                ]
+            ],
+            'permissions empty' => [
+                [
+                    'permissions' => []
+                ]
+            ]
+        ];
+    }
+
+    public static function getValidForUpdates()
+    {
+        return [
+            'only name' => [
+                [
+                    'name' => 'test'
+                ]
+            ],
+            'only permissions' => [
+                [
+                    'permissions' => ['test']
+                ]
+            ],
+            'name and permissions' => [
+                [
+                    'name' => 'test',
+                    'permissions' => ['test']
                 ]
             ]
         ];

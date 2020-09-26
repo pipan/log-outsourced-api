@@ -25,11 +25,16 @@ class RoleIndexTest extends ControllerActionTestCase
 
     public function testResponseOkNotEmpty()
     {
+        $role = new RoleEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'project_id' => 1,
+            'name' => 'Product.Access',
+            'permissions' => ['product.view']
+        ]);
         $this->roleRepository->getMocker()
             ->getSimulation('getForProject')
-            ->whenInputReturn([
-                new RoleEntity(1, 'aabb', 1, 'Product.Access', ['product.view'])
-            ], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
+            ->whenInputReturn([$role], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
 
         $response = $this->get('api/v1/roles?project_uuid=aabb');
 
