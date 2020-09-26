@@ -2,7 +2,7 @@
 
 namespace App\Domain\Role;
 
-use App\Domain\Project\ProjectDynamicValidator;
+use App\Domain\Project\ProjectValidator;
 use App\Validator\DynamicValidator;
 use App\Repository\Repository;
 use App\Validator\EntityValidator;
@@ -11,7 +11,7 @@ class RoleValidator
 {
     public static function forCreation(Repository $repository): DynamicValidator
     {
-        return ProjectDynamicValidator::createAware($repository->project(), [
+        return ProjectValidator::createAware($repository->project(), [
             'name' => ['bail', 'required', 'max:255'],
             'permissions' => ['bail', 'required', 'array', 'min:1']
         ]);

@@ -6,6 +6,7 @@ use App\Domain\Listener\ListenerEntity;
 use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandlerContainer;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 use Tests\Mock\Handler\LogHandlerMock;
 
 class LogBatchTest extends ControllerActionTestCase
@@ -19,16 +20,12 @@ class LogBatchTest extends ControllerActionTestCase
         $this->logHandler = new LogHandlerMock();
         $handlerContainer = $this->app->make(LogHandlerContainer::class);
         $handlerContainer->add('mock', $this->logHandler);
+
+        ProjectTestSeeder::seed($this->projectRepository);
     }
 
     public function testResponseOkMissingContext()
     {
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, '12345678', 'test'),
-                ['12345678']
-            );
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
             ->whenInputReturn(
@@ -36,7 +33,7 @@ class LogBatchTest extends ControllerActionTestCase
                 [1, []]
             );
 
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message'
@@ -54,12 +51,6 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponseOkWithContext()
     {
-        $this->projectRepository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ProjectEntity(1, '12345678', 'test'),
-                ['12345678']
-            );
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
             ->whenInputReturn(
@@ -67,7 +58,7 @@ class LogBatchTest extends ControllerActionTestCase
                 [1, []]
             );
 
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'level' => 'error',
                 'message' => 'Log this message',
@@ -101,7 +92,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422SendSingle()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
@@ -112,7 +103,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MissingLevelValue()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'message' => 'Log this message'
             ]
@@ -124,7 +115,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422EmptyLogLevel()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             'level' => '',
             'message' => 'Log this message'
         ]);
@@ -135,7 +126,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422LogLevelNotStandardName()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'level' => 'custom',
                 'message' => 'Log this message'
@@ -148,7 +139,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MissingMessage()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'level' => 'error'
             ]
@@ -160,7 +151,7 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponse422MessageEmpty()
     {
-        $response = $this->post('/logs/12345678/batch', [
+        $response = $this->post('/logs/aabb/batch', [
             [
                 'level' => 'error',
                 'message' => ''

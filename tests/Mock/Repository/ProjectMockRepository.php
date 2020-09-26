@@ -51,10 +51,4 @@ class ProjectMockRepository implements ProjectRepository
         return $this->mocker->getSimulation('delete')
             ->execute([$project]);
     }
-
-    public function exists($value)
-    {
-        return $this->mocker->getSimulation('exists')
-            ->execute([$value]);
-    }
 }

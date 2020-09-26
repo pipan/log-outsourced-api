@@ -79,11 +79,6 @@ class ProjectFileRepository implements ProjectRepository
         $this->save($projects);
     }
 
-    public function exists($uuid)
-    {
-        return $this->getByUuid($uuid) != null;
-    }
-
     private function save($all)
     {
         $adapter = AdapterHelper::listOf($this->writeAdapter);

@@ -42,11 +42,10 @@ class ProjectController
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
 
-        $project = new ProjectEntity(
-            0,
-            $generator->next(),
-            $request->input('name')
-        );
+        $project = new ProjectEntity([
+            'uuid' => $generator->next(),
+            'name' => $request->input('name')
+        ]);
         $repository->project()->insert($project);
         return response($this->projectSchema->adapt($project), 201);
     }
@@ -95,34 +94,12 @@ class ProjectController
             return response($this->errorSchema->adapt($validator->errors()), 422);
         }
 
-        $project = new ProjectEntity(
-            $project->getId(),
-            $project->getUuid(),
+        $project = $project->withName(
             $request->input('name', $project->getName())
         );
         $repository->project()->update($project->getId(), $project);
 
         return response()->json(
-            $this->projectSchema->adapt($project),
-            200
-        );
-    }
-
-    public function generateUuid($uuid, Repository $repository, HexadecimalGenerator $generator)
-    {
-        $project = $repository->project()->getByUuid($uuid);
-        if ($project == null) {
-            return response([], 404);
-        }
-
-        $project = new ProjectEntity(
-            $project->getId(),
-            $generator->next(),
-            $project->getName()
-        );
-        $repository->project()->update($project->getId(), $project);
-
-        return response(
             $this->projectSchema->adapt($project),
             200
         );

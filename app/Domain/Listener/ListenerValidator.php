@@ -4,7 +4,7 @@ namespace App\Domain\Listener;
 
 use App\Domain\ExistsRule;
 use App\Domain\Handler\SlugExistsValidation;
-use App\Domain\Project\ProjectDynamicValidator;
+use App\Domain\Project\ProjectValidator;
 use App\Validator\DynamicValidator;
 use App\Repository\Repository;
 use App\Validator\EntityValidator;
@@ -28,7 +28,7 @@ class ListenerValidator
         $handlerExists = new ExistsRule(
             new SlugExistsValidation($repository->handler())
         );
-        return ProjectDynamicValidator::createAware($repository->project(), [
+        return ProjectValidator::createAware($repository->project(), [
             'name' => ['bail', 'required', 'max:255'],
             'rules' => ['array'],
             'handler_slug' => ['required', $handlerExists]

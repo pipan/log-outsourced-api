@@ -6,6 +6,11 @@ use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectCreateTest extends ControllerActionTestCase
 {
+    public function getInvalidRequests()
+    {
+        return ProjectRequests::getInvalidForCreation();
+    }
+
     public function testResponseOk()
     {
         $response = $this->post('api/v1/projects', [
@@ -23,37 +28,12 @@ class ProjectCreateTest extends ControllerActionTestCase
         $this->assertCount(1, $inserted);
     }
 
-    public function testResponseValidationErrorMissingName()
+    /**
+     * @dataProvider getInvalidRequests
+     */
+    public function testResponseValidationError($requestData)
     {
-        $response = $this->post('api/v1/projects');
-
-        $response->assertStatus(422);
-        $response->assertJsonStructure([
-            'errors'
-        ]);
-    }
-
-    public function testResponseValidationErrorEmptyName()
-    {
-        $response = $this->post('api/v1/projects', [
-            'name' => ''
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonStructure([
-            'errors'
-        ]);
-    }
-
-    public function testResponseValidationErrorLongName()
-    {
-        $name = "";
-        for ($i = 0; $i < 256; $i++) {
-            $name .= "a";
-        }
-        $response = $this->post('api/v1/projects', [
-            'name' => $name
-        ]);
+        $response = $this->post('api/v1/projects', $requestData);
 
         $response->assertStatus(422);
         $response->assertJsonStructure([
