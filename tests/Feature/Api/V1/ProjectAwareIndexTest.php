@@ -28,7 +28,7 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
      */
     public function testResponseNotFoundIfProjectNotExists($url)
     {
-        $response = $this->get($url . '?project_uuid=9988');
+        $response = $this->get($url . '?project_uuid=xxxx');
         $response->assertStatus(404);
     }
 

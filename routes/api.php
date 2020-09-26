@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AuthRequired;
 use App\Http\Middleware\ProjectRequired;
 use Illuminate\Support\Facades\Route;
 
@@ -8,7 +9,8 @@ Route::post('logs/{uuid}/batch', 'Api\V1\LogController@batch');
 
 Route::prefix('api/v1')->group(function () {
     Route::get('projects', 'Api\V1\ProjectController@index')
-        ->name('projects.index');
+        ->name('projects.index')
+        ->middleware(AuthRequired::class);
     Route::post('projects', 'Api\V1\ProjectController@create')
         ->name('projects.create');
     Route::get('projects/{uuid}', 'Api\V1\ProjectController@view')

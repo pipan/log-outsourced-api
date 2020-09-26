@@ -3,16 +3,25 @@
 namespace Tests\Feature\Api\V1\Project;
 
 use App\Domain\Project\ProjectEntity;
+use Tests\Feature\Api\V1\Administrator\AdministratorTestSeeder;
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectIndexTest extends ControllerActionTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        AdministratorTestSeeder::seed($this->administratorRepository);
+    }
+
     public function testResponseOk()
     {
         $this->projectRepository->getMocker()
             ->getSimulation('getAll')
             ->whenInputReturn([]);
-        $response = $this->get('api/v1/projects');
+        $response = $this->get('api/v1/projects', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJson([]);
@@ -29,7 +38,7 @@ class ProjectIndexTest extends ControllerActionTestCase
             ->getSimulation('getAll')
             ->whenInputReturn([$project]);
         
-        $response = $this->get('api/v1/projects');
+        $response = $this->get('api/v1/projects', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -38,5 +47,16 @@ class ProjectIndexTest extends ControllerActionTestCase
                 'name' => 'test'
             ]
         ]);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $this->projectRepository->getMocker()
+            ->getSimulation('getAll')
+            ->whenInputReturn([]);
+        $response = $this->get('api/v1/projects');
+
+        $response->assertStatus(401);
+        $response->assertJson([]);
     }
 }
