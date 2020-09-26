@@ -24,5 +24,7 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <server name="ROOT_USERNAME" value="root"/>
+        <server name="ROOT_PASSWORD" value="JDJ5JDEwJEF0Z012dHgxY0hJTE9vL2FiOGFlcGVCajVMamtsUjFOL2JFVzR6UGJQMk1zeUczdkNrd29H"/>
     </php>
 </phpunit>

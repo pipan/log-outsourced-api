@@ -20,7 +20,7 @@ class RegisterRequests
             ],
             'user has password' => [
                 [
-                    'invite_token' => 'aabb',
+                    'invite_token' => 'abcd',
                     'password' => 'pass'
                 ]
             ],

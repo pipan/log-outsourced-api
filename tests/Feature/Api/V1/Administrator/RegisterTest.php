@@ -11,24 +11,7 @@ class RegisterTest extends ControllerActionTestCase
     {
         parent::setUp();
 
-        $administrators = [
-            $this->createUser('1', 'test', '', '010101'),
-            $this->createUser('2', 'test-pass', 'aaaaaa', '')
-        ];
-
-        foreach ($administrators as $administrator) {
-            $this->administratorRepository->getMocker()
-                ->getSimulation('getByInviteToken')
-                ->whenInputReturn($administrator, [$administrator->getInviteToken()]);
-            $this->administratorRepository->getMocker()
-                ->getSimulation('get')
-                ->whenInputReturn($administrator, [$administrator->getId()]);
-        }
-    }
-
-    private function createUser($id, $username, $password, $inviteToken)
-    {
-        return new AdministratorEntity($id, $username, $password, $inviteToken);
+        AdministratorTestSeeder::seed($this->administratorRepository);
     }
 
     public function getInvalidRequests()
@@ -39,7 +22,7 @@ class RegisterTest extends ControllerActionTestCase
     public function testResponseOk()
     {
         $response = $this->post('api/v1/register', [
-            'invite_token' => '010101',
+            'invite_token' => '01234',
             'password' => 'test'
         ]);
 
@@ -49,7 +32,7 @@ class RegisterTest extends ControllerActionTestCase
     public function testOkUpdatePasswordHash()
     {
         $this->post('api/v1/register', [
-            'invite_token' => '010101',
+            'invite_token' => '01234',
             'password' => 'test'
         ]);
 
@@ -64,7 +47,7 @@ class RegisterTest extends ControllerActionTestCase
     public function testOkUpdateInviteToken()
     {
         $this->post('api/v1/register', [
-            'invite_token' => '010101',
+            'invite_token' => '01234',
             'password' => 'test'
         ]);
 

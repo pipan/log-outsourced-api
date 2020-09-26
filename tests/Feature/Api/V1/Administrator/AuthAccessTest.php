@@ -21,6 +21,18 @@ class AuthAccessTest extends ControllerActionTestCase
     public function testResponseOk()
     {
         $response = $this->post('api/v1/access', [
+            'username' => 'admin',
+            'password' => 'admin'
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertCookieNotExpired('access');
+        $response->assertCookieNotExpired('refresh');
+    }
+
+    public function testResponseOkUseRootUser()
+    {
+        $response = $this->post('api/v1/access', [
             'username' => 'root',
             'password' => 'root'
         ]);
