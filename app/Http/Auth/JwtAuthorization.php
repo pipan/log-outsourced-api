@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class JwtAutorization implements Authorization
 {
-    private $id = 0;
+    private $id = -1;
 
     public function __construct(Request $request)
     {
