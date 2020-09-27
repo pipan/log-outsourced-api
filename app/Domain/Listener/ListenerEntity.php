@@ -2,78 +2,88 @@
 
 namespace App\Domain\Listener;
 
-class ListenerEntity
-{
-    protected $data;
+use Exception;
+use Lib\Entity\Entity;
 
-    public function __construct($id, $uuid, $projectId, $name, $rules, $handlerSlug, $handlerValues)
+class ListenerEntity extends Entity
+{
+    public function __construct($data)
     {
-        $this->data = [
-            'id' => $id,
-            'uuid' => $uuid,
-            'project_id' => $projectId,
-            'name' => $name,
-            'rules' => $rules,
-            'handler_slug' => $handlerSlug,
-            'handler_values' => $handlerValues
-        ];
+        parent::__construct([
+            'id' => $data['id'] ?? 0,
+            'uuid' => $data['uuid'] ?? '',
+            'project_id' => $data['project_id'] ?? 0,
+            'name' => $data['name'] ?? '',
+            'rules' => $data['rules'] ?? [],
+            'handler_slug' => $data['handler_slug'] ?? '',
+            'handler_values' => $data['handler_values'] ?? []
+        ]);
+
+        $validator = ListenerValidator::forSchema()->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception('Listener entity is incorrect: ' . $this->getUuid());
+        }
     }
 
-    public static function fromArray($properties)
+    private function with($key, $value)
     {
-        return new ListenerEntity(
-            $properties['id'],
-            $properties['uuid'],
-            $properties['project_id'],
-            $properties['name'],
-            $properties['rules'],
-            $properties['handler_slug'],
-            $properties['handler_values']
-        );
+        $data = $this->toArray();
+        $data[$key] = $value;
+        return new ListenerEntity($data);
     }
 
     public function getId()
     {
-        return $this->data['id'] ?? 0;
-    }
-
-    public function setId($id)
-    {
-        return self::fromArray(['id' => $id] + $this->toArray());
+        return $this->data['id'];
     }
 
     public function getUuid()
     {
-        return $this->data['uuid'] ?? '';
+        return $this->data['uuid'];
     }
 
     public function getProjectId()
     {
-        return $this->data['project_id'] ?? 0;
+        return $this->data['project_id'];
     }
 
     public function getName()
     {
-        return $this->data['name'] ?? '';
+        return $this->data['name'];
     }
     
     public function getRules()
     {
-        return $this->data['rules'] ?? [];
+        return $this->data['rules'];
     }
 
     public function getHandlerSlug()
     {
-        return $this->data['handler_slug'] ?? '';
+        return $this->data['handler_slug'];
     }
 
     public function getHandlerValues()
     {
-        return $this->data['handler_values'] ?? [];
+        return $this->data['handler_values'];
     }
 
-    public function toArray()
+    public function withName($value)
     {
-        return $this->data;
+        return $this->with('name', $value);
+    }
+
+    public function withRules($value)
+    {
+        return $this->with('rules', $value);
+    }
+
+    public function withHandlerSlug($value)
+    {
+        return $this->with('handler_slug', $value);
+    }
+
+    public function withHandlerValues($value)
+    {
+        return $this->with('handler_values', $value);
     }
 }

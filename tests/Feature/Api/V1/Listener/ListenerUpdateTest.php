@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Listener;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ListenerUpdateTest extends ControllerActionTestCase
@@ -22,7 +23,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
     {
         $response = $this->put('api/v1/listeners/aabb', [
             'name' => 'test',
-        ]);
+        ], AuthHeaders::authorize());
 
         $updated = $this->listenerRepository->getMocker()
             ->getSimulation('update')
@@ -40,7 +41,7 @@ class ListenerUpdateTest extends ControllerActionTestCase
         $response = $this->put('api/v1/listeners/aabb', [
             'name' => 'test',
             'rules' => ['error', 'error']
-        ]);
+        ], AuthHeaders::authorize());
 
         $updated = $this->listenerRepository->getMocker()
             ->getSimulation('update')
@@ -57,9 +58,10 @@ class ListenerUpdateTest extends ControllerActionTestCase
     {
         $response = $this->put('api/v1/listeners/0011', [
             'name' => 'test_handler',
-        ]);
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(404);
+        $response->assertJsonStructure(['message']);
     }
 
     /**
@@ -67,9 +69,23 @@ class ListenerUpdateTest extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->put('api/v1/listeners/aabb', $requestData);
+        $response = $this->put(
+            'api/v1/listeners/aabb',
+            $requestData,
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertJsonStructure(['errors', 'message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->put('api/v1/listeners/aabb', [
+            'name' => 'test_handler'
+        ]);
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

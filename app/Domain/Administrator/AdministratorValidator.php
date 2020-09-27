@@ -37,7 +37,7 @@ class AdministratorValidator
     {
         return new EntityValidator([
             'uuid' => UuidValidator::getRules(),
-            'username' => ['bail', 'required', 'max:255', Rule::unique('administrators', 'username')->ignore($entityId, 'id')]
+            'username' => ['bail', 'required', 'max:255']
         ]);
     }
 }

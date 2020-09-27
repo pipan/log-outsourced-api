@@ -13,7 +13,7 @@ class WriteAdapter extends NullAdapter
             'project_id' => $item->getProjectId(),
             'name' => $item->getName(),
             'handler_slug' => $item->getHandlerSlug(),
-            'handler_values' => json_encode($item->getHandlerValues())
+            'handler_values' => encrypt(json_encode($item->getHandlerValues()))
         ];
     }
 }

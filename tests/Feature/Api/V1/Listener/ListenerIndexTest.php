@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1\Listener;
 
 use App\Domain\Listener\ListenerEntity;
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
@@ -17,7 +18,7 @@ class ListenerIndexTest extends ControllerActionTestCase
 
     public function testResponseOkEmpty()
     {
-        $response = $this->get('api/v1/listeners?project_uuid=aabb');
+        $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonCount(0);
@@ -25,13 +26,20 @@ class ListenerIndexTest extends ControllerActionTestCase
 
     public function testResponseOkNotEmpty()
     {
+        $listener = new ListenerEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'project_id' => 1,
+            'name' => 'critical',
+            'rules' => ['critical'],
+            'handler_slug' => 'file',
+            'handler_values' => ['one' => '1']
+        ]);
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
-            ->whenInputReturn([
-                new ListenerEntity(1, 'aabb', 1, 'critical', ['critical'], 'slug', encrypt(['one' => '1']))
-            ], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
+            ->whenInputReturn([$listener], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
 
-        $response = $this->get('api/v1/listeners?project_uuid=aabb');
+        $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonCount(1);
@@ -42,10 +50,18 @@ class ListenerIndexTest extends ControllerActionTestCase
                 'project_id' => 1,
                 'rules' => ['critical'],
                 'handler' => [
-                    'slug' => 'slug',
+                    'slug' => 'file',
                     'values' => ['one' => '1']
                 ]
             ]
         ]);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->get('api/v1/listeners');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

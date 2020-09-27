@@ -2,6 +2,7 @@
 
 namespace App\Domain\Administrator;
 
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Lib\Entity\Entity;
 
@@ -21,6 +22,11 @@ class AdministratorEntity extends Entity
             'password_hash' => $passwordHash,
             'invite_token' => $data['invite_token'] ?? ''
         ]);
+
+        $validator = AdministratorValidator::forSchema($this->getId())->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception("Administrator entity is incorrect: " . $this->getUuid());
+        }
     }
 
     private function with($key, $value)

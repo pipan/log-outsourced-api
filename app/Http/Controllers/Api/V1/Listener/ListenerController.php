@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\V1\Listener;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerValidator;
+use App\Http\ResponseError;
 use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
-use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Pagination;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
@@ -15,14 +15,12 @@ use Lib\Generator\HexadecimalGenerator;
 class ListenerController
 {
     private $schema;
-    private $errorSchema;
     private $repository;
 
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;
         $this->schema = new ListenerResponseSchemaAdapter();
-        $this->errorSchema = new ValidationErrorResponseSchema();
     }
 
     public function index(Request $request)
@@ -44,10 +42,7 @@ class ListenerController
         $validator = ListenerValidator::forCreates($this->repository)
             ->forAll($request->all());
         if ($validator->fails()) {
-            return response(
-                $this->errorSchema->adapt($validator->errors()),
-                422
-            );
+            return ResponseError::invalidRequest($validator->errors());
         }
 
         $project = $this->repository->project()->getByUuid(
@@ -56,67 +51,56 @@ class ListenerController
 
         $rules = array_unique($request->input('rules', []));
 
-        $handler = new ListenerEntity(
-            0,
-            $generator->next(),
-            $project->getId(),
-            $request->input('name'),
-            $rules,
-            $request->input('handler_slug'),
-            encrypt($request->input('handler_values', []))
-        );
+        $handler = new ListenerEntity([
+            'uuid' => $generator->next(),
+            'project_id' => $project->getId(),
+            'name' => $request->input('name'),
+            'rules' => $rules,
+            'handler_slug' => $request->input('handler_slug'),
+            'handler_values' => $request->input('handler_values', [])
+        ]);
 
         $this->repository->listener()->insert($handler);
 
-        return response(
-            $this->schema->adapt($handler),
-            201
-        );
+        return response($this->schema->adapt($handler), 201);
     }
 
     public function update($uuid, Request $request)
     {
         $entity = $this->repository->listener()->getByUuid($uuid);
-        if ($entity == null) {
-            return response([], 404);
+        if (!$entity) {
+            return ResponseError::resourceNotFound();
         }
 
         $validator = ListenerValidator::forUpdates($this->repository)
             ->forAll($request->all());
         if ($validator->fails()) {
-            return response($this->errorSchema->adapt($validator->errors()), 422);
+            return ResponseError::invalidRequest($validator->errors());
         }
 
         $rules = array_unique($request->input('rules', $entity->getRules()));
 
-        $entity = $this->repository->listener()->update(
-            $entity->getId(),
-            new ListenerEntity(
-                $entity->getId(),
-                $entity->getUuid(),
-                $entity->getProjectId(),
-                $request->input('name', $entity->getName()),
-                $rules,
-                $request->input('handler_slug', $entity->getHandlerSlug()),
-                encrypt($request->input('handler_values', decrypt($entity->getHandlerValues())))
-            )
-        );
-        return response()->json(
-            $this->schema->adapt($entity),
-            200
-        );
+        $entity = $entity->withName($request->input('name', $entity->getName()))
+            ->withRules($rules)
+            ->withHandlerSlug($request->input('handler_slug', $entity->getHandlerSlug()))
+            ->withHandlerValues($request->input('handler_values', $entity->getHandlerValues()));
+
+        $entity = $this->repository->listener()
+            ->update($entity->getId(), $entity);
+
+        return response()->json($this->schema->adapt($entity));
     }
 
     public function delete($uuid)
     {
         $entity = $this->repository->listener()
             ->getByUuid($uuid);
-        if ($entity === null) {
-            return response([], 404);
+        if (!$entity) {
+            return ResponseError::resourceNotFound();
         }
 
         $this->repository->listener()
             ->delete($entity);
-        return response([], 200);
+        return response([]);
     }
 }

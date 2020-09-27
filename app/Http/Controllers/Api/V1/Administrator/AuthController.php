@@ -42,6 +42,7 @@ class AuthController
         if ($request->input('username') == env('ROOT_USERNAME', '')) {
             $administrator = new AdministratorEntity([
                 'id' => 'root',
+                'uuid' => 'root',
                 'username' => env('ROOT_USERNAME', ''),
                 'password_hash' => base64_decode(env('ROOT_PASSWORD', ''))
             ]);

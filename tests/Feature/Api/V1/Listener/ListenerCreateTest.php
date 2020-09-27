@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Listener;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Handler\HandlerTestSeeder;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
@@ -28,7 +29,7 @@ class ListenerCreateTest extends ControllerActionTestCase
             'project_uuid' => 'aabb',
             'rules' => [],
             'handler_slug' => 'file'
-        ]);
+        ], AuthHeaders::authorize());
 
         $inserted = $this->listenerRepository->getMocker()
             ->getSimulation('insert')->getExecutions();
@@ -54,7 +55,7 @@ class ListenerCreateTest extends ControllerActionTestCase
             'project_uuid' => 'aabb',
             'rules' => ['error', 'error'],
             'handler_slug' => 'file'
-        ]);
+        ], AuthHeaders::authorize());
 
         $inserted = $this->listenerRepository->getMocker()
             ->getSimulation('insert')->getExecutions();
@@ -71,8 +72,26 @@ class ListenerCreateTest extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->post('api/v1/listeners', $requestData);
+        $response = $this->post(
+            'api/v1/listeners',
+            $requestData,
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'errors']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->post('api/v1/listeners', [
+            'name' => 'test_handler',
+            'project_uuid' => 'aabb',
+            'rules' => [],
+            'handler_slug' => 'file'
+        ]);
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

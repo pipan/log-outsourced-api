@@ -24,11 +24,28 @@ class ProjectValidator
         return ['bail', 'required', $projectExists];
     }
 
+    public static function getProjectIdRule()
+    {
+        return ['bail', 'required', 'integer', 'min:0'];
+    }
+
     public static function forSchema(): DynamicValidator
     {
         return new EntityValidator([
             'uuid' => UuidValidator::getRules(),
             'name' => ['bail', 'required', 'max:255']
         ]);
+    }
+
+    public static function forInsert(): DynamicValidator
+    {
+        return new EntityValidator([
+            'name' => ['bail', 'required', 'max:255']
+        ]);
+    }
+
+    public static function forUpdate(): DynamicValidator
+    {
+        return self::forInsert();
     }
 }
