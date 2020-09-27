@@ -34,7 +34,7 @@ class AuthController
         ];
         $tokens = $this->authSchema->adapt($data);
 
-        return response([], 200)
+        return response($tokens, 200)
             ->withCookie('access', $tokens['access'], $data['access']['ttl'] / 60)
             ->withCookie('refresh', $tokens['refresh'], $data['refresh']['ttl'] / 60);
     }

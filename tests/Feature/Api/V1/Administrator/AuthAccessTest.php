@@ -15,7 +15,7 @@ class AuthAccessTest extends ControllerActionTestCase
 
     public function getUnauthorizedRequests()
     {
-        return LoginRequests::getAllInvalid();
+        return LoginRequests::getInvalid();
     }
 
     public function testResponseOk()
