@@ -118,7 +118,7 @@ return [
             'time_to_live' => 60 * 60 * 2
         ],
         'refresh' => [
-            'time_to_live' => 60 * 60 * 24 * 30,
+            'time_to_live' => 60 * 60 * 24 * 7,
         ]
     ]
 ];
