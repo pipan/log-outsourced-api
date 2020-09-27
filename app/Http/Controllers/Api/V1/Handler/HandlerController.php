@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Handler;
 
 use App\Http\ResponseSchema\HandlerResponseSchemaAdapter;
 use App\Repository\Repository;

@@ -57,6 +57,6 @@ class ProjectIndexTest extends ControllerActionTestCase
         $response = $this->get('api/v1/projects');
 
         $response->assertStatus(401);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['message']);
     }
 }

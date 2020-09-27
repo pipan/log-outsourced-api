@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectViewTest extends ControllerActionTestCase
@@ -19,7 +20,7 @@ class ProjectViewTest extends ControllerActionTestCase
             ->getSimulation('getForProject')
             ->whenInputReturn([], [1]);
 
-        $response = $this->get('api/v1/projects/aabb');
+        $response = $this->get('api/v1/projects/aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -33,9 +34,17 @@ class ProjectViewTest extends ControllerActionTestCase
 
     public function testResponseNotFound()
     {
-        $response = $this->get('api/v1/projects/xxxx');
+        $response = $this->get('api/v1/projects/xxxx', AuthHeaders::authorize());
 
         $response->assertStatus(404);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->get('api/v1/projects/aabb');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

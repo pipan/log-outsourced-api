@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectCreateTest extends ControllerActionTestCase
@@ -15,7 +16,7 @@ class ProjectCreateTest extends ControllerActionTestCase
     {
         $response = $this->post('api/v1/projects', [
             'name' => 'test_project'
-        ]);
+        ], AuthHeaders::authorize());
 
         $inserted = $this->projectRepository->getMocker()
             ->getSimulation('insert')
@@ -33,11 +34,23 @@ class ProjectCreateTest extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->post('api/v1/projects', $requestData);
+        $response = $this->post(
+            'api/v1/projects',
+            $requestData,
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(422);
-        $response->assertJsonStructure([
-            'errors'
+        $response->assertJsonStructure(['errors']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->post('api/v1/projects', [
+            'name' => 'test_project'
         ]);
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

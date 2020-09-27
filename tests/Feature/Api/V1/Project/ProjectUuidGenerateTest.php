@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Project;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ProjectUuidGenerateTest extends ControllerActionTestCase
@@ -15,7 +16,11 @@ class ProjectUuidGenerateTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->put('api/v1/projects/aabb/generate');
+        $response = $this->put(
+            'api/v1/projects/aabb/generate',
+            [],
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(200);
 
@@ -29,9 +34,21 @@ class ProjectUuidGenerateTest extends ControllerActionTestCase
 
     public function testResponseNotFound()
     {
-        $response = $this->put('api/v1/projects/xxxx/generate');
+        $response = $this->put(
+            'api/v1/projects/xxxx/generate',
+            [],
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(404);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->put('api/v1/projects/aabb/generate');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

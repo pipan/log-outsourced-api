@@ -3,19 +3,32 @@
 namespace App\Domain\Project;
 
 use App\Domain\ExistsRule;
+use App\Domain\UuidValidator;
 use App\Validator\DynamicValidator;
 use App\Validator\EntityValidator;
 
 class ProjectValidator
 {
     public static function createAware(ProjectRepository $projectRepository, $rules): DynamicValidator
+    {        
+        return new EntityValidator($rules + [
+            'project_uuid' => self::getProjectUuidRule($projectRepository)
+        ]);
+    }
+
+    public static function getProjectUuidRule(ProjectRepository $projectRepository)
     {
         $projectExists = new ExistsRule(
             new UuidExistsValidator($projectRepository)
         );
-        
-        return new EntityValidator($rules + [
-            'project_uuid' => ['bail', 'required', $projectExists]
+        return ['bail', 'required', $projectExists];
+    }
+
+    public static function forSchema(): DynamicValidator
+    {
+        return new EntityValidator([
+            'uuid' => UuidValidator::getRules(),
+            'name' => ['bail', 'required', 'max:255']
         ]);
     }
 }

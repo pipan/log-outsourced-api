@@ -4,11 +4,13 @@ namespace App\Domain\Administrator;
 
 use App\Domain\ExistsRule;
 use App\Domain\MissingRule;
+use App\Domain\UuidValidator;
 use App\Validator\DynamicValidator;
 use App\Repository\Repository;
 use App\Validator\EntityValidator;
+use Illuminate\Validation\Rule;
 
-class AdministratorDynamicValidator
+class AdministratorValidator
 {
     public static function forInvitation(Repository $repository): DynamicValidator
     {
@@ -28,6 +30,14 @@ class AdministratorDynamicValidator
         return new EntityValidator([
             'password' => ['bail', 'required'],
             'invite_token' => ['bail', 'required', $existsRule]
+        ]);
+    }
+
+    public static function forSchema($entityId)
+    {
+        return new EntityValidator([
+            'uuid' => UuidValidator::getRules(),
+            'username' => ['bail', 'required', 'max:255', Rule::unique('administrators', 'username')->ignore($entityId, 'id')]
         ]);
     }
 }

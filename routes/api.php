@@ -4,39 +4,39 @@ use App\Http\Middleware\AuthRequired;
 use App\Http\Middleware\ProjectRequired;
 use Illuminate\Support\Facades\Route;
 
-Route::post('logs/{uuid}', 'Api\V1\LogController@single');
-Route::post('logs/{uuid}/batch', 'Api\V1\LogController@batch');
+Route::post('logs/{uuid}', 'Api\V1\Log\LogController@single');
+Route::post('logs/{uuid}/batch', 'Api\V1\Log\LogController@batch');
 
 Route::prefix('api/v1')
     ->middleware(AuthRequired::class)
     ->group(function () {
-        Route::get('projects', 'Api\V1\ProjectController@index')
+        Route::get('projects', 'Api\V1\Project\ProjectController@index')
             ->name('projects.index');
-        // Route::post('projects', 'Api\V1\ProjectController@create')
-        //     ->name('projects.create');
-        // Route::get('projects/{uuid}', 'Api\V1\ProjectController@view')
-        //     ->name('projects.view');
-        // Route::put('projects/{uuid}', 'Api\V1\ProjectController@update')
-        //     ->name('projects.update');
-        // Route::delete('projects/{uuid}', 'Api\V1\ProjectController@delete')
-        //     ->name('projects.delete');
+        Route::post('projects', 'Api\V1\Project\ProjectController@create')
+            ->name('projects.create');
+        Route::get('projects/{uuid}', 'Api\V1\Project\ProjectController@view')
+            ->name('projects.view');
+        Route::put('projects/{uuid}', 'Api\V1\Project\ProjectController@update')
+            ->name('projects.update');
+        Route::delete('projects/{uuid}', 'Api\V1\Project\ProjectController@delete')
+            ->name('projects.delete');
 
-        // Route::put('projects/{uuid}/generate', 'Api\V1\ProjectUuidController@generate')
-        //     ->name('projects.generate');
+        Route::put('projects/{uuid}/generate', 'Api\V1\Project\ProjectUuidController@generate')
+            ->name('projects.generate');
 
-        // Route::get('listeners', 'Api\V1\ListenerController@index')
+        // Route::get('listeners', 'Api\V1\Listener\ListenerController@index')
         //     ->middleware(ProjectRequired::class)
         //     ->name('listeners.index');
-        // Route::post('listeners', 'Api\V1\ListenerController@create')
+        // Route::post('listeners', 'Api\V1\Listener\ListenerController@create')
         //     ->name('listeners.create');
-        // Route::put('listeners/{uuid}', 'Api\V1\ListenerController@update')
+        // Route::put('listeners/{uuid}', 'Api\V1\Listener\ListenerController@update')
         //     ->name('listeners.update');
-        // Route::delete('listeners/{uuid}', 'Api\V1\ListenerController@delete')
+        // Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
         //     ->name('listeners.delete');
 
-        // Route::get('handlers', 'Api\V1\HandlerController@index')
+        // Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
         //     ->name('handlers.index');
-        // Route::get('handlers/{slug}', 'Api\V1\HandlerController@view')
+        // Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')
         //     ->name('handlers.view');
 
         Route::delete('administrators/{uuid}', 'Api\V1\Administrator\AdministratorController@delete')
@@ -72,31 +72,19 @@ Route::prefix('api/v1')
     });
 
 Route::prefix('api/v1')->group(function () {
-    Route::post('projects', 'Api\V1\ProjectController@create')
-        ->name('projects.create');
-    Route::get('projects/{uuid}', 'Api\V1\ProjectController@view')
-        ->name('projects.view');
-    Route::put('projects/{uuid}', 'Api\V1\ProjectController@update')
-        ->name('projects.update');
-    Route::delete('projects/{uuid}', 'Api\V1\ProjectController@delete')
-        ->name('projects.delete');
-
-    Route::put('projects/{uuid}/generate', 'Api\V1\ProjectUuidController@generate')
-        ->name('projects.generate');
-
-    Route::get('listeners', 'Api\V1\ListenerController@index')
+    Route::get('listeners', 'Api\V1\Listener\ListenerController@index')
         ->middleware(ProjectRequired::class)
         ->name('listeners.index');
-    Route::post('listeners', 'Api\V1\ListenerController@create')
+    Route::post('listeners', 'Api\V1\Listener\ListenerController@create')
         ->name('listeners.create');
-    Route::put('listeners/{uuid}', 'Api\V1\ListenerController@update')
+    Route::put('listeners/{uuid}', 'Api\V1\Listener\ListenerController@update')
         ->name('listeners.update');
-    Route::delete('listeners/{uuid}', 'Api\V1\ListenerController@delete')
+    Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
         ->name('listeners.delete');
 
-    Route::get('handlers', 'Api\V1\HandlerController@index')
+    Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
         ->name('handlers.index');
-    Route::get('handlers/{slug}', 'Api\V1\HandlerController@view')
+    Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')
         ->name('handlers.view');
 
     Route::post('access', 'Api\V1\Administrator\AuthController@access')
