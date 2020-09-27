@@ -16,7 +16,7 @@ class ReadAdapter extends NullAdapter
             $item->name,
             [],
             $item->handler_slug,
-            json_decode($item->handler_values, true)
+            json_decode(decrypt($item->handler_values, true))
         );
     }
 }

@@ -82,13 +82,8 @@ class ListenerEntity extends Entity
         return $this->with('handler_slug', $value);
     }
 
-    public function withHandlerValuesEncrypted($value)
-    {
-        return $this->with('handler_values', $value);
-    }
-
     public function withHandlerValues($value)
     {
-        return $this->withHandlerValuesEncrypted(encrypt($value));
+        return $this->with('handler_values', $value);
     }
 }

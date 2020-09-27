@@ -57,7 +57,7 @@ class ListenerController
             'name' => $request->input('name'),
             'rules' => $rules,
             'handler_slug' => $request->input('handler_slug'),
-            'handler_values' => encrypt($request->input('handler_values', []))
+            'handler_values' => $request->input('handler_values', [])
         ]);
 
         $this->repository->listener()->insert($handler);
