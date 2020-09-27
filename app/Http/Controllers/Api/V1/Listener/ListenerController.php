@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Listener;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerValidator;

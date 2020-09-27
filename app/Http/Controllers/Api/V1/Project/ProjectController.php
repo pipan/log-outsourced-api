@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Project;
 
 use App\Domain\Project\ProjectEntity;
+use App\Domain\Project\ProjectValidator;
+use App\Http\ResponseError;
 use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
 use App\Http\ResponseSchema\ProjectResponseSchemaAdapter;
-use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Lib\Adapter\AdapterHelper;
 use Lib\Generator\HexadecimalGenerator;
 
@@ -16,13 +16,11 @@ class ProjectController
 {
     private $projectSchema;
     private $listenerSchema;
-    private $errorSchema;
 
     public function __construct()
     {
         $this->projectSchema = new ProjectResponseSchemaAdapter();
         $this->listenerSchema = new ListenerResponseSchemaAdapter();
-        $this->errorSchema = new ValidationErrorResponseSchema();
     }
 
     public function index(Repository $repository)
@@ -34,18 +32,16 @@ class ProjectController
 
     public function create(Request $request, Repository $repository, HexadecimalGenerator $generator)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['bail', 'required', 'max:255']
-        ]);
-
-        if ($validator->fails()) {
-            return response($this->errorSchema->adapt($validator->errors()), 422);
-        }
-
         $project = new ProjectEntity([
             'uuid' => $generator->next(),
             'name' => $request->input('name')
         ]);
+
+        $validator = ProjectValidator::forSchema()->forEntity($project);
+        if ($validator->fails()) {
+            return ResponseError::invalidRequest($validator->errors());
+        }
+
         $repository->project()->insert($project);
         return response($this->projectSchema->adapt($project), 201);
     }
@@ -54,8 +50,8 @@ class ProjectController
     {
         $project = $repository->project()->getByUuid($uuid);
 
-        if ($project == null) {
-            return response([], 404);
+        if (!$project) {
+            return ResponseError::resourceNotFound();
         }
 
         $listeners = $repository->listener()->getForProject($project->getId());
@@ -71,8 +67,8 @@ class ProjectController
     {
         $project = $repository->project()->getByUuid($uuid);
 
-        if ($project == null) {
-            return response([], 404);
+        if (!$project) {
+            return ResponseError::resourceNotFound();
         }
 
         $repository->project()->delete($project);
@@ -82,21 +78,19 @@ class ProjectController
     public function update($uuid, Repository $repository, Request $request)
     {
         $project = $repository->project()->getByUuid($uuid);
-
-        if ($project == null) {
-            return response([], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => ['bail', 'nullable', 'filled', 'max:255']
-        ]);
-        if ($validator->fails()) {
-            return response($this->errorSchema->adapt($validator->errors()), 422);
+        if (!$project) {
+            return ResponseError::resourceNotFound();
         }
 
         $project = $project->withName(
             $request->input('name', $project->getName())
         );
+
+        $validator = ProjectValidator::forSchema()->forEntity($project);
+        if ($validator->fails()) {
+            return ResponseError::invalidRequest($validator->errors());
+        }
+
         $repository->project()->update($project->getId(), $project);
 
         return response()->json(

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Project;
 
+use App\Http\ResponseError;
 use App\Http\ResponseSchema\ProjectResponseSchemaAdapter;
 use App\Repository\Repository;
 use Lib\Generator\HexadecimalGenerator;
@@ -18,8 +19,8 @@ class ProjectUuidController
     public function generate($uuid, Repository $repository, HexadecimalGenerator $generator)
     {
         $project = $repository->project()->getByUuid($uuid);
-        if ($project == null) {
-            return response([], 404);
+        if (!$project) {
+            return ResponseError::resourceNotFound();
         }
 
         $project = $project->withUuid($generator->next());

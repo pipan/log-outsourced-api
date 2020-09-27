@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Administrator;
 
-use App\Domain\Administrator\AdministratorDynamicValidator;
+use App\Domain\Administrator\AdministratorValidator;
 use App\Http\ResponseError;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
@@ -11,7 +11,7 @@ class RegisterController
 {
     public function __invoke(Request $request, Repository $repository)
     {
-        $validator = AdministratorDynamicValidator::forRegistration($repository)
+        $validator = AdministratorValidator::forRegistration($repository)
             ->forAll($request->all());
         if ($validator->fails()) {
             return ResponseError::invalidRequest($validator->errors());

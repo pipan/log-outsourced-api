@@ -4,6 +4,7 @@ namespace App\Validator;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Lib\Entity\Entity;
 
 class EntityValidator implements DynamicValidator
 {
@@ -29,5 +30,10 @@ class EntityValidator implements DynamicValidator
             $subarray[$key] = $this->rules[$key];
         }
         return FacadesValidator::make($data, $subarray);
+    }
+
+    public function forEntity(Entity $entity): Validator
+    {
+        return $this->forAll($entity->toArray());
     }
 }

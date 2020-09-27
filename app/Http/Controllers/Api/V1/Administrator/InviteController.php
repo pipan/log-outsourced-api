@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Administrator;
 
-use App\Domain\Administrator\AdministratorDynamicValidator;
+use App\Domain\Administrator\AdministratorValidator;
 use App\Domain\Administrator\AdministratorEntity;
 use App\Domain\Administrator\AdministratorSchema;
 use App\Http\ResponseError;
@@ -34,7 +34,7 @@ class InviteController
 
     public function create(Request $request, HexadecimalGenerator $generator)
     {
-        $validator = AdministratorDynamicValidator::forInvitation($this->repository)
+        $validator = AdministratorValidator::forInvitation($this->repository)
             ->forAll($request->all());
         if ($validator->fails()) {
             return ResponseError::invalidRequest($validator->errors());
