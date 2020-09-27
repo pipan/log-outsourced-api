@@ -28,9 +28,14 @@ class AdministratorFileRepository implements AdministratorRepository
         $this->usernameIndex = new IndexFile('administrators_username_index');
     }
 
-    public function exists($value)
+    public function getAll($config = [])
     {
-        return $this->getByUsername($value) !== null;
+        return [];
+    }
+
+    public function getByUuid($uuid): ?AdministratorEntity
+    {
+        return null;
     }
 
     public function get($id): ?AdministratorEntity

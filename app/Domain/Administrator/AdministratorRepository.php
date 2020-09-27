@@ -2,10 +2,11 @@
 
 namespace App\Domain\Administrator;
 
-use App\Domain\ExistsValidable;
-
 interface AdministratorRepository
 {
+    public function getAll($config = []);
+
+    public function getByUuid($uuid): ?AdministratorEntity;
     public function getByUsername($username): ?AdministratorEntity;
     public function getByInviteToken($token): ?AdministratorEntity;
     public function get($id): ?AdministratorEntity;

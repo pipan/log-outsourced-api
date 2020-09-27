@@ -15,6 +15,7 @@ class CreateAdministratorsTable extends Migration
     {
         Schema::create('administrators', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->uuid('uuid')->unique();
             $table->string('username', 255)->unique();
             $table->text('password_hash');
             $table->string('invite_token', 255);

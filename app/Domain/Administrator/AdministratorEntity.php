@@ -16,6 +16,7 @@ class AdministratorEntity extends Entity
 
         parent::__construct([
             'id' => $data['id'] ?? 0,
+            'uuid' => $data['uuid'] ?? '',
             'username' => $data['username'] ?? '',
             'password_hash' => $passwordHash,
             'invite_token' => $data['invite_token'] ?? ''
@@ -32,6 +33,11 @@ class AdministratorEntity extends Entity
     public function getId()
     {
         return $this->data['id'];
+    }
+
+    public function getUuid()
+    {
+        return $this->data['uuid'];
     }
 
     public function getUsername()

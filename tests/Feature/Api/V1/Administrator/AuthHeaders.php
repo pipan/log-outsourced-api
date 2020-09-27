@@ -9,7 +9,7 @@ class AuthHeaders
     public static function authorize()
     {
         $payload = [
-            'sub' => 1,
+            'sub' => 'root',
             'exp' => time() + 3600
         ];
         $token = JWT::encode($payload, config('app.key'));
