@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\V1\Administrator;
 
-use App\Domain\Administrator\AdministratorEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class RegisterTest extends ControllerActionTestCase
