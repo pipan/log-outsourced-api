@@ -26,7 +26,7 @@ class AuthAccessTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertCookieNotExpired('access');
+        $response->assertJsonStructure(['access', 'refresh']);
         $response->assertCookieNotExpired('refresh');
     }
 
@@ -38,7 +38,7 @@ class AuthAccessTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertCookieNotExpired('access');
+        $response->assertJsonStructure(['access', 'refresh']);
         $response->assertCookieNotExpired('refresh');
     }
 
