@@ -2,14 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Domain\Administrator\AdministratorEntity;
+use App\Http\ResponseError;
 use App\Repository\Repository;
 use Closure;
 use Exception;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class AuthRequired
 {
@@ -23,17 +22,16 @@ class AuthRequired
     public function handle(Request $request, Closure $next)
     {
         if (!$request->hasHeader('Authorization')) {
-            Log::info("no header");
-            return response([], 401);
+            return ResponseError::unauthorized();
         }
 
         try {
             $token = substr($request->header('Authorization', 'Bearer '), 7);
             $tokenData = JWT::decode($token, config('app.key'), ['HS256']);
         } catch (ExpiredException $ex) {
-            return response([], 401);
+            return ResponseError::unauthorized();
         } catch (Exception $ex) {
-            return response($ex->getMessage(), 500);
+            return ResponseError::error($ex);
         }
 
         if ($tokenData->sub === 'root') {
@@ -44,7 +42,7 @@ class AuthRequired
             ->get($tokenData->sub);
         
         if (!$administrator) {
-            return response([], 401);
+            return ResponseError::unauthorized();
         }
 
         return $next($request);

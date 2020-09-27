@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorDynamicValidator;
 use App\Domain\Administrator\AdministratorEntity;
+use App\Domain\Administrator\AdministratorSchema;
 use App\Http\ResponseError;
-use App\Http\ResponseSchema\AdministratorSchema;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Lib\Generator\HexadecimalGenerator;
@@ -18,7 +18,7 @@ class InviteController
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;
-        $this->administratorSchema = new AdministratorSchema();
+        $this->administratorSchema = AdministratorSchema::forPublic();
     }
 
     public function view($token)
@@ -41,8 +41,9 @@ class InviteController
         }
 
         $inviteAdministrator = new AdministratorEntity([
+            'uuid' => $generator->next(),
             'username' => $request->input('username'),
-            'invote_token' => $generator->next()
+            'invite_token' => $generator->next()
         ]);
         $inviteAdministrator = $this->repository->administrator()
             ->insert($inviteAdministrator);

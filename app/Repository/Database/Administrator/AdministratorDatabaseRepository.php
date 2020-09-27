@@ -4,11 +4,11 @@ namespace App\Repository\Database\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
 use App\Domain\Administrator\AdministratorRepository;
+use App\Domain\Administrator\AdministratorSchema;
 use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
-use Lib\Entity\EntityBlacklistAdapter;
 
 class AdministratorDatabaseRepository implements AdministratorRepository
 {
@@ -22,9 +22,29 @@ class AdministratorDatabaseRepository implements AdministratorRepository
             new AdapterDatabaseIo(
                 new SimpleDatabaseIo(self::TABLE),
                 new ReadAdapter(),
-                new EntityBlacklistAdapter(['id'])
+                AdministratorSchema::forWriting()
             )
         );
+    }
+
+    public function getAll($config = [])
+    {
+        $results = DB::table(self::TABLE)
+            ->get();
+
+        return $this->io->selectList($results);
+    }
+
+    public function getByUuid($uuid): ?AdministratorEntity
+    {
+        $result = DB::table(self::TABLE)
+            ->where('uuid', '=', $uuid)
+            ->first();
+        if ($result === null) {
+            return null;
+        }
+
+        return $this->io->select($result);
     }
 
     public function getByUsername($username): ?AdministratorEntity

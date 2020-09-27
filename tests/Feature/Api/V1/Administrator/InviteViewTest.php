@@ -15,7 +15,7 @@ class InviteViewTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->get('api/v1/invite/01234');
+        $response = $this->get('api/v1/administrators/invite/01234');
 
         $response->assertStatus(200);
         $response->assertJsonFragment([
@@ -29,14 +29,14 @@ class InviteViewTest extends ControllerActionTestCase
 
     public function testResponseNotFound()
     {
-        $response = $this->get('api/v1/invite/xxxx');
+        $response = $this->get('api/v1/administrators/invite/xxxx');
 
         $response->assertStatus(404);
     }
 
     public function testResponseMethodNotAllowdIfEmptyToken()
     {
-        $response = $this->get('api/v1/invite/');
+        $response = $this->get('api/v1/administrators/invite');
 
         $response->assertStatus(405);
     }
