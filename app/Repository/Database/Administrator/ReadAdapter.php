@@ -9,11 +9,6 @@ class ReadAdapter extends NullAdapter
 {
     protected function adaptNotNull($item)
     {
-        return new AdministratorEntity(
-            $item->id,
-            $item->username,
-            $item->password_hash,
-            $item->invite_token
-        );
+        return new AdministratorEntity((array) $item);
     }
 }

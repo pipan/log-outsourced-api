@@ -15,10 +15,22 @@ class AuthAccessTest extends ControllerActionTestCase
 
     public function getUnauthorizedRequests()
     {
-        return LoginRequests::getAllInvalid();
+        return LoginRequests::getInvalid();
     }
 
     public function testResponseOk()
+    {
+        $response = $this->post('api/v1/access', [
+            'username' => 'admin',
+            'password' => 'admin'
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['access', 'refresh']);
+        $response->assertCookieNotExpired('refresh');
+    }
+
+    public function testResponseOkUseRootUser()
     {
         $response = $this->post('api/v1/access', [
             'username' => 'root',
@@ -26,7 +38,7 @@ class AuthAccessTest extends ControllerActionTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertCookieNotExpired('access');
+        $response->assertJsonStructure(['access', 'refresh']);
         $response->assertCookieNotExpired('refresh');
     }
 

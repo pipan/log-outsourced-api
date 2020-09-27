@@ -27,7 +27,7 @@ class InviteRequests
             ],
             'username exists' => [
                 [
-                    'username' => 'root'
+                    'username' => 'admin'
                 ]
             ]
         ];

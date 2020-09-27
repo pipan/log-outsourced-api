@@ -10,9 +10,22 @@ class AdministratorTestSeeder
     public static function seed(AdministratorMockRepository $repository)
     {
         $admins = [
-            AdministratorEntity::createWithPassword(1, 'root', 'root'),
-            AdministratorEntity::createInvite(2, 'user', '01234'),
-            new AdministratorEntity(3, 'broken', 'pass', 'abcd')
+            new AdministratorEntity([
+                'id' => 1,
+                'username' => 'admin',
+                'password' => 'admin',
+            ]),
+            new AdministratorEntity([
+                'id' => 2,
+                'username' => 'user',
+                'invite_token' => '01234'
+            ]),
+            new AdministratorEntity([
+                'id' => 3,
+                'username' => 'broken',
+                'password' => 'pass',
+                'invite_token' => 'abcd'
+            ])
         ];
 
         foreach ($admins as $admin) {

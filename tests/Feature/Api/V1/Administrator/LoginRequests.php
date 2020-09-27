@@ -4,7 +4,7 @@ namespace Tests\Feature\Api\V1\Administrator;
 
 class LoginRequests
 {
-    public static function getAllInvalid()
+    public static function getInvalid()
     {
         return [
             'username does not exists' => [
@@ -13,9 +13,15 @@ class LoginRequests
                     'password' => 'pass'
                 ]
             ],
-            'password is incorrect' => [
+            'password is incorrect for root' => [
                 [
                     'username' => 'root',
+                    'password' => 'wrong-pass'
+                ]
+            ],
+            'password is incorrect for administrator' => [
+                [
+                    'username' => 'admin',
                     'password' => 'wrong-pass'
                 ]
             ]

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Domain\Administrator\AdministratorEntity;
 use App\Repository\Repository;
 use Closure;
 use Exception;
@@ -30,17 +31,19 @@ class AuthRequired
             $token = substr($request->header('Authorization', 'Bearer '), 7);
             $tokenData = JWT::decode($token, config('app.key'), ['HS256']);
         } catch (ExpiredException $ex) {
-            Log::info("expired");
             return response([], 401);
         } catch (Exception $ex) {
-            Log::info("exception: " . $ex->getMessage());
             return response($ex->getMessage(), 500);
+        }
+
+        if ($tokenData->sub === 'root') {
+            return $next($request);
         }
 
         $administrator = $this->repository->administrator()
             ->get($tokenData->sub);
+        
         if (!$administrator) {
-            Log::info("admin does not exists");
             return response([], 401);
         }
 

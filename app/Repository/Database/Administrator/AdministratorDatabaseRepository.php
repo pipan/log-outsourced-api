@@ -5,10 +5,10 @@ namespace App\Repository\Database\Administrator;
 use App\Domain\Administrator\AdministratorEntity;
 use App\Domain\Administrator\AdministratorRepository;
 use App\Repository\Database\AdapterDatabaseIo;
-use App\Repository\Database\AdapterDatabaseRepository;
 use App\Repository\Database\HookDatabaseIo;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
+use Lib\Entity\EntityBlacklistAdapter;
 
 class AdministratorDatabaseRepository implements AdministratorRepository
 {
@@ -22,7 +22,7 @@ class AdministratorDatabaseRepository implements AdministratorRepository
             new AdapterDatabaseIo(
                 new SimpleDatabaseIo(self::TABLE),
                 new ReadAdapter(),
-                new WriteAdapter()
+                new EntityBlacklistAdapter(['id'])
             )
         );
     }

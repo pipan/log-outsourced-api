@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Administrator;
 
+use App\Domain\Administrator\AdministratorEntity;
 use App\Http\ResponseSchema\AuthSchema;
 use App\Repository\Repository;
 use Firebase\JWT\ExpiredException;
@@ -9,6 +10,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController
 {
@@ -32,14 +34,22 @@ class AuthController
         ];
         $tokens = $this->authSchema->adapt($data);
 
-        return response([], 200)
-            ->withCookie('access', $tokens['access'], $data['access']['ttl'] / 60)
+        return response($tokens, 200)
             ->withCookie('refresh', $tokens['refresh'], $data['refresh']['ttl'] / 60);
     }
 
     public function access(Request $request, Repository $repository)
     {
-        $administrator = $repository->administrator()->getByUsername($request->input('username'));
+        if ($request->input('username') == env('ROOT_USERNAME', '')) {
+            $administrator = new AdministratorEntity([
+                'id' => 'root',
+                'username' => env('ROOT_USERNAME', ''),
+                'password_hash' => base64_decode(env('ROOT_PASSWORD', ''))
+            ]);
+        } else {
+            $administrator = $repository->administrator()->getByUsername($request->input('username'));
+        }
+        
         if (!$administrator) {
             return response([], 401);
         }
