@@ -22,28 +22,11 @@ class AdministratorEntity extends Entity
         ]);
     }
 
-    /**
-     * @deprecated
-     */
-    public static function createInvite($id, $username, $invoteToken)
+    private function with($key, $value)
     {
-        return new AdministratorEntity([
-            'id' => $id,
-            'username' => $username,
-            'invite_token' => $invoteToken
-        ]);
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function createWithPassword($id, $username, $password)
-    {
-        return new AdministratorEntity([
-            'id' => $id,
-            'username' => $username,
-            'password' => $password
-        ]);
+        $data = $this->toArray();
+        $data[$key] = $value;
+        return new AdministratorEntity($data);
     }
 
     public function getId()
@@ -64,5 +47,16 @@ class AdministratorEntity extends Entity
     public function getInviteToken()
     {
         return $this->data['invite_token'];
+    }
+
+    public function withPassword($value)
+    {
+        return $this->withPasswordHash(Hash::make($value));
+    }
+
+    public function withPasswordHash($value)
+    {
+        return $this->with('password_hash', $value)
+            ->with('invite_token', '');
     }
 }

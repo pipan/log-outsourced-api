@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorEntity;
+use App\Http\ResponseError;
 use App\Http\ResponseSchema\AuthSchema;
 use App\Repository\Repository;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
-use Firebase\JWT\SignatureInvalidException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class AuthController
 {
@@ -51,11 +50,11 @@ class AuthController
         }
         
         if (!$administrator) {
-            return response([], 401);
+            return ResponseError::unauthorized();
         }
 
         if (!Hash::check($request->input('password'), $administrator->getPasswordHash())) {
-            return response([], 401);
+            return ResponseError::unauthorized();
         }
         
         return $this->getResponse(
@@ -68,9 +67,7 @@ class AuthController
         try {
             $refreshToken = JWT::decode($request->input('refresh_token'), config('app.key'), ['HS256']);
         } catch (ExpiredException $ex) {
-            return response([], 401);
-        } catch (SignatureInvalidException $ex) {
-            return response([], 500);
+            return ResponseError::unauthorized();
         }
 
         return $this->getResponse(
