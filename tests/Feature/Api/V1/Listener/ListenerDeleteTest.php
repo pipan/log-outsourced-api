@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Listener;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class ListenerDeleteTest extends ControllerActionTestCase
@@ -15,7 +16,11 @@ class ListenerDeleteTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->delete('api/v1/listeners/aabb');
+        $response = $this->delete(
+            'api/v1/listeners/aabb',
+            [],
+            AuthHeaders::authorize()
+        );
 
         $deleted = $this->listenerRepository->getMocker()
             ->getSimulation('delete')
@@ -26,11 +31,23 @@ class ListenerDeleteTest extends ControllerActionTestCase
         $this->assertCount(1, $deleted);
     }
 
-    public function testHandlerNotFound()
+    public function testResponseNotFound()
     {
-        $response = $this->delete('api/v1/listeners/0011');
+        $response = $this->delete(
+            'api/v1/listeners/0011',
+            [],
+            AuthHeaders::authorize()
+        );
 
         $response->assertStatus(404);
-        $response->assertJson([]);
+        $response->assertJsonStructure(['message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->delete('api/v1/listeners/aabb');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

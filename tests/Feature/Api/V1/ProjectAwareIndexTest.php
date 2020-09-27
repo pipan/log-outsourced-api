@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
@@ -28,7 +29,7 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
      */
     public function testResponseNotFoundIfProjectNotExists($url)
     {
-        $response = $this->get($url . '?project_uuid=xxxx');
+        $response = $this->get($url . '?project_uuid=xxxx', AuthHeaders::authorize());
         $response->assertStatus(404);
     }
 
@@ -37,7 +38,7 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
      */
     public function testResponseNotFoundIfMissingProjectUuid($url)
     {
-        $response = $this->get($url);
+        $response = $this->get($url, AuthHeaders::authorize());
         $response->assertStatus(404);
     }
 
@@ -46,7 +47,7 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
      */
     public function testResponseNotFoundIfEmptyProjectUuid($url)
     {
-        $response = $this->get($url . '?project_uuid');
+        $response = $this->get($url . '?project_uuid', AuthHeaders::authorize());
         $response->assertStatus(404);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Validator;
 
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Lib\Entity\Entity;
 
@@ -35,5 +36,10 @@ class EntityValidator implements DynamicValidator
     public function forEntity(Entity $entity): Validator
     {
         return $this->forAll($entity->toArray());
+    }
+
+    public function forRequest(Request $request): Validator
+    {
+        return $this->forAll($request->all());
     }
 }

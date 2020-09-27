@@ -2,6 +2,7 @@
 
 namespace App\Domain\Project;
 
+use Exception;
 use Lib\Entity\Entity;
 
 class ProjectEntity extends Entity
@@ -13,6 +14,11 @@ class ProjectEntity extends Entity
             'uuid' => $data['uuid'] ??'',
             'name' => $data['name'] ?? ''
         ]);
+
+        $validator = ProjectValidator::forSchema()->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception('Project entity is incorrect: ' . ($this->getUuid()));
+        }
     }
 
     public function getId()

@@ -5,6 +5,7 @@ namespace App\Domain\Listener;
 use App\Domain\ExistsRule;
 use App\Domain\Handler\SlugExistsValidation;
 use App\Domain\Project\ProjectValidator;
+use App\Domain\UuidValidator;
 use App\Validator\DynamicValidator;
 use App\Repository\Repository;
 use App\Validator\EntityValidator;
@@ -32,6 +33,16 @@ class ListenerValidator
             'name' => ['bail', 'required', 'max:255'],
             'rules' => ['array'],
             'handler_slug' => ['required', $handlerExists]
+        ]);
+    }
+
+    public static function forSchema(): DynamicValidator
+    {
+        return new EntityValidator([
+            'uuid' => UuidValidator::getRules(),
+            'project_id' => ProjectValidator::getProjectIdRule(),
+            'name' => ['bail', 'required', 'max:255'],
+            'rules' => ['array']
         ]);
     }
 }

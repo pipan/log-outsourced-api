@@ -24,15 +24,15 @@ Route::prefix('api/v1')
         Route::put('projects/{uuid}/generate', 'Api\V1\Project\ProjectUuidController@generate')
             ->name('projects.generate');
 
-        // Route::get('listeners', 'Api\V1\Listener\ListenerController@index')
-        //     ->middleware(ProjectRequired::class)
-        //     ->name('listeners.index');
-        // Route::post('listeners', 'Api\V1\Listener\ListenerController@create')
-        //     ->name('listeners.create');
-        // Route::put('listeners/{uuid}', 'Api\V1\Listener\ListenerController@update')
-        //     ->name('listeners.update');
-        // Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
-        //     ->name('listeners.delete');
+        Route::get('listeners', 'Api\V1\Listener\ListenerController@index')
+            ->middleware(ProjectRequired::class)
+            ->name('listeners.index');
+        Route::post('listeners', 'Api\V1\Listener\ListenerController@create')
+            ->name('listeners.create');
+        Route::put('listeners/{uuid}', 'Api\V1\Listener\ListenerController@update')
+            ->name('listeners.update');
+        Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
+            ->name('listeners.delete');
 
         // Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
         //     ->name('handlers.index');
@@ -72,16 +72,6 @@ Route::prefix('api/v1')
     });
 
 Route::prefix('api/v1')->group(function () {
-    Route::get('listeners', 'Api\V1\Listener\ListenerController@index')
-        ->middleware(ProjectRequired::class)
-        ->name('listeners.index');
-    Route::post('listeners', 'Api\V1\Listener\ListenerController@create')
-        ->name('listeners.create');
-    Route::put('listeners/{uuid}', 'Api\V1\Listener\ListenerController@update')
-        ->name('listeners.update');
-    Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
-        ->name('listeners.delete');
-
     Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
         ->name('handlers.index');
     Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')

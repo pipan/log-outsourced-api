@@ -30,12 +30,18 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponseOkMissingContext()
     {
+        $listener = new ListenerEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'poject_id' => 1,
+            'name' => 'error mock',
+            'rules' => ['error'],
+            'handler_slug' => 'mock',
+            'handler_values' => []
+        ]);
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
-            ->whenInputReturn(
-                [new ListenerEntity(1, 'aabb', 1, 'error_mock', ['error'], 'mock', [])],
-                [1, []]
-            );
+            ->whenInputReturn([$listener], [1, []]);
 
         $response = $this->post('/logs/aabb/batch', [
             [
@@ -55,12 +61,18 @@ class LogBatchTest extends ControllerActionTestCase
 
     public function testResponseOkWithContext()
     {
+        $listener = new ListenerEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'poject_id' => 1,
+            'name' => 'error mock',
+            'rules' => ['error'],
+            'handler_slug' => 'mock',
+            'handler_values' => []
+        ]);
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
-            ->whenInputReturn(
-                [new ListenerEntity(1, 'aabb', 1, 'error_mock', ['error'], 'mock', [])],
-                [1, []]
-            );
+            ->whenInputReturn([$listener], [1, []]);
 
         $response = $this->post('/logs/aabb/batch', [
             [

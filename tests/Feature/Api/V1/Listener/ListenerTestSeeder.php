@@ -9,11 +9,17 @@ class ListenerTestSeeder
 {
     public static function seed(ListenerMockRepository $repository)
     {
+        $listener = new ListenerEntity([
+            'id' => 1,
+            'uuid' => 'aabb',
+            'project_id' => 1,
+            'name' => 'name',
+            'rules' => [],
+            'handler_slug' => 'slug',
+            'handler_values' => []
+        ]);
         $repository->getMocker()
             ->getSimulation('getByUuid')
-            ->whenInputReturn(
-                new ListenerEntity(1, 'aabb', 1, 'name', [], 'slug', encrypt([])),
-                ['aabb']
-            );
+            ->whenInputReturn($listener, ['aabb']);
     }
 }

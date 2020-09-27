@@ -32,15 +32,15 @@ class ProjectController
 
     public function create(Request $request, Repository $repository, HexadecimalGenerator $generator)
     {
+        $validator = ProjectValidator::forInsert()->forRequest($request);
+        if ($validator->fails()) {
+            return ResponseError::invalidRequest($validator->errors());
+        }
+
         $project = new ProjectEntity([
             'uuid' => $generator->next(),
             'name' => $request->input('name')
         ]);
-
-        $validator = ProjectValidator::forSchema()->forEntity($project);
-        if ($validator->fails()) {
-            return ResponseError::invalidRequest($validator->errors());
-        }
 
         $repository->project()->insert($project);
         return response($this->projectSchema->adapt($project), 201);
@@ -82,14 +82,14 @@ class ProjectController
             return ResponseError::resourceNotFound();
         }
 
-        $project = $project->withName(
-            $request->input('name', $project->getName())
-        );
-
-        $validator = ProjectValidator::forSchema()->forEntity($project);
+        $validator = ProjectValidator::forUpdate()->forRequest($request);
         if ($validator->fails()) {
             return ResponseError::invalidRequest($validator->errors());
         }
+
+        $project = $project->withName(
+            $request->input('name', $project->getName())
+        );
 
         $repository->project()->update($project->getId(), $project);
 
