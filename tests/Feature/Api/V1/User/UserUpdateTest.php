@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\User;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
 class UserUpdateController extends ControllerActionTestCase
@@ -21,14 +22,14 @@ class UserUpdateController extends ControllerActionTestCase
     public function testResponseOk()
     {
         $response = $this->put('/api/v1/users/aabb', [
-            'roles' => [1]
-        ]);
+            'roles' => ['user']
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['uuid', 'username', 'roles']);
         $response->assertJsonFragment([
             'username' => 'test@example.com',
-            'roles' => [1]
+            'roles' => ['user']
         ]);
     }
 
@@ -36,9 +37,10 @@ class UserUpdateController extends ControllerActionTestCase
     {
         $response = $this->put('/api/v1/users/0123', [
             'roles' => [1]
-        ]);
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(404);
+        $response->assertJsonStructure(['message']);
     }
 
     /**
@@ -46,9 +48,19 @@ class UserUpdateController extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->put('/api/v1/users/aabb', $requestData);
+        $response = $this->put('/api/v1/users/aabb', $requestData, AuthHeaders::authorize());
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertJsonStructure(['errors', 'message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->put('api/v1/users/aabb', [
+            'roles' => ['user']
+        ]);
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

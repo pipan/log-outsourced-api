@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\User;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
@@ -25,7 +26,7 @@ class UserCreateController extends ControllerActionTestCase
         $response = $this->post('/api/v1/users', [
             'project_uuid' => 'aabb',
             'username' => 'valid@example.com'
-        ]);
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(201);
         $response->assertJsonStructure(['uuid', 'username', 'roles']);
@@ -40,14 +41,14 @@ class UserCreateController extends ControllerActionTestCase
         $response = $this->post('/api/v1/users', [
             'project_uuid' => 'aabb',
             'username' => 'valid@example.com',
-            'roles' => [1]
-        ]);
+            'roles' => ['user']
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(201);
         $response->assertJsonStructure(['uuid', 'username', 'roles']);
         $response->assertJsonFragment([
             'username' => 'valid@example.com',
-            'roles' => [1]
+            'roles' => ['user']
         ]);
     }
 
@@ -56,9 +57,21 @@ class UserCreateController extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->post('/api/v1/users', $requestData);
+        $response = $this->post('/api/v1/users', $requestData, AuthHeaders::authorize());
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertJsonStructure(['errors', 'message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->post('api/v1/users?users', [
+            'project_uuid' => 'aabb',
+            'username' => 'valid@example.com',
+            'roles' => ['user']
+        ]);
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }
