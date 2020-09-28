@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Handler;
 
+use App\Http\ResponseError;
 use App\Http\ResponseSchema\HandlerResponseSchemaAdapter;
 use App\Repository\Repository;
 use Lib\Adapter\AdapterHelper;
@@ -31,7 +32,7 @@ class HandlerController
         $entity = $repository->handler()->getBySlug($slug);
 
         if ($entity == null) {
-            return response()->json(null, 404);
+            return ResponseError::resourceNotFound();
         }
 
         return response()->json(

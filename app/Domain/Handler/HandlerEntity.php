@@ -2,32 +2,31 @@
 
 namespace App\Domain\Handler;
 
-class HandlerEntity
-{
-    protected $id;
-    protected $slug;
-    protected $name;
-    protected $meta;
+use Lib\Entity\Entity;
 
-    public function __construct($slug, $name, $meta)
+class HandlerEntity extends Entity
+{
+    public function __construct($data)
     {
-        $this->slug = $slug;
-        $this->name = $name;
-        $this->meta = $meta;
+        parent::__construct([
+            'slug' => $data['slug'] ?? '',
+            'name' => $data['name'] ?? '',
+            'meta' => $data['meta'] ?? []
+        ]);
     }
 
     public function getSlug()
     {
-        return $this->slug;
+        return $this->data['slug'];
     }
 
     public function getName()
     {
-        return $this->name;
+        return $this->data['name'];
     }
 
     public function getMeta()
     {
-        return $this->meta;
+        return $this->data['meta'];
     }
 }

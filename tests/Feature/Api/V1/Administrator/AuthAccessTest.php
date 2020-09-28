@@ -20,7 +20,7 @@ class AuthAccessTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->post('api/v1/access', [
+        $response = $this->post('api/v1/auth/access', [
             'username' => 'admin',
             'password' => 'admin'
         ]);
@@ -32,7 +32,7 @@ class AuthAccessTest extends ControllerActionTestCase
 
     public function testResponseOkUseRootUser()
     {
-        $response = $this->post('api/v1/access', [
+        $response = $this->post('api/v1/auth/access', [
             'username' => 'root',
             'password' => 'root'
         ]);
@@ -47,7 +47,7 @@ class AuthAccessTest extends ControllerActionTestCase
      */
     public function testResponseUnauthorized($requestData)
     {
-        $response = $this->post('api/v1/access', $requestData);
+        $response = $this->post('api/v1/auth/access', $requestData);
 
         $response->assertStatus(401);
     }

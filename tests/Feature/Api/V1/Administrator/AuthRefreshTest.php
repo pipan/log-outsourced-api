@@ -21,7 +21,7 @@ class AuthRefreshTest extends ControllerActionTestCase
             'exp' => time() + 3600
         ], config('app.key'));
 
-        $response = $this->post('api/v1/refresh', [
+        $response = $this->post('api/v1/auth/refresh', [
             'refresh_token' => $refresh
         ]);
 
@@ -37,7 +37,7 @@ class AuthRefreshTest extends ControllerActionTestCase
             'exp' => time() - 3600
         ], config('app.key'));
 
-        $response = $this->post('api/v1/refresh', [
+        $response = $this->post('api/v1/auth/refresh', [
             'refresh_token' => $refresh
         ]);
 
@@ -51,7 +51,7 @@ class AuthRefreshTest extends ControllerActionTestCase
             'exp' => time() + 3600
         ], config('app.key'));
 
-        $response = $this->post('api/v1/refresh', [
+        $response = $this->post('api/v1/auth/refresh', [
             'refresh_token' => $refresh . 'a'
         ]);
 

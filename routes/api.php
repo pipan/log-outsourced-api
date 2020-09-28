@@ -34,10 +34,10 @@ Route::prefix('api/v1')
         Route::delete('listeners/{uuid}', 'Api\V1\Listener\ListenerController@delete')
             ->name('listeners.delete');
 
-        // Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
-        //     ->name('handlers.index');
-        // Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')
-        //     ->name('handlers.view');
+        Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
+            ->name('handlers.index');
+        Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')
+            ->name('handlers.view');
 
         Route::delete('administrators/{uuid}', 'Api\V1\Administrator\AdministratorController@delete')
             ->name('administrators.delete');
@@ -72,14 +72,9 @@ Route::prefix('api/v1')
     });
 
 Route::prefix('api/v1')->group(function () {
-    Route::get('handlers', 'Api\V1\Handler\HandlerController@index')
-        ->name('handlers.index');
-    Route::get('handlers/{slug}', 'Api\V1\Handler\HandlerController@view')
-        ->name('handlers.view');
-
-    Route::post('access', 'Api\V1\Administrator\AuthController@access')
+    Route::post('auth/access', 'Api\V1\Administrator\AuthController@access')
         ->name('auth.access');
-    Route::post('refresh', 'Api\V1\Administrator\AuthController@refresh')
+    Route::post('auth/refresh', 'Api\V1\Administrator\AuthController@refresh')
         ->name('auth.refresh');
     Route::get('administrators/invite/{token}', 'Api\V1\Administrator\InviteController@view')
         ->name('administrators.invite.view');

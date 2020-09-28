@@ -10,10 +10,10 @@ class FileHandlerPlugin implements HandlerPlugin
 {
     public function getDefinition(): HandlerEntity
     {
-        return new HandlerEntity(
-            'file',
-            'File',
-            [
+        return new HandlerEntity([
+            'slug' => 'file',
+            'name' => 'File',
+            'meta' => [
                 'schema' => [
                     'file_daily' => [
                         'type' => 'checkbox',
@@ -24,7 +24,7 @@ class FileHandlerPlugin implements HandlerPlugin
                     'icon' => 'insert_drive_file'
                 ]
             ]
-        );
+        ]);
     }
 
     public function getLogHandler(): LogHandler

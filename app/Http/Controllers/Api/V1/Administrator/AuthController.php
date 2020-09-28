@@ -9,6 +9,7 @@ use App\Repository\Repository;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController
@@ -34,7 +35,7 @@ class AuthController
         $tokens = $this->authSchema->adapt($data);
 
         return response($tokens, 200)
-            ->withCookie('refresh', $tokens['refresh'], $data['refresh']['ttl'] / 60);
+            ->withCookie('refresh', $tokens['refresh'], $data['refresh']['ttl'] / 60, route('auth.refresh'));
     }
 
     public function access(Request $request, Repository $repository)
