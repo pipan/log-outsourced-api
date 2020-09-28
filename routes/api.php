@@ -58,17 +58,17 @@ Route::prefix('api/v1')
         Route::put('roles/{uuid}', 'Api\V1\Role\RoleController@update')
             ->name('roles.update');
 
-        // Route::get('users', 'Api\V1\User\UserController@index')
-        //     ->name('users.index')
-        //     ->middleware(ProjectRequired::class);
-        // Route::post('users', 'Api\V1\User\UserController@create')
-        //     ->name('users.create');
-        // Route::get('users/{uuid}', 'Api\V1\User\UserController@view')
-        //     ->name('users.view');
-        // Route::delete('users/{uuid}', 'Api\V1\User\UserController@delete')
-        //     ->name('users.delete');
-        // Route::put('users/{uuid}', 'Api\V1\User\UserController@update')
-        //     ->name('users.update');
+        Route::get('users', 'Api\V1\User\UserController@index')
+            ->name('users.index')
+            ->middleware(ProjectRequired::class);
+        Route::post('users', 'Api\V1\User\UserController@create')
+            ->name('users.create');
+        Route::get('users/{uuid}', 'Api\V1\User\UserController@view')
+            ->name('users.view');
+        Route::delete('users/{uuid}', 'Api\V1\User\UserController@delete')
+            ->name('users.delete');
+        Route::put('users/{uuid}', 'Api\V1\User\UserController@update')
+            ->name('users.update');
     });
 
 Route::prefix('api/v1')->group(function () {
@@ -79,16 +79,4 @@ Route::prefix('api/v1')->group(function () {
     Route::get('administrators/invite/{token}', 'Api\V1\Administrator\InviteController@view')
         ->name('administrators.invite.view');
     Route::post('register', 'Api\V1\Administrator\RegisterController');
-
-    Route::get('users', 'Api\V1\User\UserController@index')
-        ->name('users.index')
-        ->middleware(ProjectRequired::class);
-    Route::post('users', 'Api\V1\User\UserController@create')
-        ->name('users.create');
-    Route::get('users/{uuid}', 'Api\V1\User\UserController@view')
-        ->name('users.view');
-    Route::delete('users/{uuid}', 'Api\V1\User\UserController@delete')
-        ->name('users.delete');
-    Route::put('users/{uuid}', 'Api\V1\User\UserController@update')
-        ->name('users.update');
 });

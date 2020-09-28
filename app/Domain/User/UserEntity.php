@@ -2,41 +2,61 @@
 
 namespace App\Domain\User;
 
-use App\Domain\Project\ProjectAwareEntity;
+use Exception;
+use Lib\Entity\Entity;
 
-class UserEntity extends ProjectAwareEntity
+class UserEntity extends Entity
 {
-    private $id;
-    private $uuid;
-    private $username;
-    private $roles;
-
-    public function __construct($id, $uuid, $username, $projectId, $roles)
+    public function __construct($data)
     {
-        parent::__construct($projectId);
-        $this->id = $id;
-        $this->uuid = $uuid;
-        $this->username = $username;
-        $this->roles = $roles;
+        parent::__construct([
+            'id' => $data['id'] ?? 0,
+            'uuid' => $data['uuid'] ?? '',
+            'project_id' => $data['project_id'] ?? 0,
+            'username' => $data['username'] ?? '',
+            'roles' => $data['roles'] ?? []
+        ]);
+
+        $validator = UserValidator::forSchema()->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception('User entity is invalid: ' . $this->getUuid());
+        }
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->data['id'];
     }
 
     public function getUuid()
     {
-        return $this->uuid;
+        return $this->data['uuid'];
+    }
+
+    public function getProjectId()
+    {
+        return $this->data['project_id'];
     }
 
     public function getUsername()
     {
-        return $this->username;
+        return $this->data['username'];
     }
 
     public function getRoles()
     {
-        return $this->roles;
+        return $this->data['roles'];
+    }
+
+    private function with($key, $value)
+    {
+        $data = $this->toArray();
+        $data[$key] = $value;
+        return new UserEntity($data);
+    }
+
+    public function withRoles($value)
+    {
+        return $this->with('roles', $value);
     }
 }
