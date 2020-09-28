@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\V1\Role;
 
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
@@ -26,7 +27,7 @@ class RoleCreateTest extends ControllerActionTestCase
             'project_uuid' => 'aabb',
             'name' => 'Manage',
             'permissions' => ['product.manage']
-        ]);
+        ], AuthHeaders::authorize());
 
         $response->assertStatus(201);
         $response->assertHeader('Location');
@@ -44,9 +45,17 @@ class RoleCreateTest extends ControllerActionTestCase
      */
     public function testResponseValidationError($requestData)
     {
-        $response = $this->post('api/v1/roles', $requestData);
+        $response = $this->post('api/v1/roles', $requestData, AuthHeaders::authorize());
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertJsonStructure(['errors', 'message']);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->get('api/v1/roles');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

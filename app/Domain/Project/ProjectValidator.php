@@ -26,7 +26,7 @@ class ProjectValidator
 
     public static function getProjectIdRule()
     {
-        return ['bail', 'required', 'integer', 'min:0'];
+        return ['bail', 'required', 'integer', 'min:1'];
     }
 
     public static function forSchema(): DynamicValidator

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Role;
 
+use Exception;
 use Lib\Entity\Entity;
 
 class RoleEntity extends Entity
@@ -15,6 +16,11 @@ class RoleEntity extends Entity
             'name' => $data['name'] ?? '',
             'permissions' => $data['permissions'] ?? []
         ]);
+
+        $validator = RoleValidator::forSchema()->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception('Role entity is invalid: ' . $this->getUuid());
+        }
     }
 
     public function getId()

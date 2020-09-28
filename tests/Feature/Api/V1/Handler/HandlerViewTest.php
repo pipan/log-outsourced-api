@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\V1\Handler;
 
-use App\Domain\Handler\HandlerEntity;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 

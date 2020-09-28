@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1\Role;
 
 use App\Domain\Role\RoleEntity;
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
@@ -17,7 +18,7 @@ class RoleIndexTest extends ControllerActionTestCase
 
     public function testResponseOkEmpty()
     {
-        $response = $this->get('api/v1/roles?project_uuid=aabb');
+        $response = $this->get('api/v1/roles?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonCount(0);
@@ -36,7 +37,7 @@ class RoleIndexTest extends ControllerActionTestCase
             ->getSimulation('getForProject')
             ->whenInputReturn([$role], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
 
-        $response = $this->get('api/v1/roles?project_uuid=aabb');
+        $response = $this->get('api/v1/roles?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonCount(1);
@@ -47,5 +48,13 @@ class RoleIndexTest extends ControllerActionTestCase
                 'permissions' => ['product.view']
             ]
         ]);
+    }
+
+    public function testResponseUnauthorized()
+    {
+        $response = $this->get('api/v1/roles?project_uuid=aabb');
+
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }
