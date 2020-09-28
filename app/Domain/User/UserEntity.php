@@ -2,6 +2,7 @@
 
 namespace App\Domain\User;
 
+use Exception;
 use Lib\Entity\Entity;
 
 class UserEntity extends Entity
@@ -16,7 +17,10 @@ class UserEntity extends Entity
             'roles' => $data['roles'] ?? []
         ]);
 
-        $validator = '';
+        $validator = UserValidator::forSchema()->forEntity($this);
+        if ($validator->fails()) {
+            throw new Exception('User entity is invalid: ' . $this->getUuid());
+        }
     }
 
     public function getId()

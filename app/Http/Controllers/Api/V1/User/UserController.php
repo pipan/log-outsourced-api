@@ -6,7 +6,6 @@ use App\Domain\User\UserValidator;
 use App\Domain\User\UserEntity;
 use App\Http\ResponseError;
 use App\Http\ResponseSchema\UserSchemaAdapter;
-use App\Http\ResponseSchema\ValidationErrorResponseSchema;
 use App\Repository\Pagination;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
@@ -16,13 +15,11 @@ use Lib\Generator\HexadecimalGenerator;
 class UserController
 {
     private $userSchema;
-    private $errorSchema;
     private $repository;
     private $userValidator;
 
     public function __construct(Repository $repository)
     {
-        $this->errorSchema = new ValidationErrorResponseSchema();
         $this->userSchema = new UserSchemaAdapter();
         $this->userValidator = UserValidator::create($repository);
         $this->repository = $repository;
