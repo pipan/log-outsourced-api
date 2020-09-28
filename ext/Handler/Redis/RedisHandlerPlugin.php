@@ -10,10 +10,10 @@ class RedisHandlerPlugin implements HandlerPlugin
 {
     public function getDefinition(): HandlerEntity
     {
-        return new HandlerEntity(
-            'redis',
-            'Redis',
-            [
+        return new HandlerEntity([
+            'slug' => 'redis',
+            'name' => 'Redis',
+            'meta' => [
                 'schema' => [
                     'redis_url' => [
                         'type' => 'string',
@@ -42,7 +42,7 @@ class RedisHandlerPlugin implements HandlerPlugin
                     'icon' => 'dns'
                 ]
             ]
-        );
+        ]);
     }
 
     public function getLogHandler(): LogHandler

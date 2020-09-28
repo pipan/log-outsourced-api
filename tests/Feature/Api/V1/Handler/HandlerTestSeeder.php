@@ -9,11 +9,12 @@ class HandlerTestSeeder
 {
     public static function seed(HandlerMockRepository $repository)
     {
+        $handler = new HandlerEntity([
+            'slug' => 'file',
+            'name' => 'File'
+        ]);
         $repository->getMocker()
             ->getSimulation('getBySlug')
-            ->whenInputReturn(
-                new HandlerEntity('file', 'file', []),
-                ['file']
-            );
+            ->whenInputReturn($handler, ['file']);
     }
 }

@@ -10,10 +10,10 @@ class DatabaseHandlerPlugin implements HandlerPlugin
 {
     public function getDefinition(): HandlerEntity
     {
-        return new HandlerEntity(
-            'database',
-            'Database',
-            [
+        return new HandlerEntity([
+            'slug' => 'database',
+            'name' => 'Database',
+            'meta' => [
                 'schema' => [
                     'db_driver' => [
                         'type' => 'select',
@@ -53,7 +53,7 @@ class DatabaseHandlerPlugin implements HandlerPlugin
                     'icon' => 'layers'
                 ]
             ]
-        );
+        ]);
     }
 
     public function getLogHandler(): LogHandler

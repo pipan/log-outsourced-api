@@ -10,10 +10,10 @@ class SentryHandlerPlugin implements HandlerPlugin
 {
     public function getDefinition(): HandlerEntity
     {
-        return new HandlerEntity(
-            'sentry',
-            'Sentry',
-            [
+        return new HandlerEntity([
+            'slug' => 'sentry',
+            'name' => 'Sentry',
+            'meta' => [
                 'schema' => [
                     'sentry_dsn' => [
                         'type' => 'string',
@@ -28,7 +28,7 @@ class SentryHandlerPlugin implements HandlerPlugin
                     'icon' => 'wifi'
                 ]
             ]
-        );
+        ]);
     }
 
     public function getLogHandler(): LogHandler
