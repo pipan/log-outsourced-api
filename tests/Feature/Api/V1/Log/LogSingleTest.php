@@ -33,7 +33,7 @@ class LogSingleTest extends ControllerActionTestCase
         $listener = new ListenerEntity([
             'id' => 1,
             'uuid' => 'aabb',
-            'poject_id' => 1,
+            'project_id' => 1,
             'name' => 'error mock',
             'rules' => ['error'],
             'handler_slug' => 'mock',
@@ -61,7 +61,7 @@ class LogSingleTest extends ControllerActionTestCase
         $listener = new ListenerEntity([
             'id' => 1,
             'uuid' => 'aabb',
-            'poject_id' => 1,
+            'project_id' => 1,
             'name' => 'error mock',
             'rules' => ['error'],
             'handler_slug' => 'mock',

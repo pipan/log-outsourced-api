@@ -21,7 +21,7 @@ class ListenerEntity extends Entity
 
         $validator = ListenerValidator::forSchema()->forEntity($this);
         if ($validator->fails()) {
-            throw new Exception('Listener entity is incorrect: ' . $this->getUuid());
+            throw new Exception('Listener entity is invalid: ' . $this->getUuid());
         }
     }
 

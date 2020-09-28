@@ -42,7 +42,7 @@ class HandlerIndexText extends ControllerActionTestCase
 
     public function testResponseUnauthorized()
     {
-        $this->projectRepository->getMocker()
+        $this->handlerRepository->getMocker()
             ->getSimulation('getAll')
             ->whenInputReturn([]);
         $response = $this->get('api/v1/handlers');
