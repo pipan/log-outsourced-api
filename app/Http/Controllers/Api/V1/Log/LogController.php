@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Log;
 use App\Domain\Listener\ListenerPatternMatcher;
 use App\Domain\Project\ProjectEntity;
 use App\Handler\LogHandlerContainer;
-use App\Http\ResponseSchema\ValidationErrorResponseSchema;
+use App\Http\ResponseError;
 use App\Repository\Repository;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,13 +16,6 @@ use Psr\Log\LogLevel;
 
 class LogController
 {
-    private $errorSchema;
-
-    public function __construct()
-    {
-        $this->errorSchema = new ValidationErrorResponseSchema();
-    }
-
     public function single($uuid, Request $request, Repository $repository, LogHandlerContainer $handlerContainer, ListenerPatternMatcher $matcher)
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +23,7 @@ class LogController
             'message' => ['required']
         ]);
         if ($validator->fails()) {
-            return response($this->errorSchema->adapt($validator->errors()), 422);
+            return ResponseError::invalidRequest($validator->errors());
         }
 
         $project = $repository->project()->getByUuid($uuid);
@@ -57,7 +50,7 @@ class LogController
             '*.message' => ['required']
         ]);
         if ($validator->fails()) {
-            return response($this->errorSchema->adapt($validator->errors()), 422);
+            return ResponseError::invalidRequest($validator->errors());
         }
 
         $project = $repository->project()->getByUuid($uuid);
