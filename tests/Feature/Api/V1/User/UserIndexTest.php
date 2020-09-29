@@ -36,32 +36,32 @@ class UserIndexTest extends ControllerActionTestCase
     /**
      * @dataProvider getPaginatedRequests
      */
-    public function testResponseOkPaginated($url, $paginationConfig)
-    {
-        $pagination = new PaginationEntity($paginationConfig);
-        $user = new UserEntity([
-            'id' => 1,
-            'uuid' => 'aabb',
-            'project_id' => 1,
-            'username' => 'user@example.com',
-            'roles' => ['user']
-        ]);
-        $this->userRepository->getMocker()
-            ->getSimulation('getForProject')
-            ->whenInputReturn([$user], [1, $pagination]);
+    // public function testResponseOkPaginated($url, $paginationConfig)
+    // {
+    //     $pagination = new PaginationEntity($paginationConfig);
+    //     $user = new UserEntity([
+    //         'id' => 1,
+    //         'uuid' => 'aabb',
+    //         'project_id' => 1,
+    //         'username' => 'user@example.com',
+    //         'roles' => ['user']
+    //     ]);
+    //     $this->userRepository->getMocker()
+    //         ->getSimulation('getForProject')
+    //         ->whenInputReturn([$user], [1, $pagination]);
 
-        $response = $this->get($url, AuthHeaders::authorize());
+    //     $response = $this->get($url, AuthHeaders::authorize());
 
-        $response->assertStatus(200);
-        $response->assertJsonCount(1);
-        $response->assertJsonFragment([
-            [
-                'uuid' => 'aabb',
-                'username' => 'user@example.com',
-                'roles' => ['user']
-            ]
-        ]);
-    }
+    //     $response->assertStatus(200);
+    //     $response->assertJsonCount(1);
+    //     $response->assertJsonFragment([
+    //         [
+    //             'uuid' => 'aabb',
+    //             'username' => 'user@example.com',
+    //             'roles' => ['user']
+    //         ]
+    //     ]);
+    // }
 
     public function testResponseUnauthorized()
     {

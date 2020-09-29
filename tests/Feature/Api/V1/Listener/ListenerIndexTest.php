@@ -27,18 +27,30 @@ class ListenerIndexTest extends ControllerActionTestCase
 
     public function testResponseOkEmpty()
     {
+        $this->listenerRepository->getMocker()
+            ->getSimulation('countForProject')
+            ->whenInputReturn(0, [1, '']);
+
         $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
-        $response->assertJsonCount(0);
+        $response->assertJson([
+            'items' => [],
+            'meta' => [
+                'pagination' => [
+                    'page' => 1,
+                    'limit' => 25,
+                    'max' => 0
+                ]
+            ]
+        ]);
     }
 
-    /**
-     * @dataProvider getPaginatedRequests
-     */
-    public function testResponseOkPaginated($url, $paginationConfig)
+    public function testResponseOk()
     {
-        $pagination = new PaginationEntity($paginationConfig);
+        $pagination = (new PaginationEntity([]))
+            ->searchBy('name')
+            ->orderBy('name');
         $listener = new ListenerEntity([
             'id' => 1,
             'uuid' => 'aabb',
@@ -51,13 +63,15 @@ class ListenerIndexTest extends ControllerActionTestCase
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
             ->whenInputReturn([$listener], [1, $pagination]);
+        $this->listenerRepository->getMocker()
+            ->getSimulation('countForProject')
+            ->whenInputReturn(1, [1, '']);
 
-        $response = $this->get($url, AuthHeaders::authorize());
+        $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
 
         $response->assertStatus(200);
-        $response->assertJsonCount(1);
-        $response->assertJsonFragment([
-            [
+        $response->assertJson([
+            'items' => [[
                 'uuid' => 'aabb',
                 'name' => 'critical',
                 'project_id' => 1,
@@ -66,6 +80,32 @@ class ListenerIndexTest extends ControllerActionTestCase
                     'slug' => 'file',
                     'values' => ['one' => '1']
                 ]
+            ]],
+            'meta' => [
+                'pagination' => [
+                    'page' => 1,
+                    'limit' => 25,
+                    'max' => 1
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @dataProvider getPaginatedRequests
+     */
+    public function testResponseOkPaginated($url, $pagination)
+    {
+        $this->listenerRepository->getMocker()
+            ->getSimulation('countForProject')
+            ->whenInputReturn(20, [1, '']);
+
+        $response = $this->get($url, AuthHeaders::authorize());
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'meta' => [
+                'pagination' => $pagination
             ]
         ]);
     }

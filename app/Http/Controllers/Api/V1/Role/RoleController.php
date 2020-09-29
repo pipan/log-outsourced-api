@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Role;
 
 use App\Domain\Role\RoleEntity;
 use App\Domain\Role\RoleValidator;
+use App\Http\Controllers\Api\V1\ListMetaEntity;
 use App\Http\ResponseError;
 use App\Http\ResponseSchema\RoleSchemaAdapter;
 use App\Repository\Pagination;
@@ -31,12 +32,22 @@ class RoleController
         if (!$project) {
             return ResponseError::resourceNotFound();
         }
+
+        $pagination = Pagination::fromRequest($request)
+            ->searchBy('name')
+            ->orderBy('name');
         $roles = $this->repository->role()
-            ->getForProject(
-                $project->getId(), Pagination::fromRequest($request)
-            );
+            ->getForProject($project->getId(), $pagination);
+        $count = $this->repository->role()
+            ->countForProject($project->getId(), $pagination->getSearchValue());
+
+        $listMeta = ListMetaEntity::fromPagination($pagination)
+            ->withTotalItems($count);
         $adapter = AdapterHelper::listOf($this->roleSchema);
-        return response($adapter->adapt($roles));
+        return response([
+            'items' => $adapter->adapt($roles),
+            'meta' => $listMeta->toArray()
+        ]);
     }
 
     public function create(Request $request, HexadecimalGenerator $generator)

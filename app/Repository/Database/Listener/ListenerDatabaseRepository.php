@@ -11,6 +11,7 @@ use App\Repository\Database\Rule\Hook\Listener\ListenerLoadHook;
 use App\Repository\Database\Rule\Hook\Listener\ListenerSaveHook;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
+use Lib\Pagination\PaginationEntity;
 
 class ListenerDatabaseRepository implements ListenerRepository
 {
@@ -38,13 +39,27 @@ class ListenerDatabaseRepository implements ListenerRepository
         return $this->io->find($id);
     }
 
-    public function getForProject($projectId, $config = [])
+    public function getAllForProject($projectId)
     {
         $result = DB::table(self::TABLE)
             ->where('project_id', '=', $projectId)
             ->get();
 
         return $this->io->selectList($result);
+    }
+
+    public function getForProject($projectId, PaginationEntity $pagination)
+    {
+        $result = DB::table(self::TABLE)
+            ->where('project_id', '=', $projectId)
+            ->get();
+
+        return $this->io->selectList($result);
+    }
+
+    public function countForProject($projectId, $search)
+    {
+        
     }
 
     public function getByUuid($uuid): ?ListenerEntity

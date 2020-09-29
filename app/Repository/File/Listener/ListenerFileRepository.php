@@ -7,6 +7,7 @@ use App\Domain\Listener\ListenerRepository;
 use App\Repository\File\IndexGenerator;
 use App\Repository\File\JsonFile;
 use Lib\Adapter\AdapterHelper;
+use Lib\Pagination\PaginationEntity;
 
 class ListenerFileRepository implements ListenerRepository
 {
@@ -29,12 +30,22 @@ class ListenerFileRepository implements ListenerRepository
         return $adapter->adapt($this->jsonFile->read());
     }
 
+    public function countForProject($projectId, $search)
+    {
+        
+    }
+
     public function get($id): ?ListenerEntity
     {
         return null;
     }
 
-    public function getForProject($projectId, $config = [])
+    public function getAllForProject($projectId)
+    {
+        
+    }
+
+    public function getForProject($projectId, PaginationEntity $pagination)
     {
         $all = $this->getAll();
         $result = [];

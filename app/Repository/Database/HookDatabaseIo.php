@@ -42,6 +42,7 @@ class HookDatabaseIo implements DatabaseIo
     public function insert($entity)
     {
         $id = $this->io->insert($entity);
+        $entity = $entity->with('id', $id);
         $this->trigger('save', $entity);
         return $this->find($id);
     }

@@ -27,8 +27,7 @@ class ProjectViewTest extends ControllerActionTestCase
             'project' => [
                 'uuid',
                 'name'
-            ],
-            'listeners'
+            ]
         ]);
     }
 

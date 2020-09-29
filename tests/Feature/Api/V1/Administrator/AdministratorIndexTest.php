@@ -30,30 +30,30 @@ class AdministratorIndexTest extends ControllerActionTestCase
     /**
      * @dataProvider getPaginatedRequests
      */
-    public function testResponsePaginated($url, $paginationConfig)
-    {
-        $pagination = new PaginationEntity($paginationConfig);
-        $admin = new AdministratorEntity([
-            'id' => 1,
-            'uuid' => 'aabb',
-            'username' => 'admin',
-            'password' => 'admin'
-        ]);
-        $this->administratorRepository->getMocker()
-            ->getSimulation('getAll')
-            ->whenInputReturn([$admin], [$pagination]);
+    // public function testResponsePaginated($url, $paginationConfig)
+    // {
+    //     $pagination = new PaginationEntity($paginationConfig);
+    //     $admin = new AdministratorEntity([
+    //         'id' => 1,
+    //         'uuid' => 'aabb',
+    //         'username' => 'admin',
+    //         'password' => 'admin'
+    //     ]);
+    //     $this->administratorRepository->getMocker()
+    //         ->getSimulation('getAll')
+    //         ->whenInputReturn([$admin], [$pagination]);
         
-        $response = $this->get($url, AuthHeaders::authorize());
+    //     $response = $this->get($url, AuthHeaders::authorize());
 
-        $response->assertStatus(200);
-        $response->assertJson([
-            [
-                'uuid' => 'aabb',
-                'username' => 'admin',
-                'invite_token' => ''
-            ]
-        ]);
-    }
+    //     $response->assertStatus(200);
+    //     $response->assertJson([
+    //         [
+    //             'uuid' => 'aabb',
+    //             'username' => 'admin',
+    //             'invite_token' => ''
+    //         ]
+    //     ]);
+    // }
 
     public function testResponseUnauthorized()
     {

@@ -2,10 +2,11 @@
 
 namespace App\Domain\Role;
 
+use App\Domain\IdEntity;
+use App\Repository\Database\DatabaseEntity;
 use Exception;
-use Lib\Entity\Entity;
 
-class RoleEntity extends Entity
+class RoleEntity extends IdEntity
 {
     public function __construct($data)
     {
@@ -23,9 +24,9 @@ class RoleEntity extends Entity
         }
     }
 
-    public function getId()
+    protected function create($data)
     {
-        return $this->data['id'];
+        return new RoleEntity($data);
     }
 
     public function getUuid()
@@ -48,13 +49,6 @@ class RoleEntity extends Entity
         return $this->data['permissions'];
     }
 
-    protected function with($key, $value)
-    {
-        $data = $this->toArray();
-        $data[$key] = $value;
-        return new RoleEntity($data);
-    }
-
     public function withName($value)
     {
         return $this->with('name', $value);
@@ -63,5 +57,10 @@ class RoleEntity extends Entity
     public function withPermissions($value)
     {
         return $this->with('permissions', $value);
+    }
+
+    public function withId($value)
+    {
+        return $this->with('id', $value);
     }
 }

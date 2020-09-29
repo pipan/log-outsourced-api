@@ -6,6 +6,8 @@ use App\Domain\Project\ProjectAwareRepository;
 
 interface ListenerRepository extends ProjectAwareRepository
 {
+    public function getAllForProject($projectId);
+
     public function getByUuid($uuid): ?ListenerEntity;
     public function get($id): ?ListenerEntity;
 

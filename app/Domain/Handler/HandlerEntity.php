@@ -15,6 +15,11 @@ class HandlerEntity extends Entity
         ]);
     }
 
+    protected function create($data)
+    {
+        return new HandlerEntity($data);
+    }
+
     public function getSlug()
     {
         return $this->data['slug'];

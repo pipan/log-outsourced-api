@@ -8,6 +8,7 @@ use App\Repository\File\IndexFile;
 use App\Repository\File\IndexGenerator;
 use App\Repository\File\JsonFile;
 use Lib\Adapter\AdapterHelper;
+use Lib\Pagination\PaginationEntity;
 
 class RoleFileRepository implements RoleRoleRepository
 {
@@ -29,9 +30,14 @@ class RoleFileRepository implements RoleRoleRepository
     public function exists($value)
     {
         return $this->getByUuid($value) !== null;
-     }
+    }
 
-    public function getForProject($projectId, $config = [])
+    public function countForProject($projectId, $search)
+    {
+        
+    }
+
+    public function getForProject($projectId, PaginationEntity $pagination)
     {
         $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt(

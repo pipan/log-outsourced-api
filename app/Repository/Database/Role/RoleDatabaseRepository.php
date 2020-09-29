@@ -6,12 +6,14 @@ use App\Domain\Role\RoleEntity;
 use App\Domain\Role\RoleRepository;
 use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
+use App\Repository\Database\PaginationQuery;
 use App\Repository\Database\Permission\Hook\Role\RoleDeleteHook;
 use App\Repository\Database\Permission\Hook\Role\RoleLoadHook;
 use App\Repository\Database\Permission\Hook\Role\RoleSaveHook;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
 use Lib\Entity\EntityBlacklistAdapter;
+use Lib\Pagination\PaginationEntity;
 
 class RoleDatabaseRepository implements RoleRepository
 {
@@ -34,10 +36,17 @@ class RoleDatabaseRepository implements RoleRepository
         $this->io->addHook('delete', new RoleDeleteHook());
     }
 
-    public function getForProject($projectId, $config = [])
+    public function countForProject($projectId, $search)
     {
-        $results = DB::table(self::TABLE)
-            ->where('project_id', '=', $projectId)
+        return PaginationQuery::getSearchExtension('name', $search)
+            ->extend(DB::table(self::TABLE)->where('project_id', '=', $projectId))
+            ->count();
+    }
+
+    public function getForProject($projectId, PaginationEntity $pagination)
+    {
+        $results = PaginationQuery::getExtensionForEntity($pagination)
+            ->extend(DB::table(self::TABLE)->where('project_id', '=', $projectId))
             ->get();
         
         return $this->io->selectList($results);

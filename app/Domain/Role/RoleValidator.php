@@ -32,7 +32,7 @@ class RoleValidator
             'uuid' => UuidValidator::getRules(),
             'project_id' => ProjectValidator::getProjectIdRule(),
             'name' => ['bail', 'filled', 'max:255'],
-            'permissions' => ['bail', 'array', 'min:1']
+            'permissions' => ['bail', 'array']
         ]);
     }
 }

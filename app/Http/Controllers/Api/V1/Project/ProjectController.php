@@ -68,12 +68,12 @@ class ProjectController
             return ResponseError::resourceNotFound();
         }
 
-        $listeners = $repository->listener()->getForProject($project->getId());
+        // $listeners = $repository->listener()->getForProject($project->getId());
 
         $listListenerAdapter = AdapterHelper::listOf($this->listenerSchema);
         return response([
             'project' => $this->projectSchema->adapt($project),
-            'listeners' => $listListenerAdapter->adapt($listeners)
+            // 'listeners' => $listListenerAdapter->adapt($listeners)
         ]);
     }
 
