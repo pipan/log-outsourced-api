@@ -7,6 +7,7 @@ use Lib\Pagination\PaginationEntity;
 interface AdministratorRepository
 {
     public function getAll(PaginationEntity $entity);
+    public function countAll($search);
 
     public function getByUuid($uuid): ?AdministratorEntity;
     public function getByUsername($username): ?AdministratorEntity;

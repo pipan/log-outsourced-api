@@ -33,7 +33,7 @@ class AdministratorValidator
         ]);
     }
 
-    public static function forSchema($entityId)
+    public static function forSchema()
     {
         return new EntityValidator([
             'uuid' => UuidValidator::getRules(),

@@ -7,6 +7,7 @@ use App\Domain\Administrator\AdministratorRepository;
 use App\Domain\Administrator\AdministratorSchema;
 use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
+use App\Repository\Database\PaginationQuery;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
 use Lib\Pagination\PaginationEntity;
@@ -30,10 +31,18 @@ class AdministratorDatabaseRepository implements AdministratorRepository
 
     public function getAll(PaginationEntity $entity)
     {
-        $results = DB::table(self::TABLE)
+        $results = PaginationQuery::getExtensionForEntity($entity)
+            ->extend(DB::table(self::TABLE))
             ->get();
 
         return $this->io->selectList($results);
+    }
+
+    public function countAll($search)
+    {
+        return PaginationQuery::getSearchExtension('username', $search)
+            ->extend(DB::table(self::TABLE))
+            ->count();
     }
 
     public function getByUuid($uuid): ?AdministratorEntity
