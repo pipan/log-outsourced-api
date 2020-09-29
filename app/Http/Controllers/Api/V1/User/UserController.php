@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Domain\User\UserValidator;
 use App\Domain\User\UserEntity;
+use App\Http\Controllers\Api\V1\ListMetaEntity;
 use App\Http\ResponseError;
 use App\Http\ResponseSchema\UserSchemaAdapter;
 use App\Repository\Pagination;
@@ -30,12 +31,23 @@ class UserController
         $project = $this->repository->project()->getByUuid(
             $request->input('project_uuid', '')
         );
+
+        $pagination = Pagination::fromRequest($request)
+            ->searchBy('username')
+            ->orderBy('username');
+
         $roles = $this->repository->user()
-            ->getForProject(
-                $project->getId(), Pagination::fromRequest($request)
-            );
+            ->getForProject($project->getId(), $pagination);
+        $count = $this->repository->user()
+            ->countForProject($project->getId(), $pagination->getSearchValue());
+
+        $listMeta = ListMetaEntity::fromPagination($pagination)
+            ->withTotalItems($count);
         $adapter = AdapterHelper::listOf($this->userSchema);
-        return response($adapter->adapt($roles));
+        return response([
+            'items' => $adapter->adapt($roles),
+            'meta' => $listMeta->toArray()
+        ]);
     }
 
     public function create(Request $request, HexadecimalGenerator $hexadecimalGenerator)
