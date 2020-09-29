@@ -6,6 +6,7 @@ use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerRepository;
 use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
+use App\Repository\Database\PaginationQuery;
 use App\Repository\Database\Rule\Hook\Listener\ListenerDeleteHook;
 use App\Repository\Database\Rule\Hook\Listener\ListenerLoadHook;
 use App\Repository\Database\Rule\Hook\Listener\ListenerSaveHook;
@@ -50,8 +51,8 @@ class ListenerDatabaseRepository implements ListenerRepository
 
     public function getForProject($projectId, PaginationEntity $pagination)
     {
-        $result = DB::table(self::TABLE)
-            ->where('project_id', '=', $projectId)
+        $result = PaginationQuery::getExtensionForEntity($pagination)
+            ->extend(DB::table(self::TABLE)->where('project_id', '=', $projectId))
             ->get();
 
         return $this->io->selectList($result);
@@ -59,7 +60,9 @@ class ListenerDatabaseRepository implements ListenerRepository
 
     public function countForProject($projectId, $search)
     {
-        
+        return PaginationQuery::getSearchExtension('name', $search)
+            ->extend(DB::table(self::TABLE)->where('project_id', '=', $projectId))
+            ->count();
     }
 
     public function getByUuid($uuid): ?ListenerEntity
