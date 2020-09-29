@@ -4,6 +4,7 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Administrator\AdministratorEntity;
 use App\Domain\Administrator\AdministratorRepository;
+use Lib\Pagination\PaginationEntity;
 use Tests\Mock\Mocker;
 
 class AdministratorMockRepository implements AdministratorRepository
@@ -20,10 +21,10 @@ class AdministratorMockRepository implements AdministratorRepository
         return $this->mocker;
     }
 
-    public function getAll($config = [])
+    public function getAll(PaginationEntity $entity)
     {
         return $this->getMocker()->getSimulation('getAll')
-            ->execute([$config]);
+            ->execute([$entity]);
     }
 
     public function get($id): ?AdministratorEntity

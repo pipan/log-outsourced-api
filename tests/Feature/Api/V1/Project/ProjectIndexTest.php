@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1\Project;
 
 use App\Domain\Project\ProjectEntity;
+use Lib\Pagination\PaginationEntity;
 use Tests\Feature\Api\V1\Administrator\AdministratorTestSeeder;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
@@ -16,19 +17,102 @@ class ProjectIndexTest extends ControllerActionTestCase
         AdministratorTestSeeder::seed($this->administratorRepository);
     }
 
-    public function testResponseOk()
+    public function getPaginatedRequests()
+    {
+        return [
+            'page and limit' => [
+                'api/v1/projects?page=2&limit=10',
+                [
+                    'page' => 2,
+                    'limit' => 10,
+                    'max' => 2
+                ]
+            ],
+            'negative page' => [
+                'api/v1/projects?page=-1&limit=10',
+                [
+                    'page' => 1,
+                    'limit' => 10,
+                    'max' => 2
+                ]
+            ],
+            'negative limit' => [
+                'api/v1/projects?page=1&limit=-10',
+                [
+                    'page' => 1,
+                    'limit' => 25,
+                    'max' => 1
+                ]
+            ],
+            'limit too big' => [
+                'api/v1/projects?page=1&limit=301',
+                [
+                    'page' => 1,
+                    'limit' => 300,
+                    'max' => 1
+                ]
+            ],
+            'total with remainder' => [
+                'api/v1/projects?page=3&limit=3',
+                [
+                    'page' => 3,
+                    'limit' => 3,
+                    'max' => 7
+                ]
+            ],
+        ];
+    }
+
+    protected function seedCount($total, $search = '')
     {
         $this->projectRepository->getMocker()
+            ->getSimulation('count')
+            ->whenInputReturn($total, [$search]);
+    }
+
+    protected function assertPagination($response, $pagination)
+    {
+        $response->assertJson([
+            'meta' => [
+                'pagination' => $pagination
+            ]
+        ]);
+    }
+
+    protected function assertItems($response, $items)
+    {
+        $response->assertJson([
+            'items' => $items
+        ]);
+    }
+
+    public function testResponseOkEmptyItems()
+    {
+        $pagination = (new PaginationEntity([]))
+            ->searchBy('name')
+            ->orderBy('name');
+    
+        $this->projectRepository->getMocker()
             ->getSimulation('getAll')
-            ->whenInputReturn([]);
+            ->whenInputReturn([], [$pagination]);
+        $this->seedCount(0, $pagination);
         $response = $this->get('api/v1/projects', AuthHeaders::authorize());
 
         $response->assertStatus(200);
-        $response->assertJson([]);
+        $this->assertPagination($response, [
+            'page' => 1,
+            'limit' => 25,
+            'max' => 0
+        ]);
+        $this->assertItems($response, []);
     }
 
-    public function testResponseNotEmpty()
+    public function testResponseOk()
     {
+        $pagination = (new PaginationEntity([]))
+            ->searchBy('name')
+            ->orderBy('name');
+
         $project = new ProjectEntity([
             'id' => 1,
             'uuid' => 'aabb',
@@ -36,17 +120,32 @@ class ProjectIndexTest extends ControllerActionTestCase
         ]);
         $this->projectRepository->getMocker()
             ->getSimulation('getAll')
-            ->whenInputReturn([$project]);
-        
+            ->whenInputReturn([$project], [$pagination]);
+        $this->seedCount(1);
         $response = $this->get('api/v1/projects', AuthHeaders::authorize());
 
         $response->assertStatus(200);
-        $response->assertJson([
-            [
-                'uuid' => 'aabb',
-                'name' => 'test'
-            ]
+        $this->assertPagination($response, [
+            'page' => 1,
+            'limit' => 25,
+            'max' => 1
         ]);
+        $this->assertItems($response, [[
+            'uuid' => 'aabb',
+            'name' => 'test'
+        ]]);
+    }
+
+    /**
+     * @dataProvider getPaginatedRequests
+     */
+    public function testResponseOkPaginated($url, $paginationResponse)
+    {
+        $this->seedCount(20);
+        $response = $this->get($url, AuthHeaders::authorize());
+
+        $response->assertStatus(200);
+        $this->assertPagination($response, $paginationResponse);
     }
 
     public function testResponseUnauthorized()

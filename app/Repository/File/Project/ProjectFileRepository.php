@@ -7,6 +7,7 @@ use App\Domain\Project\ProjectRepository;
 use App\Repository\File\IndexGenerator;
 use App\Repository\File\JsonFile;
 use Lib\Adapter\AdapterHelper;
+use Lib\Pagination\PaginationEntity;
 
 class ProjectFileRepository implements ProjectRepository
 {
@@ -23,7 +24,7 @@ class ProjectFileRepository implements ProjectRepository
         $this->indexGenerator = new IndexGenerator('projects');
     }
 
-    public function getAll()
+    protected function read()
     {
         $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt(
@@ -31,9 +32,19 @@ class ProjectFileRepository implements ProjectRepository
         );
     }
 
+    public function getAll(PaginationEntity $pagination)
+    {
+        return $this->read();
+    }
+
+    public function count($search)
+    {
+        
+    }
+
     public function getByUuid($uuid): ?ProjectEntity
     {
-        foreach ($this->getAll() as $project) {
+        foreach ($this->read() as $project) {
             if ($project->getUuid() == $uuid) {
                 return $project;
             }
@@ -43,7 +54,7 @@ class ProjectFileRepository implements ProjectRepository
 
     public function insert(ProjectEntity $entity): ProjectEntity
     {
-        $projects = $this->getAll();
+        $projects = $this->read();
         $projects[] = new ProjectEntity(
             $this->indexGenerator->next(),
             $entity->getUuid(),
@@ -56,7 +67,7 @@ class ProjectFileRepository implements ProjectRepository
 
     public function update($id, ProjectEntity $entity): ProjectEntity
     {
-        $projects = $this->getAll();
+        $projects = $this->read();
         foreach ($projects as $key => $project) {
             if ($project->getId() == $id) {
                 $projects[$key] = $entity;
@@ -69,7 +80,7 @@ class ProjectFileRepository implements ProjectRepository
 
     public function delete(ProjectEntity $entity)
     {
-        $projects = $this->getAll();
+        $projects = $this->read();
         foreach ($projects as $key => $project) {
             if ($project->getId() == $entity->getId()) {
                 unset($projects[$key]);
