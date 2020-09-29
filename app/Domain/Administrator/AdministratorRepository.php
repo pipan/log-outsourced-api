@@ -2,9 +2,11 @@
 
 namespace App\Domain\Administrator;
 
+use Lib\Pagination\PaginationEntity;
+
 interface AdministratorRepository
 {
-    public function getAll($config = []);
+    public function getAll(PaginationEntity $entity);
 
     public function getByUuid($uuid): ?AdministratorEntity;
     public function getByUsername($username): ?AdministratorEntity;

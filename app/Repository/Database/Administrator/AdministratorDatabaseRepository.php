@@ -9,6 +9,7 @@ use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
+use Lib\Pagination\PaginationEntity;
 
 class AdministratorDatabaseRepository implements AdministratorRepository
 {
@@ -27,7 +28,7 @@ class AdministratorDatabaseRepository implements AdministratorRepository
         );
     }
 
-    public function getAll($config = [])
+    public function getAll(PaginationEntity $entity)
     {
         $results = DB::table(self::TABLE)
             ->get();

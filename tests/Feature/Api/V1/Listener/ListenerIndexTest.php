@@ -3,8 +3,10 @@
 namespace Tests\Feature\Api\V1\Listener;
 
 use App\Domain\Listener\ListenerEntity;
+use Lib\Pagination\PaginationEntity;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\PaginationRequests;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
 class ListenerIndexTest extends ControllerActionTestCase
@@ -16,6 +18,13 @@ class ListenerIndexTest extends ControllerActionTestCase
         ProjectTestSeeder::seed($this->projectRepository);
     }
 
+    public function getPaginatedRequests()
+    {
+        return PaginationRequests::getPaginated('api/v1/listeners', [
+            'project_uuid' => 'aabb'
+        ]);
+    }
+
     public function testResponseOkEmpty()
     {
         $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
@@ -24,8 +33,12 @@ class ListenerIndexTest extends ControllerActionTestCase
         $response->assertJsonCount(0);
     }
 
-    public function testResponseOkNotEmpty()
+    /**
+     * @dataProvider getPaginatedRequests
+     */
+    public function testResponseOkPaginated($url, $paginationConfig)
     {
+        $pagination = new PaginationEntity($paginationConfig);
         $listener = new ListenerEntity([
             'id' => 1,
             'uuid' => 'aabb',
@@ -37,9 +50,9 @@ class ListenerIndexTest extends ControllerActionTestCase
         ]);
         $this->listenerRepository->getMocker()
             ->getSimulation('getForProject')
-            ->whenInputReturn([$listener], [1, ['limit' => 25, 'page' => 1, 'search' => '']]);
+            ->whenInputReturn([$listener], [1, $pagination]);
 
-        $response = $this->get('api/v1/listeners?project_uuid=aabb', AuthHeaders::authorize());
+        $response = $this->get($url, AuthHeaders::authorize());
 
         $response->assertStatus(200);
         $response->assertJsonCount(1);

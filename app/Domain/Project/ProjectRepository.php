@@ -2,9 +2,12 @@
 
 namespace App\Domain\Project;
 
+use Lib\Pagination\PaginationEntity;
+
 interface ProjectRepository
 {
-    public function getAll();
+    public function getAll(PaginationEntity $pagination);
+    public function count($search);
     public function getByUuid($uuid): ?ProjectEntity;
 
     public function insert(ProjectEntity $entity): ProjectEntity;

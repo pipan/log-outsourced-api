@@ -4,9 +4,11 @@ namespace App\Repository\Database\Project;
 
 use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
+use App\Repository\Database\PaginationQuery;
 use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
 use Lib\Entity\EntityBlacklistAdapter;
+use Lib\Pagination\PaginationEntity;
 
 class ProjectDatabaseRepository implements ProjectRepository
 {
@@ -21,12 +23,23 @@ class ProjectDatabaseRepository implements ProjectRepository
         $this->writeAdapter = new EntityBlacklistAdapter(['id']);
     }
 
-    public function getAll()
+    public function getAll(PaginationEntity $pagination)
     {
-        $result = DB::table(self::TABLE_NAME)->get();
+        $result = PaginationQuery::getExtensionForEntity($pagination)
+            ->extend(DB::table(self::TABLE_NAME))
+            ->get();
 
         $adapter = AdapterHelper::listOf($this->readAdapter);
         return $adapter->adapt($result);
+    }
+
+    public function count($search)
+    {
+        $result = PaginationQuery::getSearchExtension('name', $search)
+            ->extend(DB::table(self::TABLE_NAME))
+            ->count();
+
+        return $result;
     }
 
     public function getByUuid($uuid): ?ProjectEntity

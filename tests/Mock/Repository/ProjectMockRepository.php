@@ -4,6 +4,7 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
+use Lib\Pagination\PaginationEntity;
 use Tests\Mock\Mocker;
 
 class ProjectMockRepository implements ProjectRepository
@@ -20,10 +21,16 @@ class ProjectMockRepository implements ProjectRepository
         return $this->mocker;
     }
 
-    public function getAll()
+    public function getAll(PaginationEntity $pagination)
     {
         return $this->mocker->getSimulation('getAll')
-            ->execute();
+            ->execute([$pagination]);
+    }
+
+    public function count($search)
+    {
+        return $this->getMocker()->getSimulation('count')
+            ->execute([$search]);
     }
 
     public function getByUuid($uuid): ?ProjectEntity

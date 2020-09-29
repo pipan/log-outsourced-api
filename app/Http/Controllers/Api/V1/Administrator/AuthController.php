@@ -8,6 +8,7 @@ use App\Http\ResponseSchema\AuthSchema;
 use App\Repository\Repository;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\SignatureInvalidException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Hash;
@@ -70,6 +71,8 @@ class AuthController
             $refreshToken = JWT::decode($request->input('refresh_token'), config('app.key'), ['HS256']);
         } catch (ExpiredException $ex) {
             return ResponseError::unauthorized();
+        } catch(SignatureInvalidException $ex) {
+            return ResponseError::error($ex);
         }
 
         return $this->getResponse(
