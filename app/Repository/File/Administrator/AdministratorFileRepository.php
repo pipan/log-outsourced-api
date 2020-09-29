@@ -33,6 +33,11 @@ class AdministratorFileRepository implements AdministratorRepository
         return [];
     }
 
+    public function countAll($search)
+    {
+        
+    }
+
     public function getByUuid($uuid): ?AdministratorEntity
     {
         return null;

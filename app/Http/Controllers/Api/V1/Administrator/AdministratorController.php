@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Administrator;
 
 use App\Domain\Administrator\AdministratorSchema;
+use App\Http\Controllers\Api\V1\ListMetaEntity;
 use App\Http\ResponseError;
 use App\Repository\Pagination;
 use App\Repository\Repository;
@@ -22,11 +23,22 @@ class AdministratorController
 
     public function index(Request $request)
     {
+        $pagination = Pagination::fromRequest($request)
+            ->searchBy('username')
+            ->orderBy('username');
         $administrators = $this->repository->administrator()
-            ->getAll(Pagination::fromRequest($request));
+            ->getAll($pagination);
 
+        $count = $this->repository->administrator()
+            ->countAll($pagination->getSearchValue());
+
+        $listMeta = ListMetaEntity::fromPagination($pagination)
+            ->withTotalItems($count);
         $adapter = AdapterHelper::listOf($this->adminPublicSchema);
-        return response($adapter->adapt($administrators));
+        return response([
+            'items' => $adapter->adapt($administrators),
+            'meta' => $listMeta->toArray()
+        ]);
     }
 
     public function delete($uuid)
