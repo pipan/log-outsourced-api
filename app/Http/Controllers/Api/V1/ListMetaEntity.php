@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Support\Arr;
 use Lib\Entity\Entity;
 use Lib\Pagination\PaginationEntity;
 
@@ -18,10 +17,8 @@ class ListMetaEntity extends Entity
         ]);
     }
 
-    private function with($key, $value)
+    protected function create($data)
     {
-        $data = $this->toArray();
-        Arr::set($data, $key, $value);
         return new ListMetaEntity($data);
     }
 

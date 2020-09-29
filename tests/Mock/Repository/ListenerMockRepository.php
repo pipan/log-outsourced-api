@@ -4,6 +4,7 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerRepository;
+use Lib\Pagination\PaginationEntity;
 use Tests\Mock\Mocker;
 
 class ListenerMockRepository implements ListenerRepository
@@ -26,10 +27,22 @@ class ListenerMockRepository implements ListenerRepository
             ->execute([$id]);
     }
 
-    public function getForProject($projectId, $config = [])
+    public function getAllForProject($projectId)
+    {
+        return $this->mocker->getSimulation('getAllForProject')
+            ->execute([$projectId]);
+    }
+
+    public function getForProject($projectId, PaginationEntity $pagination)
     {
         return $this->mocker->getSimulation('getForProject')
-            ->execute([$projectId, $config]);
+            ->execute([$projectId, $pagination]);
+    }
+
+    public function countForProject($projectId, $search)
+    {
+        return $this->getMocker()->getSimulation('countForProject')
+            ->execute([$projectId, $search]);
     }
 
     public function getByUuid($uuid): ?ListenerEntity

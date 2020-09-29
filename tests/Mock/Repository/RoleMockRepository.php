@@ -4,6 +4,7 @@ namespace Tests\Mock\Repository;
 
 use App\Domain\Role\RoleEntity;
 use App\Domain\Role\RoleRepository;
+use Lib\Pagination\PaginationEntity;
 use Tests\Mock\Mocker;
 
 class RoleMockRepository implements RoleRepository
@@ -20,10 +21,16 @@ class RoleMockRepository implements RoleRepository
         return $this->mocker;
     }
 
-    public function getForProject($projectId, $config = [])
+    public function getForProject($projectId, PaginationEntity $pagination)
     {
         return $this->mocker->getSimulation('getForProject')
-            ->execute([$projectId, $config]);
+            ->execute([$projectId, $pagination]);
+    }
+
+    public function countForProject($projectId, $search)
+    {
+        return $this->getMocker()->getSimulation('countForProject')
+            ->execute([$projectId, $search]);
     }
 
     public function getByUuid($uuid): ?RoleEntity

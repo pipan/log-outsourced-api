@@ -2,10 +2,10 @@
 
 namespace App\Domain\User;
 
+use App\Domain\IdEntity;
 use Exception;
-use Lib\Entity\Entity;
 
-class UserEntity extends Entity
+class UserEntity extends IdEntity
 {
     public function __construct($data)
     {
@@ -23,9 +23,9 @@ class UserEntity extends Entity
         }
     }
 
-    public function getId()
+    protected function create($data)
     {
-        return $this->data['id'];
+        return new UserEntity($data);
     }
 
     public function getUuid()
@@ -46,13 +46,6 @@ class UserEntity extends Entity
     public function getRoles()
     {
         return $this->data['roles'];
-    }
-
-    private function with($key, $value)
-    {
-        $data = $this->toArray();
-        $data[$key] = $value;
-        return new UserEntity($data);
     }
 
     public function withRoles($value)

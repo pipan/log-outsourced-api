@@ -28,6 +28,11 @@ class PaginationEntity extends Entity
         }
     }
 
+    protected function create($data)
+    {
+        return new PaginationEntity($data);
+    }
+
     public function getPage()
     {
         return $this->data['page'];
@@ -56,13 +61,6 @@ class PaginationEntity extends Entity
     public function getOrderDirection()
     {
         return $this->data['order_direction'];
-    }
-
-    private function with($key, $value)
-    {
-        $data = $this->toArray();
-        $data[$key] = $value;
-        return new PaginationEntity($data);
     }
 
     public function searchBy($value)

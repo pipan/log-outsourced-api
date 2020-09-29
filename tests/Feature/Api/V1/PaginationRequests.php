@@ -17,40 +17,44 @@ class PaginationRequests
         return [
             'no input' => [
                 $url,
-                ['limit' => 25, 'page' => 1, 'search_value' => '']
+                ['limit' => 25, 'page' => 1, 'max' => 1]
             ],
             'second page' => [
-                $url . 'page=2',
-                ['limit' => 25, 'page' => 2, 'search_value' => '']
+                $url . 'limit=10&page=2',
+                ['limit' => 10, 'page' => 2, 'max' => 2]
             ],
             'negative page' => [
                 $url . 'page=-1',
-                ['limit' => 25, 'page' => 1, 'search_value' => '']
+                ['limit' => 25, 'page' => 1, 'max' => 1]
             ],
             'page zero' => [
                 $url . 'page=0',
-                ['limit' => 25, 'page' => 1, 'search_value' => '']
+                ['limit' => 25, 'page' => 1, 'max' => 1]
             ],
             'limit hundred' => [
                 $url . 'limit=100',
-                ['limit' => 100, 'page' => 1, 'search_value' => '']
+                ['limit' => 100, 'page' => 1, 'max' => 1]
             ],
             'limit negative' => [
                 $url . 'limit=-100',
-                ['limit' => 25, 'page' => 1, 'search_value' => '']
+                ['limit' => 25, 'page' => 1, 'max' => 1]
             ],
             'limit zero' => [
                 $url . 'limit=0',
-                ['limit' => 25, 'page' => 1, 'search_value' => '']
+                ['limit' => 25, 'page' => 1, 'max' => 1]
             ],
-            'search_value' => [
-                $url . 'search=aaaa',
-                ['limit' => 25, 'page' => 1, 'search_value' => 'aaaa']
+            'limit too big' => [
+                $url . 'limit=301',
+                ['limit' => 300, 'page' => 1, 'max' => 1]
             ],
-            'combination of all' => [
-                $url . 'limit=10&page=5&search=aaaa',
-                ['limit' => 10, 'page' => 5, 'search_value' => 'aaaa']
-            ]
+            'total remainder' => [
+                $url . 'page=3&limit=3',
+                ['limit' => 3, 'page' => 3, 'max' => 7]
+            ],
+            'page greater then max' => [
+                $url . 'page=5&limit=15',
+                ['limit' => 15, 'page' => 5, 'max' => 2]
+            ],
         ];
     }
 }

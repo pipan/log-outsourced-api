@@ -2,11 +2,11 @@
 
 namespace App\Domain\Administrator;
 
+use App\Domain\IdEntity;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use Lib\Entity\Entity;
 
-class AdministratorEntity extends Entity
+class AdministratorEntity extends IdEntity
 {
     public function __construct($data)
     {
@@ -29,16 +29,9 @@ class AdministratorEntity extends Entity
         }
     }
 
-    private function with($key, $value)
+    protected function create($data)
     {
-        $data = $this->toArray();
-        $data[$key] = $value;
         return new AdministratorEntity($data);
-    }
-
-    public function getId()
-    {
-        return $this->data['id'];
     }
 
     public function getUuid()

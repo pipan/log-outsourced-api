@@ -2,7 +2,9 @@
 
 namespace Lib\Entity;
 
-class Entity
+use Illuminate\Support\Arr;
+
+abstract class Entity
 {
     protected $data;
 
@@ -11,8 +13,17 @@ class Entity
         $this->data = $data;
     }
 
+    abstract protected function create($data);
+
     public function toArray()
     {
         return $this->data;
+    }
+
+    public function with($key, $value)
+    {
+        $data = $this->toArray();
+        Arr::set($data, $key, $value);
+        return $this->create($data);
     }
 }

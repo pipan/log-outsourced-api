@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Listener;
 
 use App\Domain\Listener\ListenerEntity;
 use App\Domain\Listener\ListenerValidator;
+use App\Http\Controllers\Api\V1\ListMetaEntity;
 use App\Http\ResponseError;
 use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
 use App\Repository\Pagination;
@@ -27,14 +28,24 @@ class ListenerController
     {
         $project = $this->repository->project()
             ->getByUuid($request->input('project_uuid'));
+
+        $pagination = Pagination::fromRequest($request)
+            ->searchBy('name')
+            ->orderBy('name');
         $listeners = $this->repository->listener()
-            ->getForProject(
-                $project->getId(),
-                Pagination::fromRequest($request)
-            );
+            ->getForProject($project->getId(), $pagination);
+
+        $count = $this->repository->listener()
+            ->countForProject($project->getId(), $pagination->getSearchValue());
+
+        $listMeta = ListMetaEntity::fromPagination($pagination)
+            ->withTotalItems($count);
 
         $adapter = AdapterHelper::listOf($this->schema);
-        return response($adapter->adapt($listeners));
+        return response([
+            'items' => $adapter->adapt($listeners),
+            'meta' => $listMeta->toArray()
+        ]);
     }
 
     public function create(Request $request, HexadecimalGenerator $generator)

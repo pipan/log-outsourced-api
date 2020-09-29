@@ -7,6 +7,7 @@ use Lib\Pagination\PaginationEntity;
 use Tests\Feature\Api\V1\Administrator\AdministratorTestSeeder;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
+use Tests\Feature\Api\V1\PaginationRequests;
 
 class ProjectIndexTest extends ControllerActionTestCase
 {
@@ -19,48 +20,7 @@ class ProjectIndexTest extends ControllerActionTestCase
 
     public function getPaginatedRequests()
     {
-        return [
-            'page and limit' => [
-                'api/v1/projects?page=2&limit=10',
-                [
-                    'page' => 2,
-                    'limit' => 10,
-                    'max' => 2
-                ]
-            ],
-            'negative page' => [
-                'api/v1/projects?page=-1&limit=10',
-                [
-                    'page' => 1,
-                    'limit' => 10,
-                    'max' => 2
-                ]
-            ],
-            'negative limit' => [
-                'api/v1/projects?page=1&limit=-10',
-                [
-                    'page' => 1,
-                    'limit' => 25,
-                    'max' => 1
-                ]
-            ],
-            'limit too big' => [
-                'api/v1/projects?page=1&limit=301',
-                [
-                    'page' => 1,
-                    'limit' => 300,
-                    'max' => 1
-                ]
-            ],
-            'total with remainder' => [
-                'api/v1/projects?page=3&limit=3',
-                [
-                    'page' => 3,
-                    'limit' => 3,
-                    'max' => 7
-                ]
-            ],
-        ];
+        return PaginationRequests::getPaginated('api/v1/projects');
     }
 
     protected function seedCount($total, $search = '')

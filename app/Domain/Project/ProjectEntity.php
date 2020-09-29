@@ -2,10 +2,10 @@
 
 namespace App\Domain\Project;
 
+use App\Domain\IdEntity;
 use Exception;
-use Lib\Entity\Entity;
 
-class ProjectEntity extends Entity
+class ProjectEntity extends IdEntity
 {
     public function __construct($data)
     {
@@ -21,9 +21,9 @@ class ProjectEntity extends Entity
         }
     }
 
-    public function getId()
+    protected function create($data)
     {
-        return $this->data['id'];
+        return new ProjectEntity($data);
     }
 
     public function getUuid()
@@ -34,13 +34,6 @@ class ProjectEntity extends Entity
     public function getName()
     {
         return $this->data['name'];
-    }
-
-    protected function with($key, $value)
-    {
-        $data = $this->toArray();
-        $data[$key] = $value;
-        return new ProjectEntity($data);
     }
 
     public function withName($value)

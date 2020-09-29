@@ -2,10 +2,10 @@
 
 namespace App\Domain\Listener;
 
+use App\Domain\IdEntity;
 use Exception;
-use Lib\Entity\Entity;
 
-class ListenerEntity extends Entity
+class ListenerEntity extends IdEntity
 {
     public function __construct($data)
     {
@@ -25,16 +25,9 @@ class ListenerEntity extends Entity
         }
     }
 
-    private function with($key, $value)
+    protected function create($data)
     {
-        $data = $this->toArray();
-        $data[$key] = $value;
         return new ListenerEntity($data);
-    }
-
-    public function getId()
-    {
-        return $this->data['id'];
     }
 
     public function getUuid()
