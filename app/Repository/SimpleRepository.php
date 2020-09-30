@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Domain\Administrator\AdministratorRepository;
 use App\Domain\Handler\HandlerRepository;
 use App\Domain\Listener\ListenerRepository;
+use App\Domain\Permission\PermissionRepository;
 use App\Domain\Project\ProjectRepository;
 use App\Domain\Role\RoleRepository;
 use App\Domain\User\UserRepository;
@@ -17,6 +18,7 @@ class SimpleRepository implements Repository
     protected $administratorRepo;
     protected $roleRepo;
     protected $userRepo;
+    protected $permissionRepo;
 
     public function __construct(
         $projectRepo = null,
@@ -24,7 +26,8 @@ class SimpleRepository implements Repository
         $handlerRepo = null,
         $administratorRepo = null,
         $roleRepo = null,
-        $userRepo = null
+        $userRepo = null,
+        $permissionRepo = null
     )
     {
         $this->projectRepo = $projectRepo;
@@ -33,6 +36,7 @@ class SimpleRepository implements Repository
         $this->administratorRepo = $administratorRepo;
         $this->roleRepo = $roleRepo;
         $this->userRepo = $userRepo;
+        $this->permissionRepo = $permissionRepo;
     }
 
     public function project(): ProjectRepository
@@ -63,5 +67,10 @@ class SimpleRepository implements Repository
     public function user(): ?UserRepository
     {
         return $this->userRepo;
+    }
+
+    public function permission(): ?PermissionRepository
+    {
+        return $this->permissionRepo;
     }
 }

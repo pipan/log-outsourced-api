@@ -69,6 +69,12 @@ Route::prefix('api/v1')
             ->name('users.delete');
         Route::put('users/{uuid}', 'Api\V1\User\UserController@update')
             ->name('users.update');
+
+        Route::get('permissions', 'Api\V1\Permission\PermissionController@index')
+            ->name('permissions.index')
+            ->middleware(ProjectRequired::class);
+        Route::post('permissions', 'Api\V1\Permission\PermissionController@create')
+            ->name('permissions.create');
     });
 
 Route::prefix('api/v1')->group(function () {
