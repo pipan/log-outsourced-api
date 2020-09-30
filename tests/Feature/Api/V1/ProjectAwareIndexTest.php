@@ -20,7 +20,8 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
         return [
             'Users' => ['api/v1/users'],
             'Roles' => ['api/v1/roles'],
-            'Listeners' => ['api/v1/listeners']
+            'Listeners' => ['api/v1/listeners'],
+            'Permissions' => ['api/v1/permissions']
         ];
     }
 

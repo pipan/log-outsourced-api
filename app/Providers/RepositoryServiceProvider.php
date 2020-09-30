@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Repository\Database\Administrator\AdministratorDatabaseRepository;
 use App\Repository\Database\Listener\ListenerDatabaseRepository;
+use App\Repository\Database\Permission\PermissionDatabaseRepository;
 use App\Repository\Database\Project\ProjectDatabaseRepository;
 use App\Repository\Database\Role\RoleDatabaseRepository;
 use App\Repository\Database\User\UserDatabaseRepository;
@@ -24,7 +25,8 @@ class RepositoryServiceProvider extends ServiceProvider
                 new HandlerMemoryRepository(),
                 new AdministratorDatabaseRepository(),
                 new RoleDatabaseRepository(),
-                new UserDatabaseRepository()
+                new UserDatabaseRepository(),
+                new PermissionDatabaseRepository()
             )
         ];
         $repositotyType = env('REPOSITORY_TYPE', 'database');
