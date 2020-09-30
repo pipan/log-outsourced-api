@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('logs/{uuid}', 'Api\V1\Log\LogController@single');
 Route::post('logs/{uuid}/batch', 'Api\V1\Log\LogController@batch');
+Route::get('permissions/{uuid}', 'Api\V1\Permission\PermissionValidateController');
 
 Route::prefix('api/v1')
     ->middleware(AuthRequired::class)

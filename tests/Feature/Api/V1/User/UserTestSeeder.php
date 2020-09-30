@@ -13,7 +13,7 @@ class UserTestSeeder
             'id' => 1,
             'uuid' => 'aabb',
             'project_id' => 1,
-            'username' => 'test@example.com'
+            'username' => 'admin'
         ]);
 
         $repository->getMocker()
@@ -21,6 +21,9 @@ class UserTestSeeder
             ->whenInputReturn($user, ['aabb']);
         $repository->getMocker()
             ->getSimulation('getByUsernameForProject')
-            ->whenInputReturn($user, ['test@example.com', 1]);
+            ->whenInputReturn($user, ['admin', 1]);
+        $repository->getMocker()
+            ->getSimulation('getByUsernameForProject')
+            ->whenInputReturn($user, ['admin', 1]);
     }
 }

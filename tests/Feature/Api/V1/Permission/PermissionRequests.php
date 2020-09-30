@@ -53,4 +53,37 @@ class PermissionRequests
             ],
         ];
     }
+
+    public static function getInvalidForValidation()
+    {
+        return [
+            'user missing' => [
+                'permissions/aabb?permissions[]=user.view'
+            ],
+            'user empty' => [
+                'permissions/aabb?user=&permissions[]=user.view'
+            ],
+            'user not existing' => [
+                'permissions/aabb?user=xxxx&permissions[]=user.view'
+            ],
+            'permissions missing' => [
+                'permissions/aabb?user=admin'
+            ],
+            'permissions not array' => [
+                'permissions/aabb?user=admin&permissions=user.view'
+            ]
+        ];
+    }
+
+    public static function getNotFoundForValidation()
+    {
+        return [
+            'project uuid missing' => [
+                'permissions?user=admin&permissions[]=user.view'
+            ],
+            'project not existing' => [
+                'permissions/xxxx?user=admin&permissions[]=user.view'
+            ]
+        ];
+    }
 }
