@@ -7,6 +7,9 @@ use App\Domain\User\UserRepository;
 use App\Repository\Database\AdapterDatabaseIo;
 use App\Repository\Database\HookDatabaseIo;
 use App\Repository\Database\PaginationQuery;
+use App\Repository\Database\Role\Hook\User\UserDeleteHook;
+use App\Repository\Database\Role\Hook\User\UserLoadHook;
+use App\Repository\Database\Role\Hook\User\UserSaveHook;
 use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
 use Lib\Entity\EntityBlacklistAdapter;
@@ -27,6 +30,10 @@ class UserDatabaseRepository implements UserRepository
                 new EntityBlacklistAdapter(['id', 'roles'])
             )
         );
+
+        $this->io->addHook('load', new UserLoadHook());
+        $this->io->addHook('save', new UserSaveHook());
+        $this->io->addHook('delete', new UserDeleteHook());
     }
 
     public function getForProject($projectId, PaginationEntity $pagination)

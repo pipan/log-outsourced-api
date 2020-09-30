@@ -32,7 +32,7 @@ class UserRequests
             'username exists' => [
                 [
                     'project_uuid' => 'aabb',
-                    'username' => 'test@example.com'
+                    'username' => 'admin'
                 ]
             ],
             'project uuid missing' => [

@@ -6,6 +6,8 @@ use App\Domain\Project\ProjectAwareRepository;
 
 interface RoleRepository extends ProjectAwareRepository
 {
+    public function getForUser($userId);
+
     public function getByUuid($uuid): ?RoleEntity;
 
     public function insert(RoleEntity $entity): RoleEntity;

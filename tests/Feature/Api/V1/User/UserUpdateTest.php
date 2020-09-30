@@ -28,7 +28,7 @@ class UserUpdateController extends ControllerActionTestCase
         $response->assertStatus(200);
         $response->assertJsonStructure(['uuid', 'username', 'roles']);
         $response->assertJsonFragment([
-            'username' => 'test@example.com',
+            'username' => 'admin',
             'roles' => ['user']
         ]);
     }

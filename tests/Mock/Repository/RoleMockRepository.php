@@ -21,6 +21,12 @@ class RoleMockRepository implements RoleRepository
         return $this->mocker;
     }
 
+    public function getForUser($userId)
+    {
+        return $this->mocker->getSimulation('getForUser')
+            ->execute([$userId]);
+    }
+
     public function getForProject($projectId, PaginationEntity $pagination)
     {
         return $this->mocker->getSimulation('getForProject')
