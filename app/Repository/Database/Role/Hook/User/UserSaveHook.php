@@ -17,7 +17,7 @@ class UserSaveHook implements ActionHook
         foreach ($user->getRoles() as $role) {
             $result = DB::table('roles')
                 ->where('name', '=', $role)
-                ->where('project_id', '=', $role->getProjectId())
+                ->where('project_id', '=', $user->getProjectId())
                 ->first();
             if ($result === null) {
                 continue;

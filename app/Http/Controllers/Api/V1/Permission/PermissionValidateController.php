@@ -26,13 +26,18 @@ class PermissionValidateController
             $project->getId()
         );
 
+        $requestedPermissions = $request->input('permissions', []);
         $roles = $repository->role()->getForUser($user->getId());
         $permissions = [];
         foreach ($roles as $role) {
-            $permissions = array_merge($permissions, $role->getPermissions());
-            $permissions = array_unique($permissions);
+            foreach ($role->getPermissions() as $rolePermission) {
+                if (!in_array($rolePermission, $requestedPermissions)) {
+                    continue;
+                }
+                $permissions[] = $rolePermission;
+            }            
         }
-        $permissions = array_intersect($permissions, $request->input('permissions'));
+        $permissions = array_unique($permissions);
 
         return response([
             'permissions' => $permissions
