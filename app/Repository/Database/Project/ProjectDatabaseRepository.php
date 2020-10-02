@@ -4,7 +4,11 @@ namespace App\Repository\Database\Project;
 
 use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectRepository;
+use App\Repository\Database\AdapterDatabaseIo;
+use App\Repository\Database\HookDatabaseIo;
 use App\Repository\Database\PaginationQuery;
+use App\Repository\Database\Project\Hook\ProjectAwareDeleteHook;
+use App\Repository\Database\SimpleDatabaseIo;
 use Illuminate\Support\Facades\DB;
 use Lib\Adapter\AdapterHelper;
 use Lib\Entity\EntityBlacklistAdapter;
@@ -14,6 +18,7 @@ class ProjectDatabaseRepository implements ProjectRepository
 {
     const TABLE_NAME = 'projects';
 
+    private $io;
     private $readAdapter;
     private $writeAdapter;
 
@@ -21,6 +26,19 @@ class ProjectDatabaseRepository implements ProjectRepository
     {
         $this->readAdapter = new ReadAdapter();
         $this->writeAdapter = new EntityBlacklistAdapter(['id']);
+
+        $this->io = new HookDatabaseIo(
+            new AdapterDatabaseIo(
+                new SimpleDatabaseIo(self::TABLE_NAME),
+                $this->readAdapter,
+                $this->writeAdapter
+            )
+        );
+
+        $this->io->addHook('delete', new ProjectAwareDeleteHook('listeners'));
+        $this->io->addHook('delete', new ProjectAwareDeleteHook('roles'));
+        $this->io->addHook('delete', new ProjectAwareDeleteHook('users'));
+        $this->io->addHook('delete', new ProjectAwareDeleteHook('permissions'));
     }
 
     public function getAll(PaginationEntity $pagination)
@@ -67,8 +85,6 @@ class ProjectDatabaseRepository implements ProjectRepository
 
     public function delete(ProjectEntity $project)
     {
-        return DB::table(self::TABLE_NAME)
-            ->where('id', '=', $project->getId())
-            ->delete();
+        $this->io->delete($project->getId());
     }
 }
