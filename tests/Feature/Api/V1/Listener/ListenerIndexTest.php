@@ -40,7 +40,8 @@ class ListenerIndexTest extends ControllerActionTestCase
                 'pagination' => [
                     'page' => 1,
                     'limit' => 25,
-                    'max' => 0
+                    'max' => 0,
+                    'total' => 0
                 ]
             ]
         ]);
@@ -85,7 +86,8 @@ class ListenerIndexTest extends ControllerActionTestCase
                 'pagination' => [
                     'page' => 1,
                     'limit' => 25,
-                    'max' => 1
+                    'max' => 1,
+                    'total' => 1
                 ]
             ]
         ]);

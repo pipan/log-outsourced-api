@@ -62,7 +62,8 @@ class ProjectIndexTest extends ControllerActionTestCase
         $this->assertPagination($response, [
             'page' => 1,
             'limit' => 25,
-            'max' => 0
+            'max' => 0,
+            'total' => 0
         ]);
         $this->assertItems($response, []);
     }
@@ -88,7 +89,8 @@ class ProjectIndexTest extends ControllerActionTestCase
         $this->assertPagination($response, [
             'page' => 1,
             'limit' => 25,
-            'max' => 1
+            'max' => 1,
+            'total' => 1
         ]);
         $this->assertItems($response, [[
             'uuid' => 'aabb',

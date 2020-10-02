@@ -30,6 +30,7 @@ class ListMetaEntity extends Entity
     public function withTotalItems($value)
     {
         $max = intval(ceil($value / $this->data['pagination']['limit']));
-        return $this->withPaginationMax($max);
+        return $this->with('pagination.total', $value)
+            ->withPaginationMax($max);
     }
 }
