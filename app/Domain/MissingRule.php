@@ -20,6 +20,6 @@ class MissingRule implements Rule
 
     public function message()
     {
-        return 'The :attribute musn\'t exist.';
+        return 'The :attribute must be unique.';
     }
 }

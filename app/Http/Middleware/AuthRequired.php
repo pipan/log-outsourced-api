@@ -9,6 +9,8 @@ use Exception;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use UnexpectedValueException;
 
 class AuthRequired
 {
@@ -31,7 +33,8 @@ class AuthRequired
         } catch (ExpiredException $ex) {
             return ResponseError::unauthorized();
         } catch (Exception $ex) {
-            return ResponseError::error($ex);
+            Log::info('Unauthorized exception: ' . $ex->getMessage());
+            return ResponseError::unauthorized();
         }
 
         if ($tokenData->sub === 'root') {
