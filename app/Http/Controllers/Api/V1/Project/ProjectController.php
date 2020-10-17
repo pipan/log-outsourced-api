@@ -68,13 +68,7 @@ class ProjectController
             return ResponseError::resourceNotFound();
         }
 
-        // $listeners = $repository->listener()->getForProject($project->getId());
-
-        $listListenerAdapter = AdapterHelper::listOf($this->listenerSchema);
-        return response([
-            'project' => $this->projectSchema->adapt($project),
-            // 'listeners' => $listListenerAdapter->adapt($listeners)
-        ]);
+        return response($this->projectSchema->adapt($project));
     }
 
     public function delete($uuid, Repository $repository)
