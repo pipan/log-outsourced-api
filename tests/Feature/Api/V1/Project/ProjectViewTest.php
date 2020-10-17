@@ -24,10 +24,8 @@ class ProjectViewTest extends ControllerActionTestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'project' => [
-                'uuid',
-                'name'
-            ]
+            'uuid',
+            'name'
         ]);
     }
 
