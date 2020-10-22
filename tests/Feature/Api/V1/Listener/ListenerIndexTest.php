@@ -77,10 +77,8 @@ class ListenerIndexTest extends ControllerActionTestCase
                 'name' => 'critical',
                 'project_id' => 1,
                 'rules' => ['critical'],
-                'handler' => [
-                    'slug' => 'file',
-                    'values' => ['one' => '1']
-                ]
+                'handler_slug' => 'file',
+                'handler_values' => ['one' => '1']
             ]],
             'meta' => [
                 'pagination' => [

@@ -13,10 +13,8 @@ class ListenerResponseSchemaAdapter implements Adapter
             'project_id' => $item->getProjectId(),
             'name' => $item->getName(),
             'rules' => $item->getRules(),
-            'handler' => [
-                'slug' => $item->getHandlerSlug(),
-                'values' => $item->getHandlerValues()
-            ]
+            'handler_slug' => $item->getHandlerSlug(),
+            'handler_values' => $item->getHandlerValues()
         ];
     }
 }

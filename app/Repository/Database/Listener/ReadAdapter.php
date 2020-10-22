@@ -11,7 +11,7 @@ class ReadAdapter extends NullAdapter
     {
         return (new ListenerEntity((array) $item))
             ->withHandlerValues(
-                json_decode(decrypt($item->handler_values, true))
+                json_decode(decrypt($item->handler_values), true)
             );
     }
 }

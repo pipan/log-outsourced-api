@@ -33,7 +33,7 @@ class ListenerLoadHook implements ActionHook
                 $newListeners[] = $listener;
                 continue;
             }
-            $newListeners[] = $listener->withRuls(
+            $newListeners[] = $listener->withRules(
                 $rules[$listener->getId()]
             );
         }

@@ -32,10 +32,12 @@ class HandlerIndexText extends ControllerActionTestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            [
-                'slug' => 'file',
-                'name' => 'File',
-                'meta' => []
+            'items' => [
+                [
+                    'slug' => 'file',
+                    'name' => 'File',
+                    'meta' => []
+                ]
             ]
         ]);
     }
