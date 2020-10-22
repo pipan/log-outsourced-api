@@ -40,10 +40,8 @@ class ListenerCreateTest extends ControllerActionTestCase
             'name',
             'project_id',
             'rules',
-            'handler' => [
-                'slug',
-                'values'
-            ]
+            'handler_slug',
+            'handler_values'
         ]);
         $this->assertCount(1, $inserted);
     }

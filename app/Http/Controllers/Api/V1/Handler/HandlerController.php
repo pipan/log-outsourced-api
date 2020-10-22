@@ -21,10 +21,9 @@ class HandlerController
         $entities = $repository->handler()->getAll();
 
         $adapter = AdapterHelper::listOf($this->schema);
-        return response()->json(
-            $adapter->adapt($entities),
-            200
-        );
+        return response()->json([
+            'items' => $adapter->adapt($entities)
+        ]);
     }
 
     public function view($slug, Repository $repository)

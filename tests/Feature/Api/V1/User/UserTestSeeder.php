@@ -9,21 +9,28 @@ class UserTestSeeder
 {
     public static function seed(UserMockRepository $repository)
     {
-        $user = new UserEntity([
-            'id' => 1,
-            'uuid' => 'aabb',
-            'project_id' => 1,
-            'username' => 'admin'
-        ]);
+        $users = [
+            new UserEntity([
+                'id' => 1,
+                'uuid' => 'aabb',
+                'project_id' => 1,
+                'username' => 'admin'
+            ]),
+            new UserEntity([
+                'id' => 2,
+                'uuid' => 'ccdd',
+                'project_id' => 2,
+                'username' => 'exists'
+            ]),
+        ];
 
-        $repository->getMocker()
-            ->getSimulation('getByUuid')
-            ->whenInputReturn($user, ['aabb']);
-        $repository->getMocker()
-            ->getSimulation('getByUsernameForProject')
-            ->whenInputReturn($user, ['admin', 1]);
-        $repository->getMocker()
-            ->getSimulation('getByUsernameForProject')
-            ->whenInputReturn($user, ['admin', 1]);
+        foreach ($users as $user) {
+            $repository->getMocker()
+                ->getSimulation('getByUuid')
+                ->whenInputReturn($user, [$user->getUuid()]);
+            $repository->getMocker()
+                ->getSimulation('getByUsernameForProject')
+                ->whenInputReturn($user, [$user->getUsername(), $user->getProjectId()]);
+        }
     }
 }

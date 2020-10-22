@@ -43,9 +43,9 @@ class PermissionIndexTest extends ControllerActionTestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            'items' => [[
-                'name' => "user.view"
-            ]]
+            'items' => [
+                "user.view"
+            ]
         ]);
     }
 

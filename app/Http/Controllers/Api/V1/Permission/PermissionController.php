@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api\V1\Permission;
 use App\Domain\Permission\PermissionEntity;
 use App\Domain\Permission\PermissionValidator;
 use App\Http\ResponseError;
+use App\Http\ResponseSchema\PermissionSchemaAdapter;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
 use Lib\Adapter\AdapterHelper;
-use Lib\Entity\EntityWhitelistAdapter;
 
 class PermissionController
 {
@@ -18,7 +18,7 @@ class PermissionController
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;
-        $this->schema = new EntityWhitelistAdapter(['name']);
+        $this->schema = new PermissionSchemaAdapter();
     }
 
     public function index(Request $request)
@@ -61,6 +61,8 @@ class PermissionController
         $permission = $this->repository->permission()
             ->insert($permission);
 
-        return response($this->schema->adapt($permission), 201);
+        return response([
+            'name' => $permission->getName()
+        ], 201);
     }
 }
