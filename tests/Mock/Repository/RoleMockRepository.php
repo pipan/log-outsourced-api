@@ -39,6 +39,18 @@ class RoleMockRepository implements RoleRepository
             ->execute([$projectId, $search]);
     }
 
+    public function findList($ids)
+    {
+        return $this->getMocker()->getSimulation('findList')
+            ->execute([$ids]);
+    }
+
+    public function findListForProjectByNames($projectId, $names)
+    {
+        return $this->getMocker()->getSimulation('findListForProjectByNames')
+            ->execute([$projectId, $names]);
+    }
+
     public function getByUuid($uuid): ?RoleEntity
     {
         return $this->mocker->getSimulation('getByUuid')

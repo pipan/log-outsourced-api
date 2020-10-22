@@ -29,12 +29,9 @@ class PermissionValidator
 
     public static function forValidation(Repository $repository, $projectId): DynamicValidator
     {
-        $userExists = new ExistsRule(
-            new UsernameExistsValidation($repository->user(), $projectId)
-        );
         return new EntityValidator([
             'permissions' => ['required', 'array', 'min:1'],
-            'user' => ['bail', 'required', 'max:255', $userExists]
+            'user' => ['bail', 'required', 'max:255']
         ]);
     }
 }

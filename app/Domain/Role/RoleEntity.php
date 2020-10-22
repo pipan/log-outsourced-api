@@ -3,7 +3,6 @@
 namespace App\Domain\Role;
 
 use App\Domain\IdEntity;
-use App\Repository\Database\DatabaseEntity;
 use Exception;
 
 class RoleEntity extends IdEntity

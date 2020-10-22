@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1\Permission;
 
 use App\Domain\Role\RoleEntity;
+use App\Domain\Settings\DefaultRole\DefaultRoleEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 use Tests\Feature\Api\V1\User\UserTestSeeder;
@@ -48,6 +49,66 @@ class PermissionValidateTest extends ControllerActionTestCase
                 'user.view'
             ]
         ]);
+    }
+
+    public function testResponseOkUnknownUser()
+    {
+        $this->defaultRoleRepository->getMocker()
+            ->getSimulation('get')
+            ->whenInputReturn([], [1]);
+        $this->roleRepository->getMocker()
+            ->getSimulation('getForUser')
+            ->whenInputReturn([], [0]);
+
+        $response = $this->get('permissions/aabb?user=unknown&permissions[]=user.view');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'permissions' => []
+        ]);
+    }
+
+    public function testUnknownUserAssignDefaultRoles()
+    {
+        $defaultRoles = [
+            new DefaultRoleEntity([
+                'id' => 1,
+                'role_id' => 1,
+                'project_id' => 1,
+                'role' => new RoleEntity([
+                    'id' => 1,
+                    'project_id' => 1,
+                    'uuid' => '0001',
+                    'name' => '000-one'
+                ])
+            ]),
+            new DefaultRoleEntity([
+                'id' => 2,
+                'role_id' => 2,
+                'project_id' => 1,
+                'role' => new RoleEntity([
+                    'id' => 2,
+                    'project_id' => 1,
+                    'uuid' => '0002',
+                    'name' => '000-two'
+                ])
+            ])
+        ];
+        $this->defaultRoleRepository->getMocker()
+            ->getSimulation('get')
+            ->whenInputReturn($defaultRoles, [1]);
+        $this->roleRepository->getMocker()
+            ->getSimulation('getForUser')
+            ->whenInputReturn([], [0]);
+
+        $response = $this->get('permissions/aabb?user=unknown&permissions[]=user.view');
+
+        $inserted = $this->userRepository->getMocker()
+            ->getSimulation('insert')
+            ->getExecutions();
+
+        $this->assertCount(1, $inserted);
+        $this->assertEquals($inserted[0][0]->getRoles(), ['000-one', '000-two']);
     }
 
     public function testResponseOkRequiredPermissionNotFound()

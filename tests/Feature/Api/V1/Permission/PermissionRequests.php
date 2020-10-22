@@ -63,9 +63,6 @@ class PermissionRequests
             'user empty' => [
                 'permissions/aabb?user=&permissions[]=user.view'
             ],
-            'user not existing' => [
-                'permissions/aabb?user=xxxx&permissions[]=user.view'
-            ],
             'permissions missing' => [
                 'permissions/aabb?user=admin'
             ],

@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Api\V1\Permission;
 
 use App\Domain\Permission\PermissionValidator;
+use App\Domain\User\UserEntity;
 use App\Http\ResponseError;
 use App\Repository\Repository;
 use Illuminate\Http\Request;
+use Lib\Generator\HexadecimalGenerator;
 
 class PermissionValidateController
 {
-    public function __invoke($uuid, Request $request, Repository $repository)
+    public function __invoke($uuid, Request $request, Repository $repository, HexadecimalGenerator $hexadecimalGenerator)
     {
         $project = $repository->project()->getByUuid($uuid);
         if (!$project) {
@@ -25,6 +27,20 @@ class PermissionValidateController
             $request->input('user'),
             $project->getId()
         );
+        if (!$user) {
+            $defaultRoles = $repository->defaultRole()->get($project->getId());
+            $roleNames = [];
+            foreach ($defaultRoles as $default) {
+                $roleNames[] = $default->getRole()->getName();
+            }
+
+            $user = $repository->user()->insert(new UserEntity([
+                'uuid' => $hexadecimalGenerator->next(),
+                'project_id' => $project->getId(),
+                'username' => $request->input('user'),
+                'roles' => $roleNames
+            ]));
+        }
 
         $requestedPermissions = $request->input('permissions', []);
         $roles = $repository->role()->getForUser($user->getId());
