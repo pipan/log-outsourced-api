@@ -18,7 +18,7 @@ class DefaultRoleSaveTest extends ControllerActionTestCase
 
     public function getInvalidRequests()
     {
-        return Requests::getInvalidForSave()opo;
+        return Requests::getInvalidForSave();
     }
 
     public function testResponseOk()
