@@ -82,6 +82,16 @@ Route::prefix('api/v1')
             ->middleware(ProjectRequired::class);
         Route::post('settings/defaultroles', 'Api\V1\Settings\DefaultRole\DefaultRoleController@save')
             ->name('settings.defaultroles.save');
+
+        Route::get('settings/projectkeys', 'Api\V1\Settings\ProjectKey\ProjectKeyController@index')
+            ->name('settings.projectkeys.index')
+            ->middleware(ProjectRequired::class);
+        Route::post('settings/projectkeys', 'Api\V1\Settings\ProjectKey\ProjectKeyController@create')
+            ->name('settings.projectkeys.create');
+        Route::delete('settings/projectkeys/{uuid}', 'Api\V1\Settings\ProjectKey\ProjectKeyController@delete')
+            ->name('settings.projectkeys.delete');
+        Route::put('settings/projectkeys/{uuid}', 'Api\V1\Settings\ProjectKey\ProjectKeyController@update')
+            ->name('settings.projectkeys.update');
     });
 
 Route::prefix('api/v1')->group(function () {

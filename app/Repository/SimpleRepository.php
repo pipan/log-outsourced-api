@@ -9,6 +9,7 @@ use App\Domain\Permission\PermissionRepository;
 use App\Domain\Project\ProjectRepository;
 use App\Domain\Role\RoleRepository;
 use App\Domain\Settings\DefaultRole\DefaultRoleRepository;
+use App\Domain\Settings\ProjectKey\ProjectKeyRepository;
 use App\Domain\User\UserRepository;
 
 class SimpleRepository implements Repository
@@ -21,6 +22,7 @@ class SimpleRepository implements Repository
     protected $userRepo;
     protected $permissionRepo;
     protected $defaultRoleRepo;
+    protected $projectKeyRepo;
 
     public function __construct(
         $projectRepo = null,
@@ -30,7 +32,8 @@ class SimpleRepository implements Repository
         $roleRepo = null,
         $userRepo = null,
         $permissionRepo = null,
-        $defaultRoleRepo = null
+        $defaultRoleRepo = null,
+        $projectKeyRepo = null
     )
     {
         $this->projectRepo = $projectRepo;
@@ -41,6 +44,7 @@ class SimpleRepository implements Repository
         $this->userRepo = $userRepo;
         $this->permissionRepo = $permissionRepo;
         $this->defaultRoleRepo = $defaultRoleRepo;
+        $this->projectKeyRepo = $projectKeyRepo;
     }
 
     public function project(): ProjectRepository
@@ -81,5 +85,10 @@ class SimpleRepository implements Repository
     public function defaultRole(): ?DefaultRoleRepository
     {
         return $this->defaultRoleRepo;
+    }
+
+    public function projectKey(): ?ProjectKeyRepository
+    {
+        return $this->projectKeyRepo;
     }
 }

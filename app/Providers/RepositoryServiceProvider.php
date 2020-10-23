@@ -8,6 +8,7 @@ use App\Repository\Database\Permission\PermissionDatabaseRepository;
 use App\Repository\Database\Project\ProjectDatabaseRepository;
 use App\Repository\Database\Role\RoleDatabaseRepository;
 use App\Repository\Database\Settings\DefaultRole\DefaultRoleDatabaseRepository;
+use App\Repository\Database\Settings\ProjectKey\ProjectKeyDatabaseRepository;
 use App\Repository\Database\User\UserDatabaseRepository;
 use App\Repository\Memory\Handler\HandlerMemoryRepository;
 use App\Repository\Repository;
@@ -28,7 +29,8 @@ class RepositoryServiceProvider extends ServiceProvider
                 new RoleDatabaseRepository(),
                 new UserDatabaseRepository(),
                 new PermissionDatabaseRepository(),
-                new DefaultRoleDatabaseRepository()
+                new DefaultRoleDatabaseRepository(),
+                new ProjectKeyDatabaseRepository()
             )
         ];
         $repositotyType = env('REPOSITORY_TYPE', 'database');
