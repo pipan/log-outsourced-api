@@ -8,6 +8,7 @@ use App\Domain\Listener\ListenerRepository;
 use App\Domain\Permission\PermissionRepository;
 use App\Domain\Project\ProjectRepository;
 use App\Domain\Role\RoleRepository;
+use App\Domain\Settings\DefaultRole\DefaultRoleRepository;
 use App\Domain\User\UserRepository;
 
 interface Repository
@@ -19,4 +20,5 @@ interface Repository
     public function role(): ?RoleRepository;
     public function user(): ?UserRepository;
     public function permission(): ?PermissionRepository;
+    public function defaultRole(): ?DefaultRoleRepository;
 }

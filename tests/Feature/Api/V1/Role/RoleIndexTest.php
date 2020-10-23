@@ -3,7 +3,6 @@
 namespace Tests\Feature\Api\V1\Role;
 
 use App\Domain\Role\RoleEntity;
-use App\Repository\Pagination;
 use Lib\Pagination\PaginationEntity;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;

@@ -63,6 +63,21 @@ class RoleDatabaseRepository implements RoleRepository
         return $this->io->selectList($results);
     }
 
+    public function findList($ids)
+    {
+        return $this->io->findList($ids);
+    }
+
+    public function findListForProjectByNames($projectId, $names)
+    {
+        $result = DB::table(self::TABLE)
+            ->where('project_id', '=', $projectId)
+            ->whereIn('name', $names)
+            ->get();
+        
+        return $this->io->selectList($result);
+    }
+
     public function getByUuid($uuid): ?RoleEntity
     {
         $result = DB::table(self::TABLE)

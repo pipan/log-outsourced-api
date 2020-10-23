@@ -76,6 +76,12 @@ Route::prefix('api/v1')
             ->middleware(ProjectRequired::class);
         Route::post('permissions', 'Api\V1\Permission\PermissionController@create')
             ->name('permissions.create');
+
+        Route::get('settings/defaultroles', 'Api\V1\Settings\DefaultRole\DefaultRoleController@load')
+            ->name('settings.defaultroles.load')
+            ->middleware(ProjectRequired::class);
+        Route::post('settings/defaultroles', 'Api\V1\Settings\DefaultRole\DefaultRoleController@save')
+            ->name('settings.defaultroles.save');
     });
 
 Route::prefix('api/v1')->group(function () {

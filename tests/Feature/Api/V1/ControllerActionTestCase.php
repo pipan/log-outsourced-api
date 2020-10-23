@@ -5,6 +5,7 @@ namespace Tests\Feature\Api\V1;
 use App\Repository\Repository;
 use App\Repository\SimpleRepository;
 use Tests\Mock\Repository\AdministratorMockRepository;
+use Tests\Mock\Repository\DefaultRoleMockRepository;
 use Tests\Mock\Repository\HandlerMockRepository;
 use Tests\Mock\Repository\ListenerMockRepository;
 use Tests\Mock\Repository\PermissionMockRepository;
@@ -29,6 +30,8 @@ abstract class ControllerActionTestCase extends TestCase
     protected $userRepository;
     /** @var PermissionMockRepository */
     protected $permissionRepository;
+    /** @var DefaultRoleMockRepository */
+    protected $defaultRoleRepository;
     /** @var Repository */
     protected $repository;
 
@@ -43,6 +46,7 @@ abstract class ControllerActionTestCase extends TestCase
         $this->roleRepository = new RoleMockRepository();
         $this->userRepository = new UserMockRepository();
         $this->permissionRepository = new PermissionMockRepository();
+        $this->defaultRoleRepository = new DefaultRoleMockRepository();
         $this->repository = new SimpleRepository(
             $this->projectRepository,
             $this->listenerRepository,
@@ -50,7 +54,8 @@ abstract class ControllerActionTestCase extends TestCase
             $this->administratorRepository,
             $this->roleRepository,
             $this->userRepository,
-            $this->permissionRepository
+            $this->permissionRepository,
+            $this->defaultRoleRepository
         );
 
         $this->app->instance(Repository::class, $this->repository);
