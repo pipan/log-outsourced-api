@@ -21,7 +21,9 @@ class ProjectAwareIndexTest extends ControllerActionTestCase
             'Users' => ['api/v1/users'],
             'Roles' => ['api/v1/roles'],
             'Listeners' => ['api/v1/listeners'],
-            'Permissions' => ['api/v1/permissions']
+            'Permissions' => ['api/v1/permissions'],
+            'Default Roles' => ['api/v1/settings/defaultroles'],
+            'Project Keys' => ['api/v1/settings/projectkeys']
         ];
     }
 

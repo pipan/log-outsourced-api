@@ -9,6 +9,7 @@ use Tests\Mock\Repository\DefaultRoleMockRepository;
 use Tests\Mock\Repository\HandlerMockRepository;
 use Tests\Mock\Repository\ListenerMockRepository;
 use Tests\Mock\Repository\PermissionMockRepository;
+use Tests\Mock\Repository\ProjectKeyMockRepository;
 use Tests\Mock\Repository\ProjectMockRepository;
 use Tests\Mock\Repository\RoleMockRepository;
 use Tests\Mock\Repository\UserMockRepository;
@@ -32,6 +33,8 @@ abstract class ControllerActionTestCase extends TestCase
     protected $permissionRepository;
     /** @var DefaultRoleMockRepository */
     protected $defaultRoleRepository;
+    /** @var ProjectKeyMockRepository */
+    protected $projectKeyRepository;
     /** @var Repository */
     protected $repository;
 
@@ -47,6 +50,7 @@ abstract class ControllerActionTestCase extends TestCase
         $this->userRepository = new UserMockRepository();
         $this->permissionRepository = new PermissionMockRepository();
         $this->defaultRoleRepository = new DefaultRoleMockRepository();
+        $this->projectKeyRepository = new ProjectKeyMockRepository();
         $this->repository = new SimpleRepository(
             $this->projectRepository,
             $this->listenerRepository,
@@ -55,7 +59,8 @@ abstract class ControllerActionTestCase extends TestCase
             $this->roleRepository,
             $this->userRepository,
             $this->permissionRepository,
-            $this->defaultRoleRepository
+            $this->defaultRoleRepository,
+            $this->projectKeyRepository
         );
 
         $this->app->instance(Repository::class, $this->repository);
