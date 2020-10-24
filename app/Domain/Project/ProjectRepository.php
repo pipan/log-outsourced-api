@@ -8,6 +8,7 @@ interface ProjectRepository
 {
     public function getAll(PaginationEntity $pagination);
     public function count($search);
+    public function get($id): ?ProjectEntity;
     public function getByUuid($uuid): ?ProjectEntity;
 
     public function insert(ProjectEntity $entity): ProjectEntity;

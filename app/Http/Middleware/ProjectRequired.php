@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\ExistsRule;
 use App\Domain\Project\UuidExistsValidator;
+use App\Http\ResponseError;
 use App\Repository\Repository;
 use Closure;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +27,7 @@ class ProjectRequired
             'project_uuid' => ['bail', 'required', $uuiExists]
         ]);
         if ($validation->fails()) {
-            return response([], 404);
+            return ResponseError::resourceNotFound();
         }
 
         return $next($request);

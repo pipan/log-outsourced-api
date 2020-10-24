@@ -20,6 +20,9 @@ class ProjectTestSeeder
         $projectRepository->getMocker()
             ->getSimulation('getByUuid')
             ->whenInputReturn($projects[0], ['aabb']);
+        $projectRepository->getMocker()
+            ->getSimulation('get')
+            ->whenInputReturn($projects[0], [1]);
 
         $projectRepository->getMocker()
             ->getSimulation('getAll')

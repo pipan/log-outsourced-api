@@ -3,13 +3,14 @@
 namespace Tests\Feature\Api\V1\Log;
 
 use App\Handler\LogHandlerContainer;
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Listener\ListenerTestSeeder;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 use Tests\Feature\Api\V1\Settings\ProjectKey\ProjectKeyTestSeeder;
 use Tests\Mock\Handler\LogHandlerMock;
 
-class LogBatchTest extends ControllerActionTestCase
+class LogBatchApiTest extends ControllerActionTestCase
 {
     private $logHandler;
 
@@ -26,19 +27,14 @@ class LogBatchTest extends ControllerActionTestCase
         ProjectKeyTestSeeder::seed($this->projectKeyRepository);
     }
 
-    public function getInvalidRequests()
+    public function testResponseOk()
     {
-        return LogRequests::getInvalidForBatch();
-    }
-
-    public function testResponseOkMissingContext()
-    {
-        $response = $this->post('/logs/1234/batch', [
+        $response = $this->post('/api/v1/logs/batch?project_uuid=aabb', [
             'logs' => [[
                 'level' => 'error',
                 'message' => 'Log this message'
             ]]
-        ]);
+        ], AuthHeaders::authorize());
 
         $handled = $this->logHandler->getMocker()
             ->getSimulation('handle')
@@ -49,48 +45,16 @@ class LogBatchTest extends ControllerActionTestCase
         $this->assertCount(1, $handled);
     }
 
-    public function testResponseOkWithContext()
+    public function testResponseUnauthorized()
     {
-        $response = $this->post('/logs/1234/batch', [
-            'logs' => [[
-                'level' => 'error',
-                'message' => 'Log this message',
-                'context' => [
-                    'stackTrace' => 'Error'
-                ]
-            ]]
-        ]);
-
-        $handled = $this->logHandler->getMocker()
-            ->getSimulation('handle')
-            ->getExecutions();
-
-        $response->assertStatus(200);
-        $response->assertJson([]);
-        $this->assertCount(1, $handled);
-    }
-
-    public function testResponseNotFound()
-    {
-        $response = $this->post('/logs/xxxx/batch', [
+        $response = $this->post('/api/v1/logs/batch?project_uuid=aabb', [
             'logs' => [[
                 'level' => 'error',
                 'message' => 'Log this message'
             ]]
         ]);
 
-        $response->assertStatus(404);
-        $response->assertJson([]);
-    }
-
-    /**
-     * @dataProvider getInvalidRequests
-     */
-    public function testResponseValidationError($requestData)
-    {
-        $response = $this->post('/logs/1234/batch', $requestData);
-
-        $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

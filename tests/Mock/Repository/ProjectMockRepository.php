@@ -33,6 +33,12 @@ class ProjectMockRepository implements ProjectRepository
             ->execute([$search]);
     }
 
+    public function get($id): ?ProjectEntity
+    {
+        return $this->mocker->getSimulation('get')
+            ->execute([$id]);
+    }
+
     public function getByUuid($uuid): ?ProjectEntity
     {
         return $this->mocker->getSimulation('getByUuid')

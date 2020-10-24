@@ -4,13 +4,20 @@ use App\Http\Middleware\AuthRequired;
 use App\Http\Middleware\ProjectRequired;
 use Illuminate\Support\Facades\Route;
 
-Route::post('logs/{uuid}', 'Api\V1\Log\LogController@single');
-Route::post('logs/{uuid}/batch', 'Api\V1\Log\LogController@batch');
-Route::get('permissions/{uuid}', 'Api\V1\Permission\PermissionValidateController');
+Route::post('logs/{key}', 'Api\V1\Log\LogController@singleWithKey');
+Route::post('logs/{key}/batch', 'Api\V1\Log\LogController@batchWithKey');
+Route::get('permissions/{key}', 'Api\V1\Permission\PermissionValidateController');
 
 Route::prefix('api/v1')
     ->middleware(AuthRequired::class)
     ->group(function () {
+        Route::post('logs/single', 'Api\V1\Log\LogController@singleApi')
+            ->middleware(ProjectRequired::class)
+            ->name('api.logs.single');
+        Route::post('logs/batch', 'Api\V1\Log\LogController@batchApi')
+            ->middleware(ProjectRequired::class)
+            ->name('api.logs.batch');
+
         Route::get('projects', 'Api\V1\Project\ProjectController@index')
             ->name('projects.index');
         Route::post('projects', 'Api\V1\Project\ProjectController@create')

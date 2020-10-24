@@ -11,9 +11,13 @@ use Lib\Generator\HexadecimalGenerator;
 
 class PermissionValidateController
 {
-    public function __invoke($uuid, Request $request, Repository $repository, HexadecimalGenerator $hexadecimalGenerator)
+    public function __invoke($key, Request $request, Repository $repository, HexadecimalGenerator $hexadecimalGenerator)
     {
-        $project = $repository->project()->getByUuid($uuid);
+        $projectKey = $repository->projectKey()->getByKey($key);
+        if (!$projectKey) {
+            return ResponseError::resourceNotFound();
+        }
+        $project = $repository->project()->get($projectKey->getProjectId());
         if (!$project) {
             return ResponseError::resourceNotFound();
         }
