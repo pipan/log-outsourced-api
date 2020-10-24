@@ -1,11 +1,13 @@
 {
     "name": "outsourced/log",
     "type": "project",
-    "version": "0.2.5",
-    "description": "Log proxy server",
+    "version": "0.3.0",
+    "description": "Outsourced backed",
     "keywords": [
         "log",
         "logging",
+        "permissions",
+        "roles",
         "proxy",
         "outsource"
     ],
