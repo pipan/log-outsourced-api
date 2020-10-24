@@ -16,9 +16,9 @@ use Psr\Log\LogLevel;
 
 class LogController
 {
-    private Repository $repository;
-    private LogHandlerContainer $handlerContainer;
-    private ListenerPatternMatcher $matcher;
+    private $repository;
+    private $handlerContainer;
+    private $matcher;
 
     public function __construct(Repository $repository, LogHandlerContainer $handlerContainer, ListenerPatternMatcher $matcher)
     {
