@@ -15,6 +15,18 @@ class ProjectKeyTestSeeder
                 'key' => 'aabb',
                 'project_id' => 1,
                 'name' => 'Production'
+            ]),
+            new ProjectKeyEntity([
+                'id' => 2,
+                'key' => '1234',
+                'project_id' => 1,
+                'name' => 'Production'
+            ]),
+            new ProjectKeyEntity([
+                'id' => 3,
+                'key' => '5678',
+                'project_id' => 2,
+                'name' => 'Production'
             ])
         ];
         

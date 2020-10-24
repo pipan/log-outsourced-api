@@ -60,6 +60,11 @@ class ProjectDatabaseRepository implements ProjectRepository
         return $result;
     }
 
+    public function get($id): ?ProjectEntity
+    {
+        return $this->io->find($id);
+    }
+
     public function getByUuid($uuid): ?ProjectEntity
     {
         $result = DB::table(self::TABLE_NAME)

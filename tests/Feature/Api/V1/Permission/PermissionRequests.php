@@ -58,16 +58,16 @@ class PermissionRequests
     {
         return [
             'user missing' => [
-                'permissions/aabb?permissions[]=user.view'
+                'permissions/1234?permissions[]=user.view'
             ],
             'user empty' => [
-                'permissions/aabb?user=&permissions[]=user.view'
+                'permissions/1234?user=&permissions[]=user.view'
             ],
             'permissions missing' => [
-                'permissions/aabb?user=admin'
+                'permissions/1234?user=admin'
             ],
             'permissions not array' => [
-                'permissions/aabb?user=admin&permissions=user.view'
+                'permissions/1234?user=admin&permissions=user.view'
             ]
         ];
     }

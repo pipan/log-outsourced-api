@@ -3,13 +3,14 @@
 namespace Tests\Feature\Api\V1\Log;
 
 use App\Handler\LogHandlerContainer;
+use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Listener\ListenerTestSeeder;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 use Tests\Feature\Api\V1\Settings\ProjectKey\ProjectKeyTestSeeder;
 use Tests\Mock\Handler\LogHandlerMock;
 
-class LogSingleTest extends ControllerActionTestCase
+class LogSingleApiTest extends ControllerActionTestCase
 {
     private $logHandler;
 
@@ -26,17 +27,12 @@ class LogSingleTest extends ControllerActionTestCase
         ProjectKeyTestSeeder::seed($this->projectKeyRepository);
     }
 
-    public function getInvalidRequests()
+    public function testResponseOk()
     {
-        return LogRequests::getInvalidForSingle();
-    }
-
-    public function testResponseOkMissingContext()
-    {
-        $response = $this->post('/logs/1234', [
+        $response = $this->post('/api/v1/logs/single?project_uuid=aabb', [
             'level' => 'error',
             'message' => 'Log this message'
-        ]);
+        ], AuthHeaders::authorize());
 
         $handled = $this->logHandler->getMocker()
             ->getSimulation('handle')
@@ -46,43 +42,14 @@ class LogSingleTest extends ControllerActionTestCase
         $this->assertCount(1, $handled);
     }
 
-    public function testResponseOkWithContext()
+    public function testResponseUnauthorized()
     {
-        $response = $this->post('/logs/1234', [
-            'level' => 'error',
-            'message' => 'Log this message',
-            'context' => [
-                'stackTrace' => 'Error'
-            ]
-        ]);
-
-        $handled = $this->logHandler->getMocker()
-            ->getSimulation('handle')
-            ->getExecutions();
-
-        $response->assertStatus(200);
-        $this->assertCount(1, $handled);
-    }
-
-    public function testResponseNotFound()
-    {
-        $response = $this->post('/logs/xxxx', [
+        $response = $this->post('/api/v1/logs/single?project_uuid=aabb', [
             'level' => 'error',
             'message' => 'Log this message'
         ]);
 
-        $response->assertStatus(404);
-        $response->assertJson([]);
-    }
-
-    /**
-     * @dataProvider getInvalidRequests
-     */
-    public function testResponseValidationError($requestData)
-    {
-        $response = $this->post('/logs/1234', $requestData);
-
-        $response->assertStatus(422);
-        $response->assertJsonStructure(['errors']);
+        $response->assertStatus(401);
+        $response->assertJsonStructure(['message']);
     }
 }

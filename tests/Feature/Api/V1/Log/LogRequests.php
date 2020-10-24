@@ -42,35 +42,41 @@ class LogRequests
     {
         return [
             'send single' => [
+                'logs' => [
+                    'level' => 'error',
+                    'message' => 'Log this message'
+                ]
+            ],
+            'send without logs index' => [
                 [
                     'level' => 'error',
                     'message' => 'Log this message'
                 ]
             ],
             'level missing' => [
-                [[
+                'logs' => [[
                     'message' => 'Log this message'
                 ]]
             ],
             'level empty' => [
-                [[
+                'logs' => [[
                     'level' => '',
                     'message' => 'Log this message'
                 ]]
             ],
             'level not standard name' => [
-                [[
+                'logs' => [[
                     'level' => 'non-standard',
                     'message' => 'Log this message'
                 ]]
             ],
             'message missing' => [
-                [[
+                'logs' => [[
                     'level' => 'error'
                 ]]
             ],
             'message empty' => [
-                [[
+                'logs' => [[
                     'level' => 'error',
                     'message' => ''
                 ]]

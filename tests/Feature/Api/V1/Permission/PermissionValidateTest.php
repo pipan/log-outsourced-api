@@ -6,6 +6,7 @@ use App\Domain\Role\RoleEntity;
 use App\Domain\Settings\DefaultRole\DefaultRoleEntity;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
+use Tests\Feature\Api\V1\Settings\ProjectKey\ProjectKeyTestSeeder;
 use Tests\Feature\Api\V1\User\UserTestSeeder;
 
 class PermissionValidateTest extends ControllerActionTestCase
@@ -16,6 +17,7 @@ class PermissionValidateTest extends ControllerActionTestCase
 
         ProjectTestSeeder::seed($this->projectRepository);
         UserTestSeeder::seed($this->userRepository);
+        ProjectKeyTestSeeder::seed($this->projectKeyRepository);
 
         $role = new RoleEntity([
             'id' => 1,
@@ -41,7 +43,7 @@ class PermissionValidateTest extends ControllerActionTestCase
 
     public function testResponseOk()
     {
-        $response = $this->get('permissions/aabb?user=admin&permissions[]=user.view');
+        $response = $this->get('permissions/1234?user=admin&permissions[]=user.view');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -60,7 +62,7 @@ class PermissionValidateTest extends ControllerActionTestCase
             ->getSimulation('getForUser')
             ->whenInputReturn([], [0]);
 
-        $response = $this->get('permissions/aabb?user=unknown&permissions[]=user.view');
+        $response = $this->get('permissions/1234?user=unknown&permissions[]=user.view');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -101,7 +103,7 @@ class PermissionValidateTest extends ControllerActionTestCase
             ->getSimulation('getForUser')
             ->whenInputReturn([], [0]);
 
-        $response = $this->get('permissions/aabb?user=unknown&permissions[]=user.view');
+        $response = $this->get('permissions/1234?user=unknown&permissions[]=user.view');
 
         $inserted = $this->userRepository->getMocker()
             ->getSimulation('insert')
@@ -113,7 +115,7 @@ class PermissionValidateTest extends ControllerActionTestCase
 
     public function testResponseOkRequiredPermissionNotFound()
     {
-        $response = $this->get('permissions/aabb?user=admin&permissions[]=user.create');
+        $response = $this->get('permissions/1234?user=admin&permissions[]=user.create');
 
         $response->assertStatus(200);
         $response->assertJson([

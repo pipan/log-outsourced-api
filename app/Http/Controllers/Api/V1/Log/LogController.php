@@ -16,7 +16,45 @@ use Psr\Log\LogLevel;
 
 class LogController
 {
-    public function single($uuid, Request $request, Repository $repository, LogHandlerContainer $handlerContainer, ListenerPatternMatcher $matcher)
+    private Repository $repository;
+    private LogHandlerContainer $handlerContainer;
+    private ListenerPatternMatcher $matcher;
+
+    public function __construct(Repository $repository, LogHandlerContainer $handlerContainer, ListenerPatternMatcher $matcher)
+    {
+        $this->repository = $repository;
+        $this->handlerContainer = $handlerContainer;
+        $this->matcher = $matcher;
+    }
+
+    public function singleWithKey($key, Request $request)
+    {
+        $projectKey = $this->repository->projectKey()->getByKey($key);
+        if (!$projectKey) {
+            return ResponseError::resourceNotFound();
+        }
+
+        $project = $this->repository->project()->get($projectKey->getProjectId());
+        if ($project == null) {
+            return ResponseError::resourceNotFound();
+        }
+        
+        return $this->singleWithProject($project, $request);
+    }
+
+    public function singleApi(Request $request)
+    {
+        $project = $this->repository->project()->getByUuid(
+            $request->input('project_uuid')
+        );
+        if ($project == null) {
+            return ResponseError::resourceNotFound();
+        }
+
+        return $this->singleWithProject($project, $request);
+    }
+
+    protected function singleWithProject(ProjectEntity $project, Request $request)
     {
         $validator = Validator::make($request->all(), [
             'level' => ['required', Rule::in([LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE, LogLevel::WARNING, LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY])],
@@ -26,56 +64,71 @@ class LogController
             return ResponseError::invalidRequest($validator->errors());
         }
 
-        $project = $repository->project()->getByUuid($uuid);
-        if ($project == null) {
-            return response([], 404);
-        }
-        $listners = $repository->listener()->getAllForProject($project->getId());
+        $listners = $this->repository->listener()->getAllForProject($project->getId());
 
         $this->proccessBatch(
             [$request->all()],
             $listners,
-            $project,
-            $matcher,
-            $handlerContainer
+            $project
         );
 
         return response([], 200);
     }
 
-    public function batch($uuid, Request $request, Repository $repository, LogHandlerContainer $handlerContainer, ListenerPatternMatcher $matcher)
+    public function batchWithKey($key, Request $request)
+    {
+        $projectKey = $this->repository->projectKey()->getByKey($key);
+        if (!$projectKey) {
+            return ResponseError::resourceNotFound();
+        }
+        $project = $this->repository->project()->get($projectKey->getProjectId());
+        if ($project == null) {
+            return ResponseError::resourceNotFound();
+        }
+
+        return $this->batchWithProject($project, $request);
+    }
+
+    public function batchApi(Request $request)
+    {
+        $project = $this->repository->project()->getByUuid(
+            $request->input('project_uuid')
+        );
+        if ($project == null) {
+            return ResponseError::resourceNotFound();
+        }
+
+        return $this->batchWithProject($project, $request);
+    }
+
+    protected function batchWithProject(ProjectEntity $project, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            '*.level' => ['required', Rule::in([LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE, LogLevel::WARNING, LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY])],
-            '*.message' => ['required']
+            'logs' => ['required', 'array'],
+            'logs.*.level' => ['required', Rule::in([LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE, LogLevel::WARNING, LogLevel::ERROR, LogLevel::CRITICAL, LogLevel::ALERT, LogLevel::EMERGENCY])],
+            'logs.*.message' => ['required']
         ]);
         if ($validator->fails()) {
             return ResponseError::invalidRequest($validator->errors());
         }
 
-        $project = $repository->project()->getByUuid($uuid);
-        if ($project == null) {
-            return response([], 404);
-        }
-        $listners = $repository->listener()->getAllForProject($project->getId());
+        $listners = $this->repository->listener()->getAllForProject($project->getId());
 
         $this->proccessBatch(
-            $request->all(),
+            $request->input('logs', []),
             $listners,
-            $project,
-            $matcher,
-            $handlerContainer
+            $project
         );
 
         return response([], 200);
     }
 
-    private function proccessBatch($events, $listners, ProjectEntity $project, ListenerPatternMatcher $matcher, LogHandlerContainer $handlerContainer)
+    private function proccessBatch($events, $listners, ProjectEntity $project)
     {
         foreach ($events as $event) {
-            $matched = $matcher->match($event['level'], $listners);
+            $matched = $this->matcher->match($event['level'], $listners);
             foreach ($matched as $matchedListener) {
-                $logHandler = $handlerContainer->get($matchedListener->getHandlerSlug());
+                $logHandler = $this->handlerContainer->get($matchedListener->getHandlerSlug());
                 if ($logHandler == null) {
                     throw new Exception("Cannot process log, because log handler does not exists: " . $matchedListener->getHandlerSlug());
                 }
