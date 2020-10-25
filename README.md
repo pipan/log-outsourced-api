@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.com/pipan/log-outsourced-api.svg?branch=master)](https://travis-ci.com/pipan/log-outsourced-api)
 
+![logo](docs/assets/favicon-32x32.png)
+
 Standalone server service for managing your applications's:
 
 * logs
