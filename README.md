@@ -7,9 +7,11 @@ Standalone server service for managing your applications's:
 * logs
 * user permissions
 
-[demo](https://outsourced.ovaldo.sk)
+## Demo
 
-Create new connection with:
+[Outsourced web client](https://outsourced.ovaldo.sk)
+
+Create new connection to demo server:
 
 * Name: demo
 * Host: https://log-demo-api.ovaldo.sk
