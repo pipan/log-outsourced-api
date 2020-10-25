@@ -19,7 +19,7 @@ class CreateListenersTable extends Migration
             $table->unsignedBigInteger('project_id');
             $table->string('name', 255);
             $table->string('handler_slug', 255);
-            $table->json('handler_values');
+            $table->text('handler_values');
             $table->timestamps();
 
             $table->index(['project_id'], 'link_index');

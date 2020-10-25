@@ -1,10 +1,22 @@
-# Log Outsourced
+# Outsourced
 
 [![Build Status](https://travis-ci.com/pipan/log-outsourced-api.svg?branch=master)](https://travis-ci.com/pipan/log-outsourced-api)
 
-Proxy server for application logs
+Standalone server service for managing your applications's:
 
-[demo](https://log-demo.ovaldo.sk)
+* logs
+* user permissions
+
+[demo](https://outsourced.ovaldo.sk)
+
+Create new connection with:
+
+* Name: demo
+* Host: https://log-demo-api.ovaldo.sk
+* Username: root
+* Password: root
+
+![create demo connection](https://media.giphy.com/media/Dl92GpWlF5S8F8Vquk/giphy.gif)
 
 ## Installation
 
@@ -42,7 +54,7 @@ cd ../
 
 Application will need access to one directory, so you will have to run `sudo chown -R www-data:www-data storage`
 
-Then you have to configure your [virtual host](docs/VIRTUAL_HOST.md).
+Then you have to configure your [virtual host](docs/VIRTUAL_HOST.md). And add ertificate. For testing purpose, we created tutorial [how to setup certificate with certbot](docs/CERT.md)
 
 > If you are runnig this application localy, then you will have to add <your_domain> to `hosts` file.
 
@@ -65,9 +77,5 @@ cd ../
 ```
 
 ## API
-
-## Plugins
-
-### Autorization
 
 ## Contribution

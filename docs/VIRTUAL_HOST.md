@@ -49,15 +49,15 @@ server {
         allow all;
     }
 
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Headers' 'Content-Type' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
     location ~ \.php$ {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Headers' 'Content-Type';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-
         include snippets/fastcgi-php.conf;
         fastcgi_pass unix:/run/php/php7.2-fpm.sock;
     }
@@ -74,4 +74,4 @@ server {
 }
 ```
 
-Enable new virtual host `ln -s /etc/nginx/sites-available/<subdomain>.<your_domain> /etc/nginx/sites-enabled/<subdomain>.<your_domain>` and restart apache `sudo service nginx restart`.
+Enable new virtual host `ln -s /etc/nginx/sites-available/<subdomain>.<your_domain> /etc/nginx/sites-enabled/<subdomain>.<your_domain>` and restart nginx `sudo service nginx restart`.
