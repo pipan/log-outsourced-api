@@ -34,7 +34,7 @@ First step is to install source code
 
 > this command will create a folder named `log`. This guide will assume, you have not changed this folder name
 
-Switch to newly creted directory `cd log` and start setup `php artisan setup`. This setup is interactive, so follow the instructions and fill in required values. Application will need access to one directory, so you will have to run `sudo chown -R www-data:www-data storage`
+Switch to newly creted directory `cd log` and start app setup `php artisan setup` and database setup `php artisan setup:database`. This setup is interactive, so follow the instructions and fill in required values. Application will need access to one directory, so you will have to run `sudo chown -R www-data:www-data storage`
 
 Then you have to configure your [virtual host](docs/VIRTUAL_HOST.md).
 
@@ -53,6 +53,7 @@ cd console
 php artisan key:generate --ansi
 php artisan init:file
 php artisan setup
+php artisan setup:database
 cd ../
 ```
 
