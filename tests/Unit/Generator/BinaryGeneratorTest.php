@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Generator;
+namespace Tests\Unit\Generator;
 
 use Lib\Generator\BinaryGenerator;
 use Tests\TestCase;

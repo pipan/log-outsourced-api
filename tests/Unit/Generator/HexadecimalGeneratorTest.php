@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Generator;
+namespace Tests\Unit\Generator;
 
 use Lib\Generator\HexadecimalGenerator;
 use Tests\TestCase;

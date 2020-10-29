@@ -7,7 +7,7 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 
-class JwtAutorization implements Authorization
+class JwtAuthorization implements Authorization
 {
     private $id = -1;
 

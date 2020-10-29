@@ -1,4 +1,4 @@
-dist: precise
+dist: bionic
 
 language: php
 
@@ -10,7 +10,6 @@ addons:
 
 cache:
   directories:
-    - node_modules
     - vendor
   
 before_script:

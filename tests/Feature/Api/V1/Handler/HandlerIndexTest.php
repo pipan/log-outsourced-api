@@ -6,7 +6,7 @@ use App\Domain\Handler\HandlerEntity;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class HandlerIndexText extends ControllerActionTestCase
+class HandlerIndexTest extends ControllerActionTestCase
 {
     public function testResponseOkEmpty()
     {

@@ -6,7 +6,7 @@ use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 use Tests\Feature\Api\V1\Project\ProjectTestSeeder;
 
-class UserCreateController extends ControllerActionTestCase
+class UserCreateTest extends ControllerActionTestCase
 {
     public function setUp(): void
     {
