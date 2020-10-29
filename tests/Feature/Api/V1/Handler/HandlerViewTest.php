@@ -5,7 +5,7 @@ namespace Tests\Feature\Api\V1\Handler;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class HandlerViewText extends ControllerActionTestCase
+class HandlerViewTest extends ControllerActionTestCase
 {
     public function setUp(): void
     {

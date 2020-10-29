@@ -25,7 +25,7 @@ Copy, paste and edit this virtual host.
         AllowOverride All
         Require all granted
         Header set Access-Control-Allow-Origin "*"
-	    Header set Access-Control-Allow-Headers "content-type"
+	    Header set Access-Control-Allow-Headers "content-type, authorization"
         Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
     </Directory>
 </VirtualHost>
@@ -50,7 +50,7 @@ server {
     }
 
     add_header 'Access-Control-Allow-Origin' '*' always;
-    add_header 'Access-Control-Allow-Headers' 'Content-Type' always;
+    add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
     add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
 
     location / {

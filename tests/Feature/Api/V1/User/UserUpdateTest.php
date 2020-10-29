@@ -5,7 +5,7 @@ namespace Tests\Feature\Api\V1\User;
 use Tests\Feature\Api\V1\Administrator\AuthHeaders;
 use Tests\Feature\Api\V1\ControllerActionTestCase;
 
-class UserUpdateController extends ControllerActionTestCase
+class UserUpdateTest extends ControllerActionTestCase
 {
     public function setUp(): void
     {

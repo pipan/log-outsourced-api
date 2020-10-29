@@ -8,7 +8,6 @@ use App\Domain\UuidValidator;
 use App\Validator\DynamicValidator;
 use App\Repository\Repository;
 use App\Validator\EntityValidator;
-use Illuminate\Validation\Rule;
 
 class AdministratorValidator
 {

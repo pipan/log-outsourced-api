@@ -6,7 +6,6 @@ use App\Domain\Project\ProjectEntity;
 use App\Domain\Project\ProjectValidator;
 use App\Http\Controllers\Api\V1\ListMetaEntity;
 use App\Http\ResponseError;
-use App\Http\ResponseSchema\ListenerResponseSchemaAdapter;
 use App\Http\ResponseSchema\ProjectResponseSchemaAdapter;
 use App\Repository\Pagination;
 use App\Repository\Repository;
@@ -17,12 +16,10 @@ use Lib\Generator\HexadecimalGenerator;
 class ProjectController
 {
     private $projectSchema;
-    private $listenerSchema;
 
     public function __construct()
     {
         $this->projectSchema = new ProjectResponseSchemaAdapter();
-        $this->listenerSchema = new ListenerResponseSchemaAdapter();
     }
 
     public function index(Repository $repository, Request $request)
