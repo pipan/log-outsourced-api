@@ -82,6 +82,65 @@ cd ../
 
 ## API
 
+### Logging
+
+**Single**
+
+```
+[POST] /api/v1/logs/{accessKey}
+```
+
+Body
+
+```json
+{
+    "level": "debug" | "info" | "notice" | "warning" | "error" | "critical" | "alert" | "emergency",
+    "message": "string",
+    "context": {}
+}
+```
+
+**Batch**
+
+```
+[POST] /api/v1/logs/{accessKey}/batch
+```
+
+Body
+
+```json
+[
+    {
+        "level": "debug" | "info" | "notice" | "warning" | "error" | "critical" | "alert" | "emergency",
+        "message": "string",
+        "context": {}
+    },
+    ...
+]
+```
+
+### Permissions
+
+**Verify**
+
+```
+[GET] /api/v1/permissions/{accessKey}
+```
+
+Query
+
+```
+user=string
+permissions[]=string
+```
+
+Response
+
+```
+string[]
+```
+
+
 ## SDK
 
 * [PHP](https://github.com/pipan/log-outsourced-php-sdk)
