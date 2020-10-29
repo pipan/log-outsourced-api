@@ -87,7 +87,7 @@ cd ../
 **Single**
 
 ```
-[POST] /api/v1/logs/{accessKey}
+[POST] /logs/{accessKey}
 ```
 
 Body
@@ -103,7 +103,7 @@ Body
 **Batch**
 
 ```
-[POST] /api/v1/logs/{accessKey}/batch
+[POST] /logs/{accessKey}/batch
 ```
 
 Body
@@ -124,7 +124,7 @@ Body
 **Verify**
 
 ```
-[GET] /api/v1/permissions/{accessKey}
+[GET] /permissions/{accessKey}
 ```
 
 Query
