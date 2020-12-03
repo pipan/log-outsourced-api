@@ -13,6 +13,9 @@ class DatabaseLogHandler implements LogHandler
     public function handle($log, ProjectEntity $project, $config)
     {
         $connection = $this->createConnection($config);
+        if (!$connection) {
+            return;
+        }
         $statement = $connection->prepare("INSERT INTO " . $config['db_table'] . "(level, message, context) VALUES(:level, :message, :context)");
 
         $result = $statement->execute([
@@ -33,12 +36,12 @@ class DatabaseLogHandler implements LogHandler
     private function createConnection($config): PDO
     {
         $params = [
-            'dbname=' . $config['db_database'],
-            'host=' . $config['db_host'],
-            'port=' . $config['db_port']
+            'dbname=' . $config['db_database'] ?? '',
+            'host=' . $config['db_host'] ?? '',
+            'port=' . $config['db_port'] ?? ''
         ];
-        $dsn = $config['db_driver'] . ":" . implode(";", $params);
+        $dsn = ($config['db_driver'] ?? '') . ":" . implode(";", $params);
 
-        return new PDO($dsn, $config['db_user'], $config['db_password']);
+        return new PDO($dsn, $config['db_user'] ?? '', $config['db_password'] ?? '');
     }
 }
