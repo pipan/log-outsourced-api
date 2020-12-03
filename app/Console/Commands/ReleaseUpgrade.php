@@ -28,7 +28,7 @@ class ReleaseUpgrade extends Command
         $currentVersion = (int) basename(readlink($currentPath));
         $nextVersion = $currentVersion + 1;
 
-        $cmd = 'composer create-project --no-dev --prefer-dist outsourced/log ' . $releasesPath . DIRECTORY_SEPARATOR . $nextVersion;
+        $cmd = 'composer create-project --no-cache --no-dev --prefer-dist outsourced/log ' . $releasesPath . DIRECTORY_SEPARATOR . $nextVersion;
         $this->info('executing: ' . $cmd);
         exec($cmd);
         exec('ln -sfn ' . $releasesPath . DIRECTORY_SEPARATOR . $nextVersion . ' ' . $currentPath);
